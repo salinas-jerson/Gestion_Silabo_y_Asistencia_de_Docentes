@@ -1,0 +1,11 @@
+{% extends 'ventanas/base.html' %}
+{% load  static %}
+{% block content %}
+    <h1>Pagina Inicial</h1>
+    
+    <h1>{{cabecera}}</h1> <!-- cabecera es una variable enviada  -->  
+    <img src="{% static 'images/logo.gif' %}" style="width:110px" align="left" alt="">
+    
+{% endblock %}
+
+    

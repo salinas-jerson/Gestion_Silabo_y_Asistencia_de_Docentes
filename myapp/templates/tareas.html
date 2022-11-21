@@ -1,0 +1,11 @@
+{% extends 'ventanas/base.html' %}
+
+{% block content %}
+    <h1>tareas</h1>
+
+    {% for i in tareas %}
+
+    <h1>{{i}}</h1> <!-- se la pasa una variable --> 
+    <button>delete</button>
+    {% endfor %}
+{% endblock %}

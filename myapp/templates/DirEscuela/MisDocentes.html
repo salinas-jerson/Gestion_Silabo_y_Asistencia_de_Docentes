@@ -1,0 +1,15 @@
+{% extends 'ventanas/baseDE.html' %}
+
+{% block content %}
+    <h1>Bienvenido DE ...(Grado Academico) (Nombre)</h1>
+    <h1>Docentes de Ingenieria Informática y de Sistemas: </h1>
+
+    {% for i in num %}
+        <h1>{{docentes}}</h1> <!-- se la pasa una variable --> 
+        <button>Hacer Reporte</button>
+        <button>Generar Informe</button>
+    {% endfor %}
+
+    
+    
+{% endblock %}

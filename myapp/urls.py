@@ -2,7 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('',views.index),
-    path('about/',views.AcerceDe),
-    path('hello/<str:username>',views.helloWorld)   #se llama y espera otro nombre
+    path('',views.index,name="index"),
+    path('about/',views.AcerceDe,name="about"),
+    #path('hello/<str:username>',views.helloWorld,name="hello"),   #se llama y espera nombre de parametro
+    path('tarea/',views.tareas,name="tarea"),
+    path('project/',views.project,name="project"),
+    path('crea_tarea/',views.crear_new_tarea,name="crea_tarea"), 
+    #------------ URL DOCENTES ----------------------------
+    path('mis_cursos/',views.misCursos,name="mis_cursos"),
+    path('docentes/',views.docentes,name="docentes"),
+    
+    #------------ URL DIRECTOR DE ESCUELA ----------------------------
+    path('mis_docentes/',views.misDocentes,name="mis_docentes"),
+    path('direct/',views.dirEscuela,name="direct"),
 ]

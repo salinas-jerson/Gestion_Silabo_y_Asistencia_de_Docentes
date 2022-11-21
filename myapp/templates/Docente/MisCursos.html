@@ -1,0 +1,15 @@
+{% extends 'ventanas/baseDocente.html' %}
+
+{% block content %}
+    <h1>Bienvenido ...(Grado Academico) (Nombre)</h1>
+    <h1>Cursos asignados: </h1>
+
+    {% for i in num %}
+        <h1>{{cursos}}</h1> <!-- se la pasa una variable --> 
+        <button>Dictar</button>
+        <button>Cargar Sílabo</button>
+    {% endfor %}
+
+    
+    
+{% endblock %}

@@ -1,13 +1,24 @@
 from django.db import models
 
 # Create your models here.
-#estas clases son tablas
+# estas clases son tablas
+# las modificaciones aquí, se deben migrar
 class Uasers(models.Model):
     title = models.TextField()
 
-class Proyect(models.Model):
+class Project(models.Model):
     #atributos 
     name = models.CharField(max_length=200)
-    #dependencias
+    def __str__(self):
+        return self.name
+
+class Task(models.Model):
+    #atributos 
+    name = models.CharField(max_length=200)
+    descripcion = models.TextField()
     #si la dependencia es eliminada -> esta se elimina en cascada
-    OdersTablas = models.ForeignKey(Uasers, on_delete = models.CASCADE)
+    OdersTablas = models.ForeignKey(Project, on_delete = models.CASCADE)
+
+    #done = models.BooleanField(default=False)
+    def __str__(self):
+        return self.name + " - " + self.OdersTablas.name

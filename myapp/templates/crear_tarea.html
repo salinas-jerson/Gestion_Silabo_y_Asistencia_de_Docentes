@@ -1,0 +1,12 @@
+{% extends 'ventanas/base.html' %}
+
+{% block content %}
+    <h1>Crear New Tarea</h1>
+    <form method="POST">
+        {% csrf_token %}
+
+        {{form.as_p}}
+        <button>Enviar</button>
+    </form>
+    
+{% endblock %}
