@@ -2,7 +2,7 @@ body{
     background: #202020;
     color: whitesmoke;
 }
-.navbar {
+.navbar {                       /*caja de opciones*/
     background: #404040;
     padding: 1px 0;
 }
@@ -10,13 +10,13 @@ body{
     display: flex;
     justify-content: space-between;
 }
-.navbar ul li {
+.navbar ul li {                 /*quita enumerado de items*/
     list-style: none;
 }
-.navbar ul li a {
+.navbar ul li a {               /*quita subrayado de text*/
     color: green;
     text-decoration: none;
 }
-.navbar ul li a:hover{
+.navbar ul li a:hover{          /*decora seleccion*/
     color: rgb(162, 146, 231);
 }
