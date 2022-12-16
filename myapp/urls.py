@@ -18,4 +18,7 @@ urlpatterns = [
     #------------ URL DIRECTOR DE ESCUELA ----------------------------
     path('mis_docentes/',views.misDocentes,name="mis_docentes"),
     path('direct/',views.dirEscuela,name="direct"),
+    path('regist_DE/',views.resgistDE,name="regist_DE"),
+    path('iniciaSessionDE/',views.iniciarSesionDE,name="iniciaSessionDE"),
+    path('cerrarSessionDE/',views.cerrarLoginDE,name="cerrarSessionDE"),
 ]

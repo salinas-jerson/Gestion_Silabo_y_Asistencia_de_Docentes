@@ -43,14 +43,50 @@ def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
 
 #----------------------- DIRECTOR DE ESCUELA --------------------------
+@login_required
 def misDocentes(respuesta):
     docentes= "consulta D.E. docentes"
     Numero=[1,2]
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,'num':Numero}) 
-
+@login_required
 def dirEscuela(respuesta):
     Docente= "consultas del director de escuela" 
     return render(respuesta,"DirEscuela/DirectorEscuela.html",{'director':Docente}) 
+def resgistDE(respuesta):
+    if respuesta.method == "GET":
+        return render(respuesta,"DirEscuela/resgistrarDE.html",{'form':UserCreationForm})
+    else:
+        if respuesta.POST["password1"] == respuesta.POST["password2"]:
+            if respuesta.POST["password1"] == "":
+                return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
+            else:
+                try:
+                    user = User.objects.create_user(
+                        respuesta.POST["username"], password=respuesta.POST["password1"])
+                    user.save()
+                    login(respuesta, user)
+                    return redirect('direct')
+                except IntegrityError:
+                    return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+
+        return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})
+
+def iniciarSesionDE(respuesta):    
+    if respuesta.method == 'GET':
+        return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm})
+    else:
+        user = authenticate(
+            respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
+        if user is None:
+            return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
+
+        login(respuesta, user)
+        return redirect('direct')
+
+@login_required
+def cerrarLoginDE(respuesta):
+    logout(respuesta)
+    return redirect("index")
 
 #----------------------- DOCENTE --------------------------
 @login_required
