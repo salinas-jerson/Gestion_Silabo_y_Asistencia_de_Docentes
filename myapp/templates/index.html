@@ -1,11 +1,15 @@
 {% extends 'ventanas/base.html' %}
 {% load  static %}
 {% block content %}
-    <h1>Pagina Inicial</h1>
+    <main class="container py-5">
+        <section class="card card-body">
+            <h1 class="display-1 text-center">Sistema de gestión de sílabo</h1>
     
-    <h1>{{cabecera}}</h1> <!-- cabecera es una variable enviada  -->  
-    <img src="{% static 'images/logo.gif' %}" style="width:110px" align="left" alt="">
+            <h1>{{cabecera}}</h1> <!-- cabecera es una variable enviada  -->  
+            <img src="{% static 'images/logo.gif' %}" style="width:110px" align="left" alt="">
     
+        </section>
+    </main>
 {% endblock %}
 
     

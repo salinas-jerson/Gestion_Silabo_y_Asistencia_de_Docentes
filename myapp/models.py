@@ -3,8 +3,9 @@ from django.db import models
 # Create your models here.
 # estas clases son tablas
 # las modificaciones aquí, se deben migrar
-class Uasers(models.Model):
-    title = models.TextField()
+class Docentes(models.Model):
+    username = models.TextField()
+    password = models.TextField()
 
 class Project(models.Model):
     #atributos 

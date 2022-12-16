@@ -1,5 +1,11 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+
+from django.db import IntegrityError
 from .models import Project,Task
 from .forms import crearTarea
 
@@ -47,11 +53,49 @@ def dirEscuela(respuesta):
     return render(respuesta,"DirEscuela/DirectorEscuela.html",{'director':Docente}) 
 
 #----------------------- DOCENTE --------------------------
+@login_required
 def misCursos(respuesta):
     cursos= "consulta cursos"
     Numero=[1,2]
     return render(respuesta,"Docente/MisCursos.html",{'cursos':cursos,'num':Numero}) 
 
+@login_required
 def docentes(respuesta):
     Docente= "consulta docente"
     return render(respuesta,"Docente/docentes.html",{'docente':Docente})
+
+def resgistD(respuesta):
+    if respuesta.method == "GET":
+        return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
+    else:
+        if respuesta.POST["password1"] == respuesta.POST["password2"]:
+            if respuesta.POST["password1"] == "":
+                return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
+            else:
+                try:
+                    user = User.objects.create_user(
+                        respuesta.POST["username"], password=respuesta.POST["password1"])
+                    user.save()
+                    login(respuesta, user)
+                    return redirect('docentes')
+                except IntegrityError:
+                    return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+
+        return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})
+
+def iniciarSesionD(respuesta):    
+    if respuesta.method == 'GET':
+        return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
+    else:
+        user = authenticate(
+            respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
+        if user is None:
+            return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
+
+        login(respuesta, user)
+        return redirect('docentes')
+
+@login_required
+def cerrarLoginD(respuesta):
+    logout(respuesta)
+    return redirect("index")
