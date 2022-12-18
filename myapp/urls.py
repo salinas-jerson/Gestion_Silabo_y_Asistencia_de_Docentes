@@ -21,4 +21,5 @@ urlpatterns = [
     path('regist_DE/',views.resgistDE,name="regist_DE"),
     path('iniciaSessionDE/',views.iniciarSesionDE,name="iniciaSessionDE"),
     path('cerrarSessionDE/',views.cerrarLoginDE,name="cerrarSessionDE"),
+    path('carga_academcica/',views.cargaAcademica,name="carga_academcica"),
 ]

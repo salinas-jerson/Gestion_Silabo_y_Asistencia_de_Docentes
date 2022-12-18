@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+#archivos
+from django.core.files.storage import FileSystemStorage
+from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
 from .models import Project,Task
@@ -87,6 +90,21 @@ def iniciarSesionDE(respuesta):
 def cerrarLoginDE(respuesta):
     logout(respuesta)
     return redirect("index")
+
+
+@login_required
+def cargaAcademica(request):
+    if request.method == 'POST':    
+        try:
+            file = request.FILES['file']
+            fs = FileSystemStorage()
+            filename = fs.save(file.name, file) 
+            uploaded_file_url = fs.url(filename)            
+            return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': uploaded_file_url})
+        
+        except:
+            return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo"})    
+    return render(request, 'DirEscuela/cargaAcademica.html')
 
 #----------------------- DOCENTE --------------------------
 @login_required
