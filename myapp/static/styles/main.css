@@ -1,11 +1,17 @@
 body{
-    background: #202020;
-    color: whitesmoke;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    font: 25x normal normal uppercase helvetica,arial,serif;
 }
 .navbar {                       /*caja de opciones*/
-    background: #404040;
+    background: #0a1054;
     padding: 1px 0;
+    margin: auto; 
+    font: 14px normal normal uppercase helvetica,arial,serif;
+    border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 }
+
 .navbar ul {
     display: flex;
     justify-content: space-between;
@@ -14,9 +20,9 @@ body{
     list-style: none;
 }
 .navbar ul li a {               /*quita subrayado de text*/
-    color: green;
+    color: rgb(237, 244, 237);
     text-decoration: none;
 }
 .navbar ul li a:hover{          /*decora seleccion*/
-    color: rgb(162, 146, 231);
+    color: rgb(213, 231, 146);
 }
