@@ -8,9 +8,6 @@ urlpatterns = [
     path('',views.index,name="index"),
     path('about/',views.AcerceDe,name="about"),
     #path('hello/<str:username>',views.helloWorld,name="hello"),   #se llama y espera nombre de parametro
-    path('tarea/',views.tareas,name="tarea"),
-    path('project/',views.project,name="project"),
-    path('crea_tarea/',views.crear_new_tarea,name="crea_tarea"), 
     #------------ URL DOCENTES ----------------------------
     path('mis_cursos/',views.misCursos,name="mis_cursos"),
     path('docentes/',views.docentes,name="docentes"),

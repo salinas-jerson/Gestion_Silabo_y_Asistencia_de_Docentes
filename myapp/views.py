@@ -17,31 +17,7 @@ from .forms import crearTarea
 def index(respuesta):
     title = 'Variable enviada'
     return render(respuesta,"index.html",{'cabecera': title}) #cabecera es una var
-
-def project(respuesta):
-    projec = Project.objects.all()
-    return render(respuesta,"projects.html",{'proyecto':projec}) 
-
-def tareas(respuesta):
-    tarea = Task.objects.all()
-    return render(respuesta,"tareas.html",{'tareas':tarea}) 
-
-def crear_new_tarea(respuesta):
-    if respuesta.method == 'GET':
-        #mostrar interface
-        return render(respuesta,"crear_tarea.html", {'form':crearTarea()})
-    else:
-        #guardar datos / cada atributo
-        #print(respuesta.POST['title']) # lo que viene del formulario en title y descripcion
-        Task.objects.create(
-        name=respuesta.POST['title'],
-        descripcion=respuesta.POST['descripcion'],
-        OdersTablas_id=1
-        )
-        #las variables son los mismops de la tabla (si es forinkey -> con ..._...)
-        return redirect('tarea')
-        
-
+      
 def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
 
