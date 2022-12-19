@@ -1,31 +1,62 @@
-{% extends 'ventanas/baseDocente.html' %}
-{% block content %}
+{% extends 'ventanas/baseDocente.html' %} {% block content %}
 
 <main class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4 mt-5">
-            <form action="/regist_D/" method="POST" class="card card-body text-center">
-            <h1>Registrarse</h1>
-            <p style="color:rgb(255,0,0);">*{{error}}</p>
-            {% csrf_token %}
+	<div class="row">
+		<div class="col-md-4 offset-md-4 mt-5">
+			<form
+				action="/regist_D/"
+				method="POST"
+				class="card card-body text-center"
+			>
+				<h1>Registrarse</h1>
+				<p style="color:rgb(255,0,0);">*{{error}}</p>
+				{% csrf_token %}
 
-            <div class="mb-3">
-                <label for="username">Usuario:</label>
-                <input type="text" name="username" id="username" class="form-control" placeholder="nombre de usuario">               
-            </div>
-            <div class="mb-3">
-                <label for="password1">Contraseña:</label>
-                <input type="password" name="password1" id="password1" class="form-control" placeholder="contraseña">               
-            </div>
-            <div class="mb-3">
-                <label for="password2">Confirme contraseña:</label>
-                <input type="password" name="password2" id="password2" class="form-control" placeholder="confirme contraseña">               
-            </div>
-            <button class="btn btn-primary">Registrarse</button>
-            </form>
-        </div>
-    </div>
+				<div class="mb-3">
+					<label for="first_name">Nombres:</label>
+					<input
+						type="text"
+						name="first_name"
+						id="first_name"
+						class="form-control"
+						placeholder="Nombres"
+					/>
+				</div>
+
+				<div class="mb-3">
+					<label for="username">Usuario:</label>
+					<input
+						type="text"
+						name="username"
+						id="username"
+						class="form-control"
+						placeholder="nombre de usuario"
+					/>
+				</div>
+				<div class="mb-3">
+					<label for="password1">Contraseña:</label>
+					<input
+						type="password"
+						name="password1"
+						id="password1"
+						class="form-control"
+						placeholder="contraseña"
+					/>
+				</div>
+				<div class="mb-3">
+					<label for="password2">Confirme contraseña:</label>
+					<input
+						type="password"
+						name="password2"
+						id="password2"
+						class="form-control"
+						placeholder="confirme contraseña"
+					/>
+				</div>
+				<button class="btn btn-primary">Registrarse</button>
+			</form>
+		</div>
+	</div>
 </main>
 
 {% endblock %}
-

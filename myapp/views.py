@@ -93,13 +93,25 @@ def cerrarLoginDE(respuesta):
 def misCursos(respuesta):
     cursos= "consulta cursos"
     Numero=[1,2]
-    return render(respuesta,"Docente/MisCursos.html",{'cursos':cursos,'num':Numero}) 
+    return render(respuesta,"Docente/MisCursos.html",{'cursos':cursos,'num':Numero})
+#-------------
+
+# ----------- 
 
 @login_required
 def docentes(respuesta):
-    Docente= "consulta docente"
-    return render(respuesta,"Docente/docentes.html",{'docente':Docente})
-
+    if respuesta.method=="GET":
+        Docente= "consulta docente"
+        #recuperar nombre de la persona que ingresa 
+        nom=User.objects.get(id=4)
+        return render(respuesta,"Docente/docentes.html",{'docente':Docente,'nombre':nom.first_name})
+    else:
+        if respuesta.POST["archivo"]:
+            #comensamos a subir el archivo a la bd
+            #...
+            return HttpResponse("subiendo")
+        else:
+            return redirect('docentes')
 def resgistD(respuesta):
     if respuesta.method == "GET":
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
@@ -110,7 +122,7 @@ def resgistD(respuesta):
             else:
                 try:
                     user = User.objects.create_user(
-                        respuesta.POST["username"], password=respuesta.POST["password1"])
+                        first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
                     user.save()
                     login(respuesta, user)
                     return redirect('docentes')

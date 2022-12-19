@@ -1,12 +1,20 @@
-{% extends 'ventanas/baseDocente.html' %}
+{% extends 'ventanas/baseDocente.html' %} {% block content %}
+<h1>Bienvenido ...(Grado Academico)</h1>
+<h1>{{nombre}}</h1>
+<h1>---</h1>
+<h1>{{docente}}</h1>
+<!-- se la pasa una variable -->
+<div class="card">
+	<div class="card-body">
+		<form action="/docentes/" method="POST" class="documento">
+			{% csrf_token %}
+			<h2>Subir silabo</h2>
+			<input type="file" id="archivo" name="archivo" />
+			<button class="btn btn-primary">Guardar</button>
+		</form>
+	</div>
+</div>
+<!--{% for i in tareas %}-->
 
-{% block content %}
-    <h1>Bienvenido ...(Grado Academico) (Nombre)</h1>
-    <h1>---</h1>
-    <h1>{{docente}}</h1> <!-- se la pasa una variable --> 
-
-    <!--{% for i in tareas %}-->
-
-    
-    <!--{% endfor %}-->
+<!--{% endfor %}-->
 {% endblock %}
