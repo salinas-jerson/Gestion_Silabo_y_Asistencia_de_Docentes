@@ -1,0 +1,31 @@
+{% extends 'ventanas/baseDE.html' %}
+
+
+{% block content %}
+<body class="text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-5">
+                <form method="post" class="card card-body text-center" enctype="multipart/form-data">
+                    <h1>Subir archivo de la carga académica</h1>
+                    <p style="color:rgb(255,0,0);">{{error}}</p>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label"></label>
+                        <input class="form-control" type="file" name="file" id="formFile">                        
+                    </div>
+                    <button class="btn btn-primary">Cargar Archivo</button> 
+                    
+                </form>
+
+                    {% if uploaded_file_url %}
+                    <p>Archivo subido en: <a href="">{{ uploaded_file_url }}</a></p> 
+                    {% endif %}
+                    <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p> 
+               
+            </div>
+        </div>
+    </div>
+</body>
+     
+{% endblock %}

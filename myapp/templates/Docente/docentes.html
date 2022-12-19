@@ -6,12 +6,18 @@
 <!-- se la pasa una variable -->
 <div class="card">
 	<div class="card-body">
-		<form action="/docentes/" method="POST" class="documento">
+		<form
+			action="/docentes/"
+			method="POST"
+			class="documento"
+			enctype="multipart/form-data"
+		>
 			{% csrf_token %}
 			<h2>Subir silabo</h2>
 			<input type="file" id="archivo" name="archivo" />
 			<button class="btn btn-primary">Guardar</button>
 		</form>
+		<a href="{{file.url}}">ver silabo</a>
 	</div>
 </div>
 <!--{% for i in tareas %}-->
