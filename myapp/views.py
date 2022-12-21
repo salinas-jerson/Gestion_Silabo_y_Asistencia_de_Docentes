@@ -102,11 +102,15 @@ def docentes(respuesta):
     else:
         #if respuesta.POST["archivo"]:
         if respuesta.method=='POST':
-            uploadedFile=respuesta.FILES["archivo"]
-            document=Document(title='archivo1',uploadfile=uploadedFile)
-            document.save()
+            try:
+
+                uploadedFile=respuesta.FILES["archivo"]
+                document=Document(title='archivo1',uploadfile=uploadedFile)
+                document.save()
             #comensamos a subir el archivo a la bd
             #...
+            except:
+                return render(respuesta,"Docente/docentes.html",{'error':"*seleecione un archivo"})
         else:
             return redirect('docentes')
         File=Document.objects.get(id=2)
