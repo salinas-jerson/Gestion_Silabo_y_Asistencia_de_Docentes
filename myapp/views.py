@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Project,Task,Document
+from .models import Document
 from .forms import crearTarea
 
 # Create your views here.

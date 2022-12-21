@@ -20,19 +20,3 @@ class Document(models.Model):
     uploadfile=models.FileField(upload_to='uploaded Files')
     dataTimeOfUpload=models.DateTimeField(auto_now=True)
 #----------------------------------------------
-class Project(models.Model):
-    #atributos 
-    name = models.CharField(max_length=200)
-    def __str__(self):
-        return self.name
-
-class Task(models.Model):
-    #atributos 
-    name = models.CharField(max_length=200)
-    descripcion = models.TextField()
-    #si la dependencia es eliminada -> esta se elimina en cascada
-    OdersTablas = models.ForeignKey(Project, on_delete = models.CASCADE)
-
-    #done = models.BooleanField(default=False)
-    def __str__(self):
-        return self.name + " - " + self.OdersTablas.name
