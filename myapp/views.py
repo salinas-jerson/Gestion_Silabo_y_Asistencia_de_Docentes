@@ -112,34 +112,34 @@ def docentes(respuesta):
         File=Document.objects.get(id=2)
         return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
 
+def es_docente(elemento_nombre,elemento_apellido):
+    lista_Nombre=[] 
+    for item in Docentes.objects.all():
+        if elemento_nombre==item.Nombre and elemento_apellido==item.apellido:
+            lista_Nombre.append(item.Nombre)
+            return True
+        else:
+            return False
 def resgistD(respuesta):
     if respuesta.method == "GET":
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
     else:
         if respuesta.POST["password1"] == respuesta.POST["password2"]:
-            if respuesta.POST["password1"] == "":
-                return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
-            else:
-                try:
-                    user = User.objects.create_user(
-                        email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
-                    user.save()
-                    login(respuesta, user)
-                    return redirect('docentes')
-                except IntegrityError:
-                    return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+            if es_docente(respuesta.POST["first_name"],respuesta.POST["last_name"]):
+                if respuesta.POST["password1"] == "":
+                    return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
+                else:
+                    try:
+                        user = User.objects.create_user(
+                            email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
+                        user.save()
+                        login(respuesta, user)
+                        return redirect('docentes')
+                    except IntegrityError:
+                        return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+            return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "Usted aun no esta registrado como Docente."})
+        return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coincide."})
 
-        return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})
-def existe_docente(elemento):
-    lista_Nombres=[] 
-    lista_cargos=[]
-    for item in Docentes.objects.all():
-        lista_Nombres.append(item.Nombre)
-    for i in lista_Nombres:
-        if elemento in lista_Nombres:
-            return True
-        else:
-            return False
 
 def iniciarSesionD(respuesta):    
     if respuesta.method == 'GET': #and existe_docente
