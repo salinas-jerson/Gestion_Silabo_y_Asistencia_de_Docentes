@@ -20,3 +20,9 @@ class Document(models.Model):
     uploadfile=models.FileField(upload_to='uploaded Files')
     dataTimeOfUpload=models.DateTimeField(auto_now=True)
 #----------------------------------------------
+
+
+
+
+    
+#

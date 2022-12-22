@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document
+from .models import Document,Docentes
 from .forms import crearTarea
 
 # Create your views here.
@@ -100,21 +100,18 @@ def docentes(respuesta):
         nom=User.objects.get(id=4)
         return render(respuesta,"Docente/docentes.html",{'docente':Docente,'nombre':nom.first_name})
     else:
-        #if respuesta.POST["archivo"]:
+        #si se ejecuta el metodo POST subimos el archivo
         if respuesta.method=='POST':
-            try:
-
-                uploadedFile=respuesta.FILES["archivo"]
-                document=Document(title='archivo1',uploadfile=uploadedFile)
-                document.save()
+            uploadedFile=respuesta.FILES["archivo"]
+            document=Document(title='archivo1',uploadfile=uploadedFile)
+            document.save()
             #comensamos a subir el archivo a la bd
             #...
-            except:
-                return render(respuesta,"Docente/docentes.html",{'error':"*seleecione un archivo"})
         else:
             return redirect('docentes')
         File=Document.objects.get(id=2)
         return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
+
 def resgistD(respuesta):
     if respuesta.method == "GET":
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
@@ -125,7 +122,7 @@ def resgistD(respuesta):
             else:
                 try:
                     user = User.objects.create_user(
-                        first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
+                        email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
                     user.save()
                     login(respuesta, user)
                     return redirect('docentes')
@@ -133,9 +130,19 @@ def resgistD(respuesta):
                     return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
 
         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})
+def existe_docente(elemento):
+    lista_Nombres=[] 
+    lista_cargos=[]
+    for item in Docentes.objects.all():
+        lista_Nombres.append(item.Nombre)
+    for i in lista_Nombres:
+        if elemento in lista_Nombres:
+            return True
+        else:
+            return False
 
 def iniciarSesionD(respuesta):    
-    if respuesta.method == 'GET':
+    if respuesta.method == 'GET': #and existe_docente
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         user = authenticate(
