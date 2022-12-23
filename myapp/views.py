@@ -88,17 +88,15 @@ def misCursos(respuesta):
     cursos= "consulta cursos"
     Numero=[1,2]
     return render(respuesta,"Docente/MisCursos.html",{'cursos':cursos,'num':Numero})
-#-------------
 
-# ----------- 
+#variable global
+nombre_de_docente=""
 
 @login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
-        Docente= "consulta docente"
-        #recuperar nombre de la persona que ingresa 
-        nom=User.objects.get(id=4)
-        return render(respuesta,"Docente/docentes.html",{'docente':Docente,'nombre':nom.first_name})
+        Docente= nombre_de_docente
+        return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
     else:
         #si se ejecuta el metodo POST subimos el archivo
         if respuesta.method=='POST':
@@ -111,7 +109,7 @@ def docentes(respuesta):
             return redirect('docentes')
         File=Document.objects.get(id=2)
         return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
-
+#modulo para validar si es un docente
 def es_docente(elemento_nombre,elemento_apellido):
     lista_Nombre=[] 
     for item in Docentes.objects.all():
@@ -140,14 +138,31 @@ def resgistD(respuesta):
             return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "Usted aun no esta registrado como Docente."})
         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coincide."})
 
+#-----------------
+#buscamos el id mediante username y buscamos el first_name y last_name
+
 
 def iniciarSesionD(respuesta):    
-    if respuesta.method == 'GET': #and existe_docente
+    def busqueda_username(username1):
+        mensaje="no se encontró al usuario"
+        for fila in User.objects.all():
+            if fila.username==username1:
+                return fila.first_name
+        return mensaje
+
+#-----------------
+    if respuesta.method == 'GET':
+        
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
+        #recuperamos el nombre y apellido de la persona que ingresó 
+        nombre_docente=busqueda_username(respuesta.POST['username'])
+        global nombre_de_docente
+        nombre_de_docente=nombre_docente
+        #------------------------------------------------
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
-        if user is None:
+        if user is None: 
             return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
 
         login(respuesta, user)
