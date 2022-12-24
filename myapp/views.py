@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes
+from .models import Document,Docentes, CargaAcademica
 from .forms import crearTarea
 
 # Create your views here.
@@ -75,7 +75,9 @@ def cargaAcademica(request):
             file = request.FILES['file']
             fs = FileSystemStorage()
             filename = fs.save(file.name, file) 
-            uploaded_file_url = fs.url(filename)            
+            uploaded_file_url = fs.url(filename)    
+            #fila = CargaAcademica.objects.create()   
+            print(file[0])    
             return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': uploaded_file_url})
         
         except:

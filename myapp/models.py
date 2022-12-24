@@ -22,6 +22,27 @@ class Document(models.Model):
 #----------------------------------------------
 
 
+# Tabla carga académica
+class CargaAcademica(models.Model):
+    TI_DO= models.CharField(max_length=10,default="defauld value")
+    DOCENTE= models.CharField(max_length=80,default="defauld value")
+    IDENT = models.PositiveIntegerField()
+    PR_DE= models.CharField(max_length=10,default="defauld value")
+    CARRERA=models.CharField(max_length=50,default="defauld value")
+    CURSO=models.CharField(max_length=80,default="defauld value")
+    CRED=models.PositiveIntegerField()
+    TIPO=models.CharField(max_length=2,default="defauld value")
+    GPO=models.CharField(max_length=2,default="defauld value")
+    HT=models.PositiveIntegerField()
+    HP=models.PositiveIntegerField()
+    DIA=models.CharField(max_length=10,default="defauld value")
+    HR_INICIO=models.PositiveIntegerField()
+    HR_FIN=models.PositiveIntegerField()
+    AULA=models.CharField(max_length=10,default="defauld value")
+    LIMITE=models.PositiveIntegerField()
+    MATRICULADOS =models.PositiveIntegerField()
+
+
 
 
     
