@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes
+from myapp.models import Docentes,Silabo
 from .forms import crearTarea
 
 # Create your views here.
@@ -88,27 +88,35 @@ def misCursos(respuesta):
     cursos= "consulta cursos"
     Numero=[1,2]
     return render(respuesta,"Docente/MisCursos.html",{'cursos':cursos,'num':Numero})
+#----------------
+
 
 #variable global
 nombre_de_docente=""
-
+apellido_de_docente=""
+id_tabla=""
 @login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
-        Docente= nombre_de_docente
-        return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
+        return render(respuesta,"Docente/docentes.html",{'nombre':nombre_de_docente})
     else:
         #si se ejecuta el metodo POST subimos el archivo
         if respuesta.method=='POST':
             uploadedFile=respuesta.FILES["archivo"]
-            document=Document(title='archivo1',uploadfile=uploadedFile)
+            #sacar el id 
+            dd=Docentes.objects.all()
+            ii=''
+            for item in dd:
+                if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
+                    ii=item.id
+            objeto_de_docente=Docentes.objects.get(id=ii)
+            document=Silabo(docente=objeto_de_docente,silabo=uploadedFile)
             document.save()
             #comensamos a subir el archivo a la bd
-            #...
         else:
             return redirect('docentes')
-        File=Document.objects.get(id=2)
-        return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
+        File=Silabo.objects.get(id=1)
+        return render(respuesta,"Docente/docentes.html",context={'file':File.silabo})
 #modulo para validar si es un docente
 def es_docente(elemento_nombre,elemento_apellido):
     lista_Nombre=[] 
@@ -116,8 +124,7 @@ def es_docente(elemento_nombre,elemento_apellido):
         if elemento_nombre==item.Nombre and elemento_apellido==item.apellido:
             lista_Nombre.append(item.Nombre)
             return True
-        else:
-            return False
+    return False
 def resgistD(respuesta):
     if respuesta.method == "GET":
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
@@ -138,27 +145,32 @@ def resgistD(respuesta):
             return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "Usted aun no esta registrado como Docente."})
         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coincide."})
 
-#-----------------
-#buscamos el id mediante username y buscamos el first_name y last_name
+
 
 
 def iniciarSesionD(respuesta):    
+    #-----------------
+    #buscamos el id mediante username y buscamos el first_name y last_name
     def busqueda_username(username1):
-        mensaje="no se encontró al usuario"
+        mensaje1="no se encontró al usuario"
+        mensaje2="no se encontró el apellido del usuario"
         for fila in User.objects.all():
             if fila.username==username1:
-                return fila.first_name
-        return mensaje
+                return fila.first_name,fila.last_name
+        return mensaje1,mensaje2
 
-#-----------------
+    #-----------------
     if respuesta.method == 'GET':
         
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         #recuperamos el nombre y apellido de la persona que ingresó 
-        nombre_docente=busqueda_username(respuesta.POST['username'])
+        nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'])
         global nombre_de_docente
         nombre_de_docente=nombre_docente
+        global apellido_de_docente
+        apellido_de_docente=apellido_docente
+    
         #------------------------------------------------
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
