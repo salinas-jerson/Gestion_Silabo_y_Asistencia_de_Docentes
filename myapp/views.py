@@ -164,7 +164,7 @@ def docentes(respuesta):
             #...
         else:
             return redirect('docentes')
-        File=Document.objects.get(id=2)
+        File=Document.objects.get(id=2) # error, no necesariamente estará en la possición 2
         return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
 #modulo para validar si es un docente
 def es_docente(elemento_nombre,elemento_apellido):
