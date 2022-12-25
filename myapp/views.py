@@ -25,9 +25,8 @@ def AcerceDe(respuesta):
 #----------------------- DIRECTOR DE ESCUELA --------------------------
 @login_required
 def misDocentes(respuesta):
-    docentes= "consulta D.E. docentes"
-    Numero=[1,2]
-    return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,'num':Numero}) 
+    docentes= Docentes.objects.all()
+    return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes}) 
 @login_required
 def dirEscuela(respuesta):
     Docente= "consultas del director de escuela" 
@@ -134,9 +133,28 @@ def CsvToDB(respuesta):
             #print(elementos[3],">",elementos[14])
 
         miCSV_arch.close()
-
-
     return render(respuesta, 'DirEscuela/DirectorEscuela.html')
+
+@login_required
+def actualizarDocente(respuesta):
+    records = Docentes.objects.all()  #elimina todo
+    records.delete()                  # el registro
+    docente = ""
+    for i in CargaAcademica.objects.all():
+        if docente != i.DOCENTE:
+            docente = i.DOCENTE
+            datos = docente.split(sep=' ')
+            #obtiene nombre del docente
+            nom = ""
+            for i in datos[:len(datos) -2]:
+                nom += i + " "
+            Docentes(
+                Nombre = nom[:-1],
+                apellido = datos[len(datos)-2] +" "+ datos[len(datos)-1]
+            ).save() # guarda cada docente de la carga academica
+            #print(nom[:-1], ">" ,datos[len(datos)-2] +" "+ datos[len(datos)-1])
+    docentes= Docentes.objects.all()
+    return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
 
 #----------------------- DOCENTE --------------------------
