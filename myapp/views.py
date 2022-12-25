@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 #archivos
+import csv
 from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -70,19 +71,73 @@ def cerrarLoginDE(respuesta):
 
 @login_required
 def cargaAcademica(request):
-    if request.method == 'POST':    
-        try:
-            file = request.FILES['file']
-            fs = FileSystemStorage()
-            filename = fs.save(file.name, file) 
-            uploaded_file_url = fs.url(filename)    
-            #fila = CargaAcademica.objects.create()   
-            print(file[0])    
-            return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': uploaded_file_url})
+    #records = Document.objects.all()       #elimina todo
+    #records.delete()                       #el directorio
+    if request.method == 'POST':   
+        try:          
+            file = request.FILES['file']     
+            if str(file).split(sep='.')[1] =='csv':
+                if Document.objects.filter(title='CargaAcademica').exists():
+                    Document.objects.filter(title='CargaAcademica').delete()
+                    #Document.objects.filter(title='CargaAcademica').update(uploadfile=file)
+                    Document(title='CargaAcademica',uploadfile=file).save()
+                    #------------------
+                    #CsvToDB()
+                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "actualizado"})
+                else:
+                    Document(title='CargaAcademica',uploadfile=file).save()
+                    #------------------
+                    #CsvToDB()
+                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "XD"})
+            
+            else:
+                return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo con extención .CSV"})  
+            
         
         except:
             return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo"})    
     return render(request, 'DirEscuela/cargaAcademica.html')
+
+@login_required
+def CsvToDB(respuesta):
+    miCSV = Document.objects.filter(title='CargaAcademica')
+    if miCSV:
+        records = CargaAcademica.objects.all()  #elimina todo
+        records.delete()                        # el registro
+        name=miCSV.first().uploadfile
+        miCSV_arch = open(str(name),errors="ignore")        
+
+        linea = miCSV_arch.readline()
+        while (linea):
+            elementos= linea.split(sep=';')
+            #crea el objeto de cada linea
+            CargaAcademica(TI_DO= elementos[0],
+            DOCENTE= elementos[1],
+            IDENT = int(elementos[2]),
+            PR_DE= elementos[3],
+            CARRERA=elementos[4],
+            CURSO= elementos[5],
+            CRED= int(elementos[6]),
+            TIPO= elementos[7],
+            GPO= elementos[8],
+            HT= int(elementos[9]),
+            HP= int(elementos[10]),
+            DIA=elementos[11], 
+            HR_INICIO= int(elementos[12]),
+            HR_FIN= int(elementos[13]),
+            AULA= elementos[14],
+            LIMITE= int(elementos[15]),
+            MATRICULADOS = int(elementos[16])).save()
+                     
+            linea = miCSV_arch.readline()
+            #capturar error
+            #print(elementos[3],">",elementos[14])
+
+        miCSV_arch.close()
+
+
+    return render(respuesta, 'DirEscuela/DirectorEscuela.html')
+
 
 #----------------------- DOCENTE --------------------------
 @login_required
