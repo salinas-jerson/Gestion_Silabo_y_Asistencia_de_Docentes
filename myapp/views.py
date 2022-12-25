@@ -10,7 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica
+from .models import Document,Docentes, CargaAcademica,Silabo
 from .forms import crearTarea
 
 # Create your views here.
@@ -148,24 +148,42 @@ def misCursos(respuesta):
 
 #variable global
 nombre_de_docente=""
-
+apellido_de_docente=""
 @login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
         Docente= nombre_de_docente
-        return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
+        try:
+            id_s=''#------buscamos el dilabo del docente---
+            for item in Silabo.objects.all():
+                if item.docente.Nombre==nombre_de_docente and item.docente.apellido==apellido_de_docente:
+                    id_s=item.id
+            File=Silabo.objects.get(id=id_s)#--------------
+            return render(respuesta,"Docente/docentes.html",{'nombre':Docente,'file':File.silabo})
+        except:
+            return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
     else:
         #si se ejecuta el metodo POST subimos el archivo
         if respuesta.method=='POST':
-            uploadedFile=respuesta.FILES["archivo"]
-            document=Document(title='archivo1',uploadfile=uploadedFile)
-            document.save()
-            #comensamos a subir el archivo a la bd
-            #...
+            try:
+                uploadedFile=respuesta.FILES["archivo"]
+                #sacamos el id del docente
+                dd=Docentes.objects.all()
+                ii=''
+                for item in dd:
+                    if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
+                        ii=item.id
+                objeto_de_docente=Docentes.objects.get(id=ii)
+                document=Silabo(docente=objeto_de_docente,silabo=uploadedFile)
+                document.save()
+            except:
+                return render(respuesta,"Docente/docentes.html",context={'error':"aun no subio un archivo"})
         else:
             return redirect('docentes')
-        File=Document.objects.get(id=2) # error, no necesariamente estará en la possición 2
-        return render(respuesta,"Docente/docentes.html",context={'file':File.uploadfile})
+        
+        #buscamos en la tabla de Silabos el que le corresponde
+        
+                
 #modulo para validar si es un docente
 def es_docente(elemento_nombre,elemento_apellido):
     lista_Nombre=[] 
@@ -204,7 +222,7 @@ def iniciarSesionD(respuesta):
         mensaje="no se encontró al usuario"
         for fila in User.objects.all():
             if fila.username==username1:
-                return fila.first_name
+                return fila.first_name,fila.last_name
         return mensaje
 
 #-----------------
@@ -213,9 +231,11 @@ def iniciarSesionD(respuesta):
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         #recuperamos el nombre y apellido de la persona que ingresó 
-        nombre_docente=busqueda_username(respuesta.POST['username'])
+        nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'])
         global nombre_de_docente
+        global apellido_de_docente
         nombre_de_docente=nombre_docente
+        apellido_de_docente=apellido_docente
         #------------------------------------------------
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
