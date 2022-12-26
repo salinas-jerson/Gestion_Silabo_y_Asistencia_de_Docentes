@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 #archivos
 import csv
 from django.core.files.storage import FileSystemStorage
@@ -151,14 +152,20 @@ nombre_de_docente=""
 apellido_de_docente=""
 @login_required
 def docentes(respuesta):
+    def buscar_id_Silabo():
+        for item in Silabo.objects.all():
+            if item.docente.Nombre==nombre_de_docente and item.docente.apellido==apellido_de_docente:
+                return item.id
+            
+    def buscar_id_Doncente():
+        for item in Docentes.objects.all():
+            if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
+                return item.id
+            
     if respuesta.method=="GET":
         Docente= nombre_de_docente
         try:
-            id_s=''#------buscamos el dilabo del docente---
-            for item in Silabo.objects.all():
-                if item.docente.Nombre==nombre_de_docente and item.docente.apellido==apellido_de_docente:
-                    id_s=item.id
-            File=Silabo.objects.get(id=id_s)#--------------
+            File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
             return render(respuesta,"Docente/docentes.html",{'nombre':Docente,'file':File.silabo})
         except:
             return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
@@ -168,20 +175,23 @@ def docentes(respuesta):
             try:
                 uploadedFile=respuesta.FILES["archivo"]
                 #sacamos el id del docente
-                dd=Docentes.objects.all()
-                ii=''
-                for item in dd:
-                    if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
-                        ii=item.id
-                objeto_de_docente=Docentes.objects.get(id=ii)
+                objeto_de_docente=Docentes.objects.get(id=buscar_id_Doncente())
                 document=Silabo(docente=objeto_de_docente,silabo=uploadedFile)
-                document.save()
+                if buscar_id_Silabo():
+                    messages.info(respuesta,"usted ya cargó un silabo")
+                    return render(respuesta,"Docente/docentes.html",{'file':File.silabo})
+                else:
+                    document.save()
+                    messages.info(respuesta,"Guardado")
+                    return render(respuesta,"Docente/docentes.html",{'file':File.silabo})
+                    #File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
+                
+                
             except:
                 return render(respuesta,"Docente/docentes.html",context={'error':"aun no subio un archivo"})
-        else:
-            return redirect('docentes')
+        #else:
+            #return redirect('docentes')
         
-        #buscamos en la tabla de Silabos el que le corresponde
         
                 
 #modulo para validar si es un docente
