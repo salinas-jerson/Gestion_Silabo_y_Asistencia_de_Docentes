@@ -3,13 +3,26 @@
 {% block content %}
     <h1>Bienvenido DE ...(Grado Academico) (Nombre)</h1>
     <h1>Docentes de Ingenieria Informática y de Sistemas: </h1>
+    <a class="btn btn-primary" href="{% url 'update_docente' %}"> Actualizar
+    </a>
+    <p style="color:rgb(0,255,0);">{{error}}</p>
+    {% csrf_token %}
 
-    {% for i in num %}
-        <h1>{{docentes}}</h1> <!-- se la pasa una variable --> 
-        <button>Hacer Reporte</button>
-        <button>Generar Informe</button>
-    {% endfor %}
-
+    <body class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    {% for i in docentes %}
+                    <h1>{{ i.apellido }}</h1> <!-- se la pasa una variable --> 
+                    <h1>{{ i.Nombre }}</h1> <!-- se la pasa una variable --> 
+                    <button>Hacer Reporte</button>
+                    <button>Generar Informe</button>
+                    {% endfor %}
+                    
     
-    
+                    <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p>
+                </div>
+            </div>
+        </div>
+    </body>
 {% endblock %}

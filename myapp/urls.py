@@ -23,6 +23,7 @@ urlpatterns = [
     path('cerrarSessionDE/',views.cerrarLoginDE,name="cerrarSessionDE"),
     path('carga_academcica/',views.cargaAcademica,name="carga_academcica"),
     path('carga_DB/',views.CsvToDB,name="carga_DB"),
+    path('update_docente/',views.actualizarDocente,name="update_docente"),
 ]
 urlpatterns+=[
     re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT})
