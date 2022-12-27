@@ -4,6 +4,7 @@ from django.db import models
 # estas clases son tablas
 # las modificaciones aquí, se deben migrar
 class Docentes(models.Model):
+    id_docente = models.PositiveIntegerField()
     Nombre = models.CharField(max_length=40,default="defauld value")
     apellido = models.CharField(max_length=40,default="default value")
     cargo=models.CharField(max_length=20,default="default value")
@@ -24,6 +25,7 @@ class Document(models.Model):
 
 # Tabla carga académica
 class CargaAcademica(models.Model):
+    id_docente = models.PositiveIntegerField()
     TI_DO= models.CharField(max_length=10,default="defauld value")
     DOCENTE= models.CharField(max_length=80,default="defauld value")
     IDENT = models.PositiveIntegerField()
