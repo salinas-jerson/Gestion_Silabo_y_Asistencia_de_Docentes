@@ -202,6 +202,7 @@ def docentes(respuesta):
                     return render(respuesta,"Docente/docentes.html",{'file':File.silabo})
                 else:
                     document.save()
+                    print("mensaje")
                     messages.info(respuesta,"Guardado")
                     return render(respuesta,"Docente/docentes.html",{'file':File.silabo})
                     #File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
