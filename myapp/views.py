@@ -111,23 +111,24 @@ def CsvToDB(respuesta):
         while (linea):
             elementos= linea.split(sep=';')
             #crea el objeto de cada linea
-            CargaAcademica(TI_DO= elementos[0],
-            DOCENTE= elementos[1],
-            IDENT = int(elementos[2]),
-            PR_DE= elementos[3],
-            CARRERA=elementos[4],
-            CURSO= elementos[5],
-            CRED= int(elementos[6]),
-            TIPO= elementos[7],
-            GPO= elementos[8],
-            HT= int(elementos[9]),
-            HP= int(elementos[10]),
-            DIA=elementos[11], 
-            HR_INICIO= int(elementos[12]),
-            HR_FIN= int(elementos[13]),
-            AULA= elementos[14],
-            LIMITE= int(elementos[15]),
-            MATRICULADOS = int(elementos[16])).save()
+            CargaAcademica( id_docente = int(elementos[0]),
+            TI_DO= elementos[1],
+            DOCENTE= elementos[2],
+            IDENT = int(elementos[3]),
+            PR_DE= elementos[4],
+            CARRERA=elementos[5],
+            CURSO= elementos[6],
+            CRED= int(elementos[7]),
+            TIPO= elementos[8],
+            GPO= elementos[9],
+            HT= int(elementos[10]),
+            HP= int(elementos[11]),
+            DIA=elementos[12], 
+            HR_INICIO= int(elementos[13]),
+            HR_FIN= int(elementos[14]),
+            AULA= elementos[15],
+            LIMITE= int(elementos[16]),
+            MATRICULADOS = int(elementos[17])).save()
                      
             linea = miCSV_arch.readline()
             #capturar error
@@ -140,20 +141,21 @@ def CsvToDB(respuesta):
 def actualizarDocente(respuesta):
     records = Docentes.objects.all()  #elimina todo
     records.delete()                  # el registro
-    docente = ""
+    id = 0
+    # actualiza tabla docente con datos de la tabla carga academica
     for i in CargaAcademica.objects.all():
-        if docente != i.DOCENTE:
-            docente = i.DOCENTE
-            datos = docente.split(sep=' ')
-            #obtiene nombre del docente
-            nom = ""
-            for i in datos[:len(datos) -2]:
-                nom += i + " "
-            Docentes(
-                Nombre = nom[:-1],
-                apellido = datos[len(datos)-2] +" "+ datos[len(datos)-1]
-            ).save() # guarda cada docente de la carga academica
-            #print(nom[:-1], ">" ,datos[len(datos)-2] +" "+ datos[len(datos)-1])
+        if id != i.id_docente:
+            id = i.id_docente
+            if id != 0: #solo pasa cursos activados
+                datos = i.DOCENTE.split(sep=' ') 
+                #obtiene nombre del docente
+                nom = ""
+                for j in datos[:len(datos) -2]:
+                    nom += j + " "
+                Docentes(  id_docente = int(id),
+                    Nombre = nom[:-1],
+                    apellido = datos[len(datos)-2] +" "+ datos[len(datos)-1]
+                ).save() # guarda cada docente de la carga academica
     docentes= Docentes.objects.all()
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
