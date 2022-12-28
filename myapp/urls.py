@@ -10,6 +10,10 @@ urlpatterns = [
     #path('hello/<str:username>',views.helloWorld,name="hello"),   #se llama y espera nombre de parametro
     #------------ URL DOCENTES ----------------------------
     path('mis_cursos/',views.misCursos,name="mis_cursos"),
+    path('silabos/',views.registro_Silabo,name="regis_silabo"),
+    path('asistencia/',views.asistencia,name="asistencia"),
+    path('asistencia_alumnos/',views.asistencia_alumnos,name="asistencia_Al"),
+    path('carga_academica/',views.carga_academica,name="carga_academica"),
     path('docentes/',views.docentes,name="docentes"),
     path('regist_D/',views.resgistD,name="regist_D"),
     path('iniciaSessionD/',views.iniciarSesionD,name="iniciaSessionD"),

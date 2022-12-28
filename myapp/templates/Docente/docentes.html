@@ -3,30 +3,26 @@
 <h1>{{nombre}}</h1>
 <!-- botones para cada funcion de docente -->
 <div class="botones">
-	<input type="button" class="btn btn-second" value="SILABO" />
-	<input type="button" class="btn btn-second" value="CURSOS" />
-	<p>cambios</p>
+	<form action="/asistencia/" method="POST">
+		{% csrf_token %}
+		<input type="submit" class="btn btn-second" value="Asistencia" />
+	</form>
+	<form action="/asistencia_alumnos/" method="POST">
+		{% csrf_token %}
+		<input type="submit" class="btn btn-second" value="Asistencia de alumnos" />
+	</form>
+	<form action="/carga_academica/" method="POST" class="carga">
+		{% csrf_token %}
+		<input type="submit" class="btn btn-second" value="Carga Academica" />
+	</form>
+	<form action="/silabos/" method="GET">
+		{% csrf_token %}
+		<input type="submit" class="btn btn-second" value="Silabo" />
+	</form>
 </div>
 
 <!-- se la pasa una variable -->
-<div class="card">
-	<div class="card-body">
-		<form
-			action="/docentes/"
-			method="POST"
-			class="documento"
-			enctype="multipart/form-data"
-		>
-			{% csrf_token %}
-			<h2>Subir silabo</h2>
-			<p style="color:rgb(255,0,0);">{{error}}</p>
-			{% csrf_token %}
-			<input type="file" id="archivo" name="archivo" />
-			<button class="btn btn-primary">Guardar</button>
-		</form>
-		<a href="{{file.url}}">ver silabo</a>
-	</div>
-</div>
+
 <!--{% for i in tareas %}-->
 
 <!--{% endfor %}-->

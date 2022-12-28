@@ -1,0 +1,20 @@
+{% extends 'ventanas/baseDocente.html' %} {% block content %}
+<div class="card">
+	<div class="card-body">
+		<form
+			action="/silabos/"
+			method="POST"
+			class="documento"
+			enctype="multipart/form-data"
+		>
+			{% csrf_token %}
+			<h2>Subir silabo</h2>
+			<p style="color:rgb(255,0,0);">{{error}}</p>
+			{% csrf_token %}
+			<input type="file" id="archivo" name="archivo" />
+			<button class="btn btn-primary">Guardar</button>
+		</form>
+		<a href="{{file.url}}">ver silabo</a>
+	</div>
+</div>
+{% endblock %}
