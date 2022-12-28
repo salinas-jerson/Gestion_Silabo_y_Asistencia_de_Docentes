@@ -188,6 +188,11 @@ def es_docente(elemento_nombre,elemento_apellido):
             lista_Nombre.append(item.Nombre)
             return True
     return False
+def buscar_D_login(Name,lastN):
+    for item in User.objects.all():
+        if item.first_name==Name and item.last_name==lastN:
+            return True
+    return False
 def resgistD(respuesta):
     if respuesta.method == "GET":
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
@@ -200,10 +205,11 @@ def resgistD(respuesta):
                     try:
                         user = User.objects.create_user(
                             email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
-                        user.save()
-                        login(respuesta, user)
-                        messages.info("se registró correctamente")
-                        return redirect('iniciaSessionD')
+                        if buscar_D_login(respuesta.POST["first_name"],respuesta.POST["last_name"])==False:
+                            user.save()
+                            login(respuesta, user)
+                            messages.info("se registró correctamente")
+                            return redirect('iniciaSessionD')
                     except IntegrityError:
                         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
             return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "Usted aun no esta registrado como Docente."})
@@ -284,7 +290,6 @@ def registro_Silabo(respuesta):
             except:
                 return render(respuesta,"Docente/silabos.html",{'error':"campo vacio"})
         return redirect('silabos')
-
 
 
 def asistencia(request):
