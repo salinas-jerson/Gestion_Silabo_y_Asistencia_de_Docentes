@@ -159,6 +159,10 @@ def actualizarDocente(respuesta):
     docentes= Docentes.objects.all()
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
+def Eliminar(respuesta):
+    if User.objects.filter(username='sali').exists():
+        User.objects.filter(username='sali').delete()
+    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 #----------------------- DOCENTE --------------------------
 @login_required
@@ -202,12 +206,13 @@ def resgistD(respuesta):
                             email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
                         user.save()
                         login(respuesta, user)
-                        messages.info("se registró correctamente")
+                        messages.info(respuesta,"se registró correctamente")
                         return redirect('iniciaSessionD')
                     except IntegrityError:
                         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
             return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "Usted aun no esta registrado como Docente."})
         return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "La Contraseña no coincide."})
+
 
 #-----------------
 #buscamos el id mediante username y buscamos el first_name y last_name
