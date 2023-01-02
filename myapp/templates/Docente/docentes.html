@@ -3,7 +3,7 @@
 <h1>{{nombre}}</h1>
 <!-- botones para cada funcion de docente -->
 <div class="botones">
-	<form action="/asistencia/" method="POST">
+	<form action="/asistencia/" method="GET">
 		{% csrf_token %}
 		<input type="submit" class="btn btn-second" value="Asistencia" />
 	</form>

@@ -296,9 +296,28 @@ def registro_Silabo(respuesta):
                 return render(respuesta,"Docente/silabos.html",{'error':"campo vacio"})
         return redirect('silabos')
 
-
+from datetime import datetime
 def asistencia(request):
-    return render(request,"Docente/asistencia.html")
+    if request.method=='GET':
+        #importamos datetime from datetime
+        #entonces capturamos la fecha y hora
+        time_now=datetime.now()
+        year=time_now.year
+        month=time_now.month
+        day=time_now.day
+        Fecha=str(day)+'/'+str(month)+'/'+str(year)
+        Hora=str(time_now.hour)+':'+str(time_now.minute)
+        return render(request,"Docente/asistencia.html",{'Fecha_actual':Fecha,'Hora_actual':Hora})
+    else:
+        if request.method=='POST':
+            try:
+                if request.POST['mi_asistencia']:
+                    messages.success(request,"Su Asistencia Fue Registrada!")
+                    #aqui se registraria la asistencia en una tabla en la BD
+                    return redirect('asistencia')      
+            except:
+                messages.warning(request,"marque la casilla de asistencia")
+                return redirect('asistencia')
 def asistencia_alumnos(request):
     return render(request,"Docente/asistenciaAlumnos.html")
 def carga_academica(request):
