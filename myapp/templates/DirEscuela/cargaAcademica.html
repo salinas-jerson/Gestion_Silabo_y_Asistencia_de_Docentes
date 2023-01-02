@@ -19,8 +19,10 @@
                 </form>
                 
                 {% if uploaded_file_url %}
-                    <p>Archivo subido en: <a href="">{{ uploaded_file_url }}</a></p> 
-                    <a class="btn btn-primary" href="{% url 'carga_DB' %}">Actualizar</a>
+                    <p style="color:rgb(0,255,0);">Archivo subido</p> 
+                    <h3>¿desea reemplazar los datos?</h3>
+                    <a class="btn btn-primary" href="{% url 'carga_DB' %}">Sí</a>
+                    <a class="btn btn-primary" href="{% url 'direct' %}">No</a>
                 {% endif %}
                 
                 

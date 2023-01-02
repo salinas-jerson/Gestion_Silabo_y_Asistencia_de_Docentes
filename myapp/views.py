@@ -61,7 +61,12 @@ def iniciarSesionDE(respuesta):
             return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
 
         login(respuesta, user)
-        return redirect('direct')
+        global datos  #var global DE
+        datosDE = User.objects.filter(username=respuesta.POST['username'])
+        datos = datosDE[0]
+        
+        return render(respuesta, 'DirEscuela/DirectorEscuela.html', {"datos": datos})
+        #return redirect('direct')
 
 @login_required
 def cerrarLoginDE(respuesta):
