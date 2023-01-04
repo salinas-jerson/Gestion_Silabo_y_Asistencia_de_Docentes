@@ -4,7 +4,7 @@ body{
     font: 25x normal normal uppercase helvetica,arial,serif;
 }
 .navbar {                       /*caja de opciones*/
-    background: #0a1054;
+    background: #023a5f;
     padding: 1px 0;
     margin: auto; 
     font: 14px normal normal uppercase helvetica,arial,serif;
@@ -24,5 +24,5 @@ body{
     text-decoration: none;
 }
 .navbar ul li a:hover{          /*decora seleccion*/
-    color: rgb(213, 231, 146);
+    color: rgb(240, 10, 79);
 }
