@@ -8,31 +8,47 @@
         </a>
     </div> 
 
-    <p style="color:rgb(0,255,0);">{{error}}</p>
+    <p class="text-center" style="color:rgb(0,255,0);">{{error}}</p>
     {% csrf_token %}
 
-    <div class="container text-lef">
-        {% for i in docentes %}
-        <div class="row">
-            <div class="col">
-                {{ i.apellido }} <!-- se la pasa una variable --> 
-            </div>
-            <div class="col">
-                {{ i.Nombre }}
-            </div>
-            <div class="col">
-                <button>Hacer Reporte</button>
-            </div>
-            <div class="col">
-                <button>Generar Informe</button>
-            </div>
-            
-                        
-        </div>                    
-        {% endfor %}
-        <div class="container text-center" >
-            <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p>
+    <body> <!--onload="popup()">-->
+        <div id="main_container">
+          
+          <div class="center_content">
+            <div class="center_left">
+              
+                <table id="hor-minimalist-b" width="80%">
+                    <thead>
+                        <tr>
+                            <td>Nro</td>
+                            <td>Apellidos y Nombres</td>
+                            <td>Informe</td>
+                            <td>Reporte</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for i in docentes %}
+                        <tr>
+                            <td>{{ i.id_docente }}</td>
+                            <td>{{i.apellido}}, {{ i.Nombre }}</td>
+                            <td><a href=""><img src="images/arrowb.gif" width="15" style="border:none">Ver</a></td>
+                            <td><a href=" "><img src="images/xls.png" width="18" style="border:none">PDF</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="container text-center" >
+                    <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p>
+                </div>        
+        
+            </div>                    
+          </div>
         </div>
-    </div>
+        
+        
+        
+        </body>
 
 {% endblock %}
