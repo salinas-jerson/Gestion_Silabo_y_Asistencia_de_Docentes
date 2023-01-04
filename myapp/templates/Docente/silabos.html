@@ -1,5 +1,6 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
 <div class="card">
+	{% for i in materias_a_cargo %} {{i}}
 	<div class="card-body">
 		<form
 			action="/silabos/"
@@ -8,7 +9,7 @@
 			enctype="multipart/form-data"
 		>
 			{% csrf_token %}
-			<h2>Sílabo</h2>
+
 			<p style="color:rgb(255,0,0);">{{error}}</p>
 			{% csrf_token %}
 			<input type="file" id="archivo" name="archivo" />
@@ -16,5 +17,6 @@
 		</form>
 		<a href="{{file.url}}">ver silabo</a>
 	</div>
+	{% endfor %}
 </div>
 {% endblock %}

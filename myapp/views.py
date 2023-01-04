@@ -174,6 +174,7 @@ def misCursos(respuesta):
 #variable global
 nombre_de_docente=""
 apellido_de_docente=""
+Id_de_docente=""
 @login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
@@ -231,7 +232,7 @@ def iniciarSesionD(respuesta):
             if fila.username==username1:
                 return fila.first_name,fila.last_name
         return mensaje
-
+    
 #-----------------
     if respuesta.method == 'GET':
         
@@ -268,13 +269,27 @@ def registro_Silabo(respuesta):
         for item in Docentes.objects.all():
             if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
                 return item.id
-
+    def buscar_id(name,lastname):
+        for i in Docentes.objects.all():
+            if i.Nombre.lower()==name.lower() and i.apellido.lower()==lastname.lower():
+                return i.id_docente
+    def buscar_curso():
+        cursos=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente==Id_de_docente:
+               cursos.append(item.CURSO)
+        cursos_unicos=list(set(cursos))
+        return cursos_unicos
     if respuesta.method=="GET":
+        #consultamos el numero de silabos
+        global Id_de_docente
+        Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
+        materias=buscar_curso()
         try:
             File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
-            return render(respuesta,"Docente/silabos.html",{'file':File.silabo})
+            return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
         except:
-            return render(respuesta,"Docente/silabos.html",{'error':"aun no registró un silabo"})
+            return render(respuesta,"Docente/silabos.html",{'error':"aun no registró un silabo",'materias_a_cargo':materias})
     else:
         #si se ejecuta el metodo POST subimos el archivo
         if respuesta.method=='POST':
@@ -285,12 +300,11 @@ def registro_Silabo(respuesta):
                 document=Silabo(docente=objeto_de_docente,silabo=uploadedFile)
                 if buscar_id_Silabo():
                     messages.info(respuesta,"usted ya cargó un silabo")
-                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo})
+                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
                 else:
                     document.save()
                     messages.info(respuesta,"Guardado")
-                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo})
-                    #File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
+                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
                 
             except:
                 return render(respuesta,"Docente/silabos.html",{'error':"campo vacio"})
