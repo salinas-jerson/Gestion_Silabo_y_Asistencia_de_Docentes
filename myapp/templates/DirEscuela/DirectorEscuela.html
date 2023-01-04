@@ -1,7 +1,9 @@
 {% extends 'ventanas/baseDE.html' %}
 
 {% block content %}
-    <h1>Bienvenido Director de escuela ...(Grado Academico) (Nombre)</h1>
+{% csrf_token %}
+    <h1>Bienvenido Director de escuela: {{ nombre_director_escuela }}</h1>
+    
     
     <main class="container ">
         <div class="row">
@@ -11,6 +13,7 @@
                     <a class="btn btn-primary" href="/carga_academcica/"> Cargar
                     </a>
                 </div>
+                
                 <!-- <div class="text-center">
                     <a class="btn btn-primary" href="/Eliminar_docente/"> Eliminar Docente
                     </a>

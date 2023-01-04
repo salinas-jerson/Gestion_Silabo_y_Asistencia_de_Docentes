@@ -24,34 +24,19 @@ def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
 
 #----------------------- DIRECTOR DE ESCUELA --------------------------
-@login_required
+#variables globales
+nombre_director_escuela = ""
+@login_required # lista, consulta de docentes
 def misDocentes(respuesta):
     docentes= Docentes.objects.all()
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes}) 
-@login_required
+
+@login_required # home director de escuela
 def dirEscuela(respuesta):
-    Docente= "consultas del director de escuela" 
-    return render(respuesta,"DirEscuela/DirectorEscuela.html",{'director':Docente}) 
-def resgistDE(respuesta):
-    if respuesta.method == "GET":
-        return render(respuesta,"DirEscuela/resgistrarDE.html",{'form':UserCreationForm})
-    else:
-        if respuesta.POST["password1"] == respuesta.POST["password2"]:
-            if respuesta.POST["password1"] == "":
-                return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
-            else:
-                try:
-                    user = User.objects.create_user(
-                        respuesta.POST["username"], password=respuesta.POST["password1"])
-                    user.save()
-                    login(respuesta, user)
-                    return redirect('direct')
-                except IntegrityError:
-                    return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+    #"consultas del director de escuela" 
+    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
-        return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})
-
-def iniciarSesionDE(respuesta):    
+def iniciarSesionDE(respuesta):    # 
     if respuesta.method == 'GET':
         return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm})
     else:
@@ -61,18 +46,19 @@ def iniciarSesionDE(respuesta):
             return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
 
         login(respuesta, user)
-        return redirect('direct')
+        global nombre_director_escuela  #var global DE
+        datosDE = User.objects.filter(username=respuesta.POST['username'])
+        nombre_director_escuela = datosDE[0]
+        
+        return render(respuesta, 'DirEscuela/DirectorEscuela.html', {"nombre_director_escuela": nombre_director_escuela})
 
-@login_required
+@login_required  # cierra sesion
 def cerrarLoginDE(respuesta):
     logout(respuesta)
     return redirect("index")
 
-
-@login_required
+@login_required # recibe el archivo csv (carga academica)
 def cargaAcademica(request):
-    #records = Document.objects.all()       #elimina todo
-    #records.delete()                       #el directorio
     if request.method == 'POST':   
         try:          
             file = request.FILES['file']     
@@ -81,24 +67,17 @@ def cargaAcademica(request):
                     Document.objects.filter(title='CargaAcademica').delete()
                     #Document.objects.filter(title='CargaAcademica').update(uploadfile=file)
                     Document(title='CargaAcademica',uploadfile=file).save()
-                    #------------------
-                    #CsvToDB()
                     return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "actualizado"})
                 else:
                     Document(title='CargaAcademica',uploadfile=file).save()
-                    #------------------
-                    #CsvToDB()
-                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "XD"})
-            
+                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "XD"})            
             else:
-                return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo con extención .CSV"})  
-            
-        
+                return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo con extención .CSV"})
         except:
             return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo"})    
     return render(request, 'DirEscuela/cargaAcademica.html')
 
-@login_required
+@login_required # actualiza la base de datos con el archivo cargado
 def CsvToDB(respuesta):
     miCSV = Document.objects.filter(title='CargaAcademica')
     if miCSV:
@@ -131,13 +110,10 @@ def CsvToDB(respuesta):
             MATRICULADOS = int(elementos[17])).save()
                      
             linea = miCSV_arch.readline()
-            #capturar error
-            #print(elementos[3],">",elementos[14])
-
         miCSV_arch.close()
     return render(respuesta, 'DirEscuela/DirectorEscuela.html')
 
-@login_required
+@login_required #actualiza la tabla de docentes
 def actualizarDocente(respuesta):
     records = Docentes.objects.all()  #elimina todo
     records.delete()                  # el registro
@@ -146,23 +122,57 @@ def actualizarDocente(respuesta):
     for i in CargaAcademica.objects.all():
         if id != i.id_docente:
             id = i.id_docente
-            if id != 0: #solo pasa cursos activados
+            if id != 0: #solo pasa cursos activados .:. con docentes 
                 datos = i.DOCENTE.split(sep=' ') 
+                num_apelli = 2
+                if len(datos) > 4 and datos[-2:][0] == "LA": #en caso sea casado
+                    num_apelli = 4
                 #obtiene nombre del docente
-                nom = ""
-                for j in datos[:len(datos) -2]:
+                nom = ""      
+                ape = ""          
+                for j in datos[:len(datos) - num_apelli]:
                     nom += j + " "
+                for k in datos[-num_apelli:]:
+                    ape += k +" "
                 Docentes(  id_docente = int(id),
-                    Nombre = nom[:-1],
-                    apellido = datos[len(datos)-2] +" "+ datos[len(datos)-1]
+                    Nombre = nom[:-1].lower(),
+                    apellido = ape[:-1]
                 ).save() # guarda cada docente de la carga academica
     docentes= Docentes.objects.all()
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
+
+@login_required #modifica sus datos 
+def misDatos(respuesta):
+    if respuesta.method == 'GET':
+        DirEsc = User.objects.filter(is_superuser=1)
+        return render(respuesta,"DirEscuela/misDatosDE.html",{'director_escuela':DirEsc}) 
+    else:
+        return render(respuesta,"DirEscuela/misDatosDE.html") 
+
 
 def Eliminar(respuesta):
     if User.objects.filter(username='sali').exists():
         User.objects.filter(username='sali').delete()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+
+"""def resgistDE(respuesta):
+    if respuesta.method == "GET":
+        return render(respuesta,"DirEscuela/resgistrarDE.html",{'form':UserCreationForm})
+    else:
+        if respuesta.POST["password1"] == respuesta.POST["password2"]:
+            if respuesta.POST["password1"] == "":
+                return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
+            else:
+                try:
+                    user = User.objects.create_user(
+                        respuesta.POST["username"], password=respuesta.POST["password1"])
+                    user.save()
+                    login(respuesta, user)
+                    return redirect('direct')
+                except IntegrityError:
+                    return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "El usuario ya existe."})
+
+        return render(respuesta, "DirEscuela/resgistrarDE.html", {"form": UserCreationForm, "error": "La Contraseña no coencide."})"""
 
 #----------------------- DOCENTE --------------------------
 @login_required
