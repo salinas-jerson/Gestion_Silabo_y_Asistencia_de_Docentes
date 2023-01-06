@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from django.contrib.auth.hashers import make_password
 #archivos
 import csv
 from django.core.files.storage import FileSystemStorage
@@ -136,7 +138,7 @@ def actualizarDocente(respuesta):
                     ape += k +" "
                 Docentes(  id_docente = int(id),
                     Nombre = nom[:-1].lower(),
-                    apellido = ape[:-1]
+                    apellido = ape[:-1].upper()
                 ).save() # guarda cada docente de la carga academica
     docentes= Docentes.objects.all()
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
@@ -151,8 +153,22 @@ def misDatos(respuesta):
 
 
 def Eliminar(respuesta):
-    if User.objects.filter(username='sali').exists():
-        User.objects.filter(username='sali').delete()
+    docentes= Docentes.objects.all()
+    for i in docentes:
+        if User.objects.filter(username=i.Nombre).exists():
+            User.objects.filter(username=i.Nombre).delete()
+    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+def crear_user_docentes(respuesta):
+    docentes= Docentes.objects.all()
+    for i in docentes:
+        User(  
+            email= i.Nombre+"@gmail.com",
+            first_name=i.Nombre,
+            last_name=i.apellido,            
+            username=i.Nombre,             
+            password=make_password("123")
+                ).save()
+
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 """def resgistDE(respuesta):
@@ -213,14 +229,14 @@ def resgistD(respuesta):
         return render(respuesta,"Docente/resgistrarD.html",{'form':UserCreationForm})
     else:
         if respuesta.POST["password1"] == respuesta.POST["password2"]:
-            if es_docente(respuesta.POST["first_name"],respuesta.POST["last_name"]):
+            if es_docente(respuesta.POST["first_name"].lower(),respuesta.POST["last_name"].upper()):
                 if respuesta.POST["password1"] == "":
                     return render(respuesta, "Docente/resgistrarD.html", {"form": UserCreationForm, "error": "ingrese sus datos"})
                 else:
                     try:
                         user = User.objects.create_user(
-                            email=respuesta.POST["email"],last_name=respuesta.POST["last_name"],first_name=respuesta.POST["first_name"],username=respuesta.POST["username"], password=respuesta.POST["password1"])
-                        if buscar_D_login(respuesta.POST["first_name"],respuesta.POST["last_name"])==False:
+                            email=respuesta.POST["email"],last_name=respuesta.POST["last_name"].upper(),first_name=respuesta.POST["first_name"].lower(),username=respuesta.POST["username"].lower(), password=respuesta.POST["password1"])
+                        if buscar_D_login(respuesta.POST["first_name"].lower(),respuesta.POST["last_name"].upper())==False:
                             user.save()
                             login(respuesta, user)
                             messages.info("se registró correctamente")
@@ -239,7 +255,7 @@ def iniciarSesionD(respuesta):
     def busqueda_username(username1):
         mensaje="no se encontró al usuario"
         for fila in User.objects.all():
-            if fila.username==username1:
+            if fila.username==username1.lower():
                 return fila.first_name,fila.last_name
         return mensaje
     
@@ -249,7 +265,7 @@ def iniciarSesionD(respuesta):
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         #recuperamos el nombre y apellido de la persona que ingresó 
-        nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'])
+        nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
         global nombre_de_docente
         global apellido_de_docente
         nombre_de_docente=nombre_docente
