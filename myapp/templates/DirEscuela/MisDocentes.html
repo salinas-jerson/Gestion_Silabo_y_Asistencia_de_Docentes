@@ -17,7 +17,7 @@
           <div class="center_content">
             <div class="center_left">
               
-                <table id="hor-minimalist-b" width="80%">
+                <table class="table table-striped" id="hor-minimalist-b" width="80%">
                     <thead>
                         <tr>
                             <td>Nro</td>
@@ -30,10 +30,20 @@
                     <tbody>
                         {% for i in docentes %}
                         <tr>
-                            <td>{{ i.id_docente }}</td>
-                            <td>{{i.apellido}}, {{ i.Nombre }}</td>
-                            <td><a href=""><img src="images/arrowb.gif" width="15" style="border:none">Ver</a></td>
-                            <td><a href=" "><img src="images/xls.png" width="18" style="border:none">PDF</a></td>
+                            <form action="">
+                                <p style="color:rgb(255,0,0);">{{error}}</p>
+                                {% csrf_token %}
+                                
+                                <td>{{ i.id_docente }}</td>
+                                <td>{{i.apellido}}, {{ i.Nombre }}</td>
+                                <td><a href=""><img src="images/arrowb.gif" width="15" style="border:none">Ver</a></td>
+                                <td><a href=" "><img src="images/xls.png" width="18" style="border:none">PDF</a></td>
+                                <td><input type="text" name="username" id="username" class="form-control"></td> 
+                                <td><input type="password" name="password" id="password" class="form-control" placeholder="{{ i.Nombre }}"></td>
+                                
+                                <td><button class="btn btn-primary">Iniciar sesión</button></td>
+
+                            </form>
                         </tr>
                         {% endfor %}
                     </tbody>

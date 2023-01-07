@@ -4,7 +4,6 @@
 {% csrf_token %}
     <h1>Bienvenido Director de escuela: {{ nombre_director_escuela }}</h1>
     
-    
     <main class="container ">
         <div class="row">
             <div class="card card-body text-center mt-5">
@@ -12,23 +11,25 @@
                 <div class="text-center">
                     <a class="btn btn-primary" href="/carga_academcica/"> Cargar
                     </a>
-                </div>
-                <div class="text-center">
-                    <a class="btn btn-primary" href="/Eliminar_docente/"> Eliminar Docente
-                    </a>
-                </div>
-                <div class="text-center">
-                    <a class="btn btn-primary" href="/crear_user_docentes/"> Crear usuario Docentes
-                    </a>
-                </div>
-                
-                <!-- 
-                <div class="text-center">
-                    <a class="btn btn-primary" href="/Eliminar_docente/"> Eliminar Docente
-                    </a>
-                </div>
-                -->
+                </div>                      
             </div>
         </div>
+        <div class="text-center">
+            
+        </div>
+        <div class="text-center">
+            
+        </div>  
     </main>
+    <br>
+    <div class="container ">
+        <div class="dropdown ">
+          <button class="btn btn-danger dropdown-toggle " type="button" id="dropdown1" data-toggle="dropdown">Danger
+          </button>
+          <div class="dropdown-menu">
+            <a class="btn btn-danger" href="/Eliminar_docente/"> Eliminar usuario Docentes</a>
+            <a class="btn btn-success" href="/crear_user_docentes/"> Crear usuario Docentes</a>
+          </div>
+        </div>  
+      </div>
 {% endblock %}

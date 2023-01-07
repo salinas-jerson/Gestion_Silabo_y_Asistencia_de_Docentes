@@ -28,7 +28,7 @@ urlpatterns = [
     path('carga_academcica/',views.cargaAcademica,name="carga_academcica"),
     path('carga_DB/',views.CsvToDB,name="carga_DB"),
     path('update_docente/',views.actualizarDocente,name="update_docente"), 
-    path('Eliminar_docente/',views.Eliminar,name="Eliminar_docente"), 
+    path('Eliminar_docente/',views.Eliminar_user_docentes,name="Eliminar_docente"), 
     path('crear_user_docentes/',views.crear_user_docentes,name="crear_user_docentes"), 
 
 ]

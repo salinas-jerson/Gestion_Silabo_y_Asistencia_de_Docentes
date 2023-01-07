@@ -152,7 +152,7 @@ def misDatos(respuesta):
         return render(respuesta,"DirEscuela/misDatosDE.html") 
 
 
-def Eliminar(respuesta):
+def Eliminar_user_docentes(respuesta):
     docentes= Docentes.objects.all()
     for i in docentes:
         if User.objects.filter(username=i.Nombre).exists():
