@@ -1,13 +1,37 @@
 {% extends 'ventanas/baseDE.html' %}
 {% block content %}
+{% csrf_token %}
 
-<main class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4 mt-5">
-            <h1>silabos</h1>
-        </div>
-    </div>
-</main>
+<h1>Sílabos</h1>    
+<h1>Docente: </h1>          
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    <thead>
+        <tr>
+            <td>PR_DE</td>
+            <td>Curso</td>
+            <td>Nombre</td>
+            <td>Informe</td>
+            <td>Reporte</td>
+        </tr>
+    </thead>
 
+    <tbody>
+        {% for i in cursos %}
+        <tr>
+            <form action="/ /" method="POST" >
+                <p style="color:rgb(255,0,0);">{{error}}</p>
+                
+                <td>{{ i.PR_DE }}</td>
+                <td>{{ i.CURSO }}</td>
+                <td>{{ i.DOCENTE }}</td>
+                <td><input type="hidden" name="id_docente" value="{{ i.id_docente }}" /></td>
+                
+                <td><button class="btn btn-info" name="silabo">Ver</button></td>
+                <td><button class="btn btn-success" name="reporte">Informe</button></td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 

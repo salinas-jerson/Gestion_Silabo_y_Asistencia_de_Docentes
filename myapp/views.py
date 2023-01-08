@@ -14,7 +14,6 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
 from .models import Document,Docentes, CargaAcademica,Silabo
-from .forms import crearTarea
 
 # Create your views here.
  
@@ -151,14 +150,14 @@ def misDatos(respuesta):
     else:
         return render(respuesta,"DirEscuela/misDatosDE.html") 
 
-
-def Eliminar_user_docentes(respuesta):
+def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docentes
     docentes= Docentes.objects.all()
     for i in docentes:
         if User.objects.filter(username=i.Nombre).exists():
             User.objects.filter(username=i.Nombre).delete()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
-def crear_user_docentes(respuesta):
+
+def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
     docentes= Docentes.objects.all()
     for i in docentes:
         User(  
@@ -168,8 +167,26 @@ def crear_user_docentes(respuesta):
             username=i.Nombre,             
             password=make_password("123")
                 ).save()
-
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+
+def verSilabos(respuesta):
+    if respuesta.method == 'GET':
+        return render(respuesta,"DirEscuela/verSilabos.html")
+    else:
+        id_docente = respuesta.POST["id_docente"]        
+        if respuesta.POST["btn"] == "silabo":
+            silabos = Silabo.objects.filter(docente_id=id_docente)
+            cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
+            cursos = []
+            nom = ""
+            for i in cursos1:                
+                if i.CURSO != nom:
+                    nom = i.CURSO
+                    cursos.append(i)
+            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos})
+        else:
+            return render(respuesta,"DirEscuela/reporte.html")
+    
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":
