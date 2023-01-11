@@ -30,7 +30,8 @@ urlpatterns = [
     path('update_docente/',views.actualizarDocente,name="update_docente"), 
     path('Eliminar_docente/',views.Eliminar_user_docentes,name="Eliminar_docente"), 
     path('crear_user_docentes/',views.crear_user_docentes,name="crear_user_docentes"), 
-    path('ver_silabos/',views.verSilabos,name="ver_silabos"), 
+    path('ver_silabos/',views.verSilabos,name="ver_silabos"),
+    path('ver_archivo/',views.verArchivos,name="ver_archivo"),
 
 ]#
 urlpatterns+=[
@@ -38,6 +39,4 @@ urlpatterns+=[
 ]
 
 if settings.DEBUG:
-    urlpatterns+=static(settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -116,8 +116,11 @@ LOGIN_URL = '/iniciaSessionDE'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #subir archivos
-MEDIA_URL='/media/'
-MADIA_ROOT = os.path.join(BASE_DIR,'media')
+#STATICFILES_DIRS = [    os.path.join(BASE_DIR, 'myapp/files') ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'myapp')
+
+MEDIA_URL = '/files/'
 
 #borrar
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))

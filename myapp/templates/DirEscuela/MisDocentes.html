@@ -31,9 +31,7 @@
                         {% for i in docentes %}
                         <tr>
                             <form action="/ver_silabos/" method="POST" >
-                                <p style="color:rgb(255,0,0);">{{error}}</p>
                                 {% csrf_token %}
-                                
                                 <td>{{ i.id_docente }}</td>
                                 <td>{{i.apellido}}, {{ i.Nombre }}</td>
                                 <td><input type="hidden" name="id_docente" value="{{ i.id_docente }}" /></td>

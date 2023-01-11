@@ -2,11 +2,12 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from django.contrib.auth.hashers import make_password
+
 #archivos
 import csv
 from django.core.files.storage import FileSystemStorage
@@ -63,7 +64,7 @@ def cargaAcademica(request):
     if request.method == 'POST':   
         try:          
             file = request.FILES['file']     
-            if str(file).split(sep='.')[1] =='csv':
+            if str(file).split(sep='.')[1].lower() =='csv':
                 if Document.objects.filter(title='CargaAcademica').exists():
                     Document.objects.filter(title='CargaAcademica').delete()
                     #Document.objects.filter(title='CargaAcademica').update(uploadfile=file)
@@ -140,6 +141,7 @@ def actualizarDocente(respuesta):
                     apellido = ape[:-1].upper()
                 ).save() # guarda cada docente de la carga academica
     docentes= Docentes.objects.all()
+    messages.info (respuesta,"Usted, actualizó la tabla docente")
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
 @login_required #modifica sus datos 
@@ -150,6 +152,7 @@ def misDatos(respuesta):
     else:
         return render(respuesta,"DirEscuela/misDatosDE.html") 
 
+@login_required
 def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docentes
     docentes= Docentes.objects.all()
     for i in docentes:
@@ -157,6 +160,7 @@ def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docent
             User.objects.filter(username=i.Nombre).delete()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
+@login_required
 def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
     docentes= Docentes.objects.all()
     for i in docentes:
@@ -169,10 +173,39 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
                 ).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
+@login_required
 def verSilabos(respuesta):
     if respuesta.method == 'GET':
+        verArchivos(respuesta)
         return render(respuesta,"DirEscuela/verSilabos.html")
     else:
+        id_docente = respuesta.POST["id_docente"]        
+        if respuesta.POST["btn"] == "silabo":
+            silabos = Silabo.objects.filter(docente_id=id_docente)
+            cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
+            cursos = []
+            nom = ""
+            for i in cursos1:                
+                if i.CURSO != nom:
+                    nom = i.CURSO
+                    cursos.append(i)
+                    docente = i.DOCENTE
+            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
+        else:
+            return render(respuesta,"DirEscuela/reporte.html")
+ 
+@login_required
+def verArchivos(respuesta):
+    if respuesta.method == 'GET':
+        
+        carga = Document.objects.filter(title='CargaAcademica')
+        name=carga.first().uploadfile.url
+        #name = carga.up
+        print(name)
+        print("GET:\n>>>",carga)
+        return render(respuesta,"DirEscuela/verSilabos.html",{"carga":name})
+    else:
+        print("post")
         id_docente = respuesta.POST["id_docente"]        
         if respuesta.POST["btn"] == "silabo":
             silabos = Silabo.objects.filter(docente_id=id_docente)
@@ -186,7 +219,6 @@ def verSilabos(respuesta):
             return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos})
         else:
             return render(respuesta,"DirEscuela/reporte.html")
-    
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":

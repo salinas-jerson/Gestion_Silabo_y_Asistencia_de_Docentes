@@ -21,7 +21,7 @@ class Silabo(models.Model):
 #--------------------------
 class Document(models.Model):
     title=models.CharField(max_length=20)
-    uploadfile=models.FileField(upload_to='myapp/files/')
+    uploadfile=models.FileField(upload_to='files/')
     dataTimeOfUpload=models.DateTimeField(auto_now=True)
 #----------------------------------------------
 
