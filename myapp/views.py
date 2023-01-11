@@ -302,11 +302,10 @@ def resgistD(respuesta):
 
 def iniciarSesionD(respuesta):    
     def busqueda_username(username1):
-        mensaje="no se encontró al usuario"
         for fila in User.objects.all():
             if fila.username==username1.lower():
-                return fila.first_name,fila.last_name
-        return mensaje
+                return fila.first_name, fila.last_name
+        return 0
     
 #-----------------
     if respuesta.method == 'GET':
@@ -314,7 +313,13 @@ def iniciarSesionD(respuesta):
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         #recuperamos el nombre y apellido de la persona que ingresó 
-        nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
+        if busqueda_username(respuesta.POST['username'].lower()) != 0:
+            nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
+        else:
+            
+            mensaje = "No existe usuario"
+            nombre_docente = "0"
+            apellido_docente ="0"
         global nombre_de_docente
         global apellido_de_docente
         nombre_de_docente=nombre_docente
@@ -326,7 +331,8 @@ def iniciarSesionD(respuesta):
             return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
 
         login(respuesta, user)
-        return redirect('docentes')
+        return render(respuesta, 'Docente/docentes.html')
+        #return redirect('docentes')
 
 @login_required
 def cerrarLoginD(respuesta):
