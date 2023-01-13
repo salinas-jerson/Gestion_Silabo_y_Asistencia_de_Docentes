@@ -1,22 +1,24 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
 <div class="card">
-	{% for i in materias_a_cargo %} {{i}}
+	{% for i in cursos %}
 	<div class="card-body">
+		<h3>{{i}}</h3>
 		<form
-			action="/silabos/"
+			action="guardarSilabo/{{i}}"
 			method="POST"
 			class="documento"
 			enctype="multipart/form-data"
 		>
 			{% csrf_token %}
-
 			<p style="color:rgb(255,0,0);">{{error}}</p>
 			{% csrf_token %}
 			<input type="file" id="archivo" name="archivo" />
-			<button class="btn btn-primary">Guardar</button>
+			<button type="submit" class="btn btn-primary">Guardar</button>
+			<a href="eliminarSilabo/{{i}}" class="btn btn-second">Eliminar</a>
 		</form>
-		<a href="{{file.url}}">ver silabo</a>
+		{% if BD|length > 0 %} {% for file in BD %} {% if file.curso == i %}
+		<a href="{{file.silabo.url}}">ver silabo</a>
+		{% endif %} {% endfor %} {% endif %}
 	</div>
-	{% endfor %}
+	{% endfor %} {% endblock %}
 </div>
-{% endblock %}

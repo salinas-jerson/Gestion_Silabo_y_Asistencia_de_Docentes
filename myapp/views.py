@@ -14,7 +14,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In
 
 # Create your views here.
  
@@ -341,15 +341,16 @@ def cerrarLoginD(respuesta):
 
 @login_required
 def registro_Silabo(respuesta):
-    def buscar_id_Silabo():
+    def buscar_id_Silabo(curso):
         for item in Silabo.objects.all():
-            if item.docente.Nombre==nombre_de_docente and item.docente.apellido==apellido_de_docente:
+            if item.docente.Nombre.lower()==nombre_de_docente.lower() and item.docente.apellido.lower()==apellido_de_docente.lower() and item.curso.lower()==curso.lower():
                 return item.id
+       
             
     def buscar_id_Doncente():
         for item in Docentes.objects.all():
-            if item.Nombre==nombre_de_docente and item.apellido==apellido_de_docente:
-                return item.id
+            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
+                return item.id_docente
     def buscar_id(name,lastname):
         for i in Docentes.objects.all():
             if i.Nombre.lower()==name.lower() and i.apellido.lower()==lastname.lower():
@@ -358,61 +359,94 @@ def registro_Silabo(respuesta):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-               cursos.append(item.CURSO)
+               cursos.append(item.CURSO.replace(" ",""))
         cursos_unicos=list(set(cursos))
         return cursos_unicos
+
+    global Id_de_docente
+    Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
+    materias=buscar_curso()
+    registros_objetos=[]
+    subidos=[]
     if respuesta.method=="GET":
         #consultamos el numero de silabos
-        global Id_de_docente
-        Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
-        materias=buscar_curso()
-        try:
-            File=Silabo.objects.get(id=buscar_id_Silabo())#--------------
-            return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
-        except:
-            return render(respuesta,"Docente/silabos.html",{'error':"aun no registró un silabo",'materias_a_cargo':materias})
-    else:
-        #si se ejecuta el metodo POST subimos el archivo
-        if respuesta.method=='POST':
-            try:
-                uploadedFile=respuesta.FILES["archivo"]
-                #sacamos el id del docente
-                objeto_de_docente=Docentes.objects.get(id=buscar_id_Doncente())
-                document=Silabo(docente=objeto_de_docente,silabo=uploadedFile)
-                if buscar_id_Silabo():
-                    messages.info(respuesta,"usted ya cargó un silabo")
-                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
-                else:
-                    document.save()
-                    messages.info(respuesta,"Guardado")
-                    return render(respuesta,"Docente/silabos.html",{'file':File.silabo,'materias_a_cargo':materias})
-                
-            except:
-                return render(respuesta,"Docente/silabos.html",{'error':"campo vacio"})
-        return redirect('silabos')
+        for item in materias:
+            ss=buscar_id_Silabo(item)
+            if ss:
+                File=Silabo.objects.get(id=ss)#--------------
+                registros_objetos.append(File)
+                subidos.append(File.curso)  
+                 
+        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos})
+
+def guardarSilabo(request,i):
+    def buscar_id_Silabo(curso):
+        for item in Silabo.objects.all():
+            if item.docente.Nombre.lower()==nombre_de_docente.lower() and item.docente.apellido.lower()==apellido_de_docente.lower() and item.curso.lower()==curso.lower():
+                return item.id
+    def buscar_id_Doncente():
+        for item in Docentes.objects.all():
+            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
+                return item.id_docente
+    def buscar_curso():
+        cursos=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente==Id_de_docente:
+               cursos.append(item.CURSO.replace(" ",""))
+        cursos_unicos=list(set(cursos))
+        return cursos_unicos
+    materias=buscar_curso()
+    registros_objetos=[]
+    if request.method=='POST':            
+        uploadedFile=request.FILES["archivo"]
+        objeto_de_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
+        document=Silabo(docente=objeto_de_docente,silabo=uploadedFile,curso=i)
+        document.save()    
+        messages.info(request,"Silabo"+ i +" Guardado!")
+        for item in materias:
+            ss=buscar_id_Silabo(item)
+            if ss:
+                File=Silabo.objects.get(id=ss)#--------------
+                registros_objetos.append(File)
+        return redirect('regis_silabo')
+        #return render(request,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos})                       
+def eliminarSilabo(request,i):
+    silabo=Silabo.objects.get(curso=i)
+    silabo.delete()
+    messages.info(request,i+" ELIMINADO")
+    return redirect('regis_silabo')
 
 from datetime import datetime
+@login_required
 def asistencia(request):
+    def buscar_IdDoncente():
+        for item in Docentes.objects.all():
+            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
+                return item.id_docente
+    #importamos datetime from datetime
+    #entonces capturamos la fecha y hora
+    time_now=datetime.now()
+    Fecha=time_now.date()
+    Hora=time_now.time()
     if request.method=='GET':
-        #importamos datetime from datetime
-        #entonces capturamos la fecha y hora
-        time_now=datetime.now()
-        year=time_now.year
-        month=time_now.month
-        day=time_now.day
-        Fecha=str(day)+'/'+str(month)+'/'+str(year)
-        Hora=str(time_now.hour)+':'+str(time_now.minute)
         return render(request,"Docente/asistencia.html",{'Fecha_actual':Fecha,'Hora_actual':Hora})
     else:
         if request.method=='POST':
             try:
-                if request.POST['mi_asistencia']:
-                    messages.success(request,"Su Asistencia Fue Registrada!")
-                    #aqui se registraria la asistencia en una tabla en la BD
-                    return redirect('asistencia')      
+                if request.POST["mi_asistencia"]:
+                    try:
+                        #aqui se registraria la asistencia en una tabla en la BD
+                        asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
+                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha)
+                        registro_asistencia.save()
+                        messages.success(request,"Su Asistencia Fue Registrada!")
+                        return redirect('asistencia')      
+                    except:
+                        messages.warning(request,"usted ya registró su asistencia")
+                        return redirect('asistencia')
             except:
-                messages.warning(request,"marque la casilla de asistencia")
-                return redirect('asistencia')
+                messages.warning(request,"no seleccionó la casilla ")
+        return redirect('asistencia')
 def asistencia_alumnos(request):
     return render(request,"Docente/asistenciaAlumnos.html")
 def carga_academica(request):

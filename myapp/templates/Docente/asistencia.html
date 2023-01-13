@@ -1,13 +1,31 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h2>REGISTRAR ASISTENCIA</h2>
-<h3>Fecha</h3>
-{{Fecha_actual}}
-<h2>Hora</h2>
-{{Hora_actual}}
-<form action="/asistencia/" method="POST">
-	{% csrf_token %}
-	<label for="">marcar asistencia</label>
-	<input type="checkbox" name="mi_asistencia" class="asistencia" />
-	<input type="submit" value="Registrar" class="btn btn-second" />
-</form>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h2>REGISTRAR ASISTENCIA</h2>
+			<h3>Fecha</h3>
+			<h4>{{Fecha_actual}}</h4>
+			<h3>Hora</h3>
+			<h4>{{Hora_actual}}</h4>
+			<form action="/asistencia/" method="POST">
+				{% csrf_token %}
+				<label for="">marcar asistencia</label>
+				<input
+					type="checkbox"
+					name="mi_asistencia"
+					class="asistencia"
+					value="asistencia"
+				/>
+				<input type="submit" value="Registrar" class="btn btn-second" />
+			</form>
+		</div>
+		<div class="col">
+			<form action="">
+				<label for="">Registrar Temas </label>
+				<input type="text" placeholder="Ingrese tema del dia" />
+				<button type="submit" class="btn btn-second">Registrar</button>
+			</form>
+		</div>
+	</div>
+</div>
 {% endblock %}
