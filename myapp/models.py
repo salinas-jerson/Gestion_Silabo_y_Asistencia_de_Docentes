@@ -15,7 +15,7 @@ class Docentes(models.Model):
 class Silabo(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False,max_length=20)
     silabo=models.FileField(upload_to='uploads/')
-    
+    curso=models.CharField(max_length=100,default='default value')
     def __str__(self):
         return self.silabo
 #--------------------------
