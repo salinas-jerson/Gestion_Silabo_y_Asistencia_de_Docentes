@@ -9,27 +9,28 @@
         <tr>
             <td>PR_DE</td>
             <td>Curso</td>
-            <td>Nombre</td>
+            <td>Docente</td>
             <td>Informe</td>
-            <td>Reporte</td>
+            <td>PDF</td>
+            <td>Sílabo</td>
         </tr>
     </thead>
 
     <tbody>
         {% for i in cursos %}
-        <tr>
-            <h1>{{ carga }}</h1>            
-            <form action="/ver_archivo/" method="POST" >
+        <tr>          
+            <form action="{% url 'ver_archivo' %}" method="POST" >
                 {% csrf_token %}
                 <td>{{ i.PR_DE }}</td>
                 <td>{{ i.CURSO }}</td>
                 <td>{{ i.DOCENTE }}</td>
-                <td><input type="hidden" name="id_docente" value="{{ i.id_docente }}" /></td>
-        
+                
                 <td><button class="btn btn-success" name="reporte">Informe</button></td>
-
+                <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
             </form>
-            <td><a href="{{ carga }}"  target="_blank">Ver PDF</a></td>
+            <td><a href= "{{ '/files/files/IF614BIN2022-2.pdf' }}"  target="_blank">Ver PDF</a></td>
+            <td><a href="{{ carga.uploadfile.url }}"  target="_blank">Descargar</a></td>
+            
         </tr>
         {% endfor %}
     </tbody>

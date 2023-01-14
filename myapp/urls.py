@@ -32,8 +32,8 @@ urlpatterns = [
     path('update_docente/',views.actualizarDocente,name="update_docente"), 
     path('Eliminar_docente/',views.Eliminar_user_docentes,name="Eliminar_docente"), 
     path('crear_user_docentes/',views.crear_user_docentes,name="crear_user_docentes"), 
-    path('ver_silabos/',views.verSilabos,name="ver_silabos"),
-    path('ver_archivo/',views.verArchivos,name="ver_archivo"),
+    path('mis_docentes/ver_silabos/<int:id>/',views.verSilabos,name="ver_silabos"),
+    path('mis_docentes/ver_silabos/ver_archivo/',views.verArchivos,name="ver_archivo"),
 
 ]#
 urlpatterns+=[

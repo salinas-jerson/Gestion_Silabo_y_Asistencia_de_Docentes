@@ -30,11 +30,10 @@
                     <tbody>
                         {% for i in docentes %}
                         <tr>
-                            <form action="/ver_silabos/" method="POST" >
+                            <form action="{% url 'ver_silabos' i.id_docente %}" method="POST" >
                                 {% csrf_token %}
                                 <td>{{ i.id_docente }}</td>
                                 <td>{{i.apellido}}, {{ i.Nombre }}</td>
-                                <td><input type="hidden" name="id_docente" value="{{ i.id_docente }}" /></td>
                                 
                                 <td><button class="btn btn-info" name="btn" value="silabo">Ver sílabos</button></td>
                                 <td><button class="btn btn-success" name="btn" value="reporte">Reporte</button></td>

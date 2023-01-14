@@ -86,7 +86,7 @@ def CsvToDB(respuesta):
         records = CargaAcademica.objects.all()  #elimina todo
         records.delete()                        # el registro
         name=miCSV.first().uploadfile
-        miCSV_arch = open(str(name),errors="ignore")        
+        miCSV_arch = open("myapp/"+str(name),errors="ignore")        
 
         linea = miCSV_arch.readline()
         while (linea):
@@ -174,22 +174,24 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 @login_required
-def verSilabos(respuesta):
-    if respuesta.method == 'GET':
-        verArchivos(respuesta)
-        return render(respuesta,"DirEscuela/verSilabos.html")
-    else:
-        id_docente = respuesta.POST["id_docente"]        
+def verSilabos(respuesta,id):
+    id_docente = id 
+    silabos = Silabo.objects.filter(docente_id=id_docente)
+    cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
+    cursos = []
+    nom = ""
+    for i in cursos1:                
+        if i.CURSO != nom:
+            nom = i.CURSO
+            cursos.append(i)
+            docente = i.DOCENTE
+
+    if respuesta.method == 'GET':   
+        carga = Document.objects.filter(title='CargaAcademica')    
+        carga = carga.first()
+        return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente,"carga":carga})
+    else:             
         if respuesta.POST["btn"] == "silabo":
-            silabos = Silabo.objects.filter(docente_id=id_docente)
-            cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
-            cursos = []
-            nom = ""
-            for i in cursos1:                
-                if i.CURSO != nom:
-                    nom = i.CURSO
-                    cursos.append(i)
-                    docente = i.DOCENTE
             return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
         else:
             return render(respuesta,"DirEscuela/reporte.html")
@@ -197,26 +199,12 @@ def verSilabos(respuesta):
 @login_required
 def verArchivos(respuesta):
     if respuesta.method == 'GET':
-        
-        carga = Document.objects.filter(title='CargaAcademica')
-        name=carga.first().uploadfile.url
-        #name = carga.up
-        print(name)
-        print("GET:\n>>>",carga)
-        return render(respuesta,"DirEscuela/verSilabos.html",{"carga":name})
+        return render(respuesta,"DirEscuela/verSilabos.html",{"carga":"name"})
     else:
         print("post")
         id_docente = respuesta.POST["id_docente"]        
         if respuesta.POST["btn"] == "silabo":
-            silabos = Silabo.objects.filter(docente_id=id_docente)
-            cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
-            cursos = []
-            nom = ""
-            for i in cursos1:                
-                if i.CURSO != nom:
-                    nom = i.CURSO
-                    cursos.append(i)
-            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos})
+            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":"silabos","cursos":"cursos"})
         else:
             return render(respuesta,"DirEscuela/reporte.html")
 
