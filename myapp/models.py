@@ -16,6 +16,7 @@ class Silabo(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False,max_length=20)
     silabo=models.FileField(upload_to='uploads/')
     curso=models.CharField(max_length=100,default='default value')
+    id_Docente=models.CharField(max_length=5,default='default value')
     def __str__(self):
         return self.silabo
 #--------------------------
@@ -64,6 +65,9 @@ class Avance_Docente(models.Model):
     Tema=models.CharField(max_length=400)
     FechaAvance=models.DateTimeField(auto_now=True)
 
+#nombre de curso
+#id docente
+#asistencia id docente
 
     
 #

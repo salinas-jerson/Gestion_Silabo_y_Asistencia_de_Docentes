@@ -400,7 +400,7 @@ def guardarSilabo(request,i):
     if request.method=='POST':            
         uploadedFile=request.FILES["archivo"]
         objeto_de_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
-        document=Silabo(docente=objeto_de_docente,silabo=uploadedFile,curso=i)
+        document=Silabo(docente=objeto_de_docente,silabo=uploadedFile,curso=i,id_Docente=objeto_de_docente.id_docente)
         document.save()    
         messages.info(request,"Silabo"+ i +" Guardado!")
         for item in materias:
@@ -450,4 +450,31 @@ def asistencia(request):
 def asistencia_alumnos(request):
     return render(request,"Docente/asistenciaAlumnos.html")
 def carga_academica(request):
-    return render(request,"Docente/cargaAcademica.html")
+    #separamos solo carga del docente del resto
+    def buscar_Carga():
+        #buscamos la carga del docente y almacenamos
+        Docente_carga=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente== Id_de_docente:
+                Docente_carga.append(item)
+        return Docente_carga
+    #utilizamos el arreglo del docente
+    def consultas():
+        carga_docente=buscar_Carga()
+        cursos=[]
+        aula=[]
+        for item in carga_docente:
+            cursos.append(item.CURSO)
+        cursos_unicos=list(set(cursos))
+        dia={}  
+        for c in cursos_unicos:
+            for objeto in carga_docente:
+                if objeto.CURSO==c:
+                    
+                    return dia
+    if request.method=='GET':
+        dia=consultas()
+        return render(request,"Docente/cargaAcademica.html",{'dia':dia})
+
+def registroTema(request):
+    return 
