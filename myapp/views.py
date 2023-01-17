@@ -298,7 +298,10 @@ def resgistD(respuesta):
 
 #-----------------
 #buscamos el id mediante username y buscamos el first_name y last_name
-
+def buscar_id(name,lastname):
+        for i in Docentes.objects.all():
+            if i.Nombre.lower()==name.lower() and i.apellido.lower()==lastname.lower():
+                return i.id_docente
 
 def iniciarSesionD(respuesta):    
     def busqueda_username(username1):
@@ -306,24 +309,26 @@ def iniciarSesionD(respuesta):
             if fila.username==username1.lower():
                 return fila.first_name, fila.last_name
         return 0
-    
+    #------------
 #-----------------
     if respuesta.method == 'GET':
-        
         return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm})
     else:
         #recuperamos el nombre y apellido de la persona que ingresó 
         if busqueda_username(respuesta.POST['username'].lower()) != 0:
             nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
+            global nombre_de_docente
+            global apellido_de_docente
+            global Id_de_docente
+            Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
+            nombre_de_docente=nombre_docente
+            apellido_de_docente=apellido_docente
         else:
             
             mensaje = "No existe usuario"
             nombre_docente = "0"
             apellido_docente ="0"
-        global nombre_de_docente
-        global apellido_de_docente
-        nombre_de_docente=nombre_docente
-        apellido_de_docente=apellido_docente
+        
         #------------------------------------------------
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
@@ -339,7 +344,9 @@ def cerrarLoginD(respuesta):
     logout(respuesta)
     return redirect("index")
 
+
 @login_required
+
 def registro_Silabo(respuesta):
     def buscar_id_Silabo(curso):
         for item in Silabo.objects.all():
@@ -351,20 +358,14 @@ def registro_Silabo(respuesta):
         for item in Docentes.objects.all():
             if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
                 return item.id_docente
-    def buscar_id(name,lastname):
-        for i in Docentes.objects.all():
-            if i.Nombre.lower()==name.lower() and i.apellido.lower()==lastname.lower():
-                return i.id_docente
     def buscar_curso():
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-               cursos.append(item.CURSO.replace(" ",""))
+                cursos.append(item.CURSO.replace(" ",""))
         cursos_unicos=list(set(cursos))
         return cursos_unicos
 
-    global Id_de_docente
-    Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
     materias=buscar_curso()
     registros_objetos=[]
     subidos=[]
@@ -392,7 +393,7 @@ def guardarSilabo(request,i):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-               cursos.append(item.CURSO.replace(" ",""))
+                cursos.append(item.CURSO.replace(" ",""))
         cursos_unicos=list(set(cursos))
         return cursos_unicos
     materias=buscar_curso()
@@ -465,13 +466,17 @@ def carga_academica(request):
         aula=[]
         for item in carga_docente:
             cursos.append(item.CURSO)
-        cursos_unicos=list(set(cursos))
-        dia={}  
-        for c in cursos_unicos:
-            for objeto in carga_docente:
-                if objeto.CURSO==c:
+        cursos_unicos=set(cursos)
+        dia=cursos_unicos
+          
+        for cur in dia:
+            dias=[]
+            for carga in carga_docente:
+                if cur==carga.CURSO:
+                    dias.append(carga.DIA)
+            dia[cur]=set(dias)
                     
-                    return dia
+        return dia
     if request.method=='GET':
         dia=consultas()
         return render(request,"Docente/cargaAcademica.html",{'dia':dia})
