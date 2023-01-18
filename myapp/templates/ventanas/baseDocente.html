@@ -7,6 +7,8 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1, shrink-to-fit=no"
 		/>
+		<!--carpeta css-->
+		<link rel="stylesheet" href="../../static/styles/docente.css" />
 
 		<!-- Bootstrap CSS -->
 		<link
@@ -32,7 +34,7 @@
 				<div class="col-md-12">
 					<nav
 						class="navbar navbar-expand-md navbar-light bg"
-						style="background-color: #f0f5f5"
+						style="background-color: #2f4990"
 					>
 						{% if user.is_authenticated %}
 						<a href="{% url 'docentes' %}" class="navbar-brand">Docente Home</a>
@@ -55,11 +57,6 @@
 										>X cerrar sesión</a
 									>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{% url 'mis_cursos' %}"
-										>Mis Cursos</a
-									>
-								</li>
 
 								{% else %}
 								<li class="nav-item active">
@@ -72,7 +69,6 @@
 										>Registrarse</a
 									>
 								</li>
-
 								{% endif %}
 							</div>
 						</div>

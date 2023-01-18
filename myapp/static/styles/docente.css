@@ -1,0 +1,6 @@
+@media (min-width: 60px) {
+	.grid_docente {
+		display: grid;
+		grid-template-columns: 200px;
+	}
+}
