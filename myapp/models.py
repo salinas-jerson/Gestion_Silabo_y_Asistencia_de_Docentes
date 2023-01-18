@@ -53,7 +53,7 @@ class CargaAcademica(models.Model):
 class Asistencia_In(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False)
     HoraEntrada=models.TimeField()
-    FechaIn=models.DateField(unique=True)
+    FechaIn=models.DateField()
     id_Docente=models.CharField(max_length=5,default='default value')
     Asistencia_curso=models.CharField(max_length=100,default='default value')
 
