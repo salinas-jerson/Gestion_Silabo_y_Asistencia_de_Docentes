@@ -54,16 +54,16 @@ class Asistencia_In(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False)
     HoraEntrada=models.TimeField()
     FechaIn=models.DateField(unique=True)
-#Tabla de asistencia de Salida
-class Asistencia_Out(models.Model):
-    docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False)
-    HoraSalida=models.TimeField()
-    FechaOut=models.DateField(unique=True)
+    id_Docente=models.CharField(max_length=5,default='default value')
+    Asistencia_curso=models.CharField(max_length=100,default='default value')
+
 #Tabla de Temas de avance
 class Avance_Docente(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False)
     Tema=models.CharField(max_length=400)
     FechaAvance=models.DateTimeField(auto_now=True)
+    id_Docente_Avance=models.CharField(max_length=5,default='default value')
+    Avance_curso=models.CharField(max_length=100,default='default value')
 
 #nombre de curso
 #id docente
