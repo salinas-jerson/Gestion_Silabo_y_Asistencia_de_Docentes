@@ -317,18 +317,18 @@ def iniciarSesionD(respuesta):
         #recuperamos el nombre y apellido de la persona que ingresó 
         if busqueda_username(respuesta.POST['username'].lower()) != 0:
             nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
-            global nombre_de_docente
-            global apellido_de_docente
-            global Id_de_docente
-            Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
-            nombre_de_docente=nombre_docente
-            apellido_de_docente=apellido_docente
+            
         else:
             
             mensaje = "No existe usuario"
             nombre_docente = "0"
             apellido_docente ="0"
-        
+        global nombre_de_docente
+        global apellido_de_docente
+        nombre_de_docente=nombre_docente
+        apellido_de_docente=apellido_docente
+        global Id_de_docente
+        Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
         #------------------------------------------------
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
@@ -463,23 +463,22 @@ def carga_academica(request):
     def consultas():
         carga_docente=buscar_Carga()
         cursos=[]
-        aula=[]
         for item in carga_docente:
             cursos.append(item.CURSO)
-        cursos_unicos=set(cursos)
-        dia=cursos_unicos
-          
-        for cur in dia:
-            dias=[]
+        cursos_unicos=list(set(cursos))
+        #diccionario anidado
+        dic={}  
+        for cur in cursos_unicos:
+            dic[cur]={}
             for carga in carga_docente:
                 if cur==carga.CURSO:
-                    dias.append(carga.DIA)
-            dia[cur]=set(dias)
-                    
-        return dia
+                    dic[cur][carga.DIA]={}
+                    dic[cur][carga.DIA]=carga.AULA+" "+str(carga.HR_INICIO)+":00"+" - "+str(carga.HR_FIN)+":00"
+
+        return dic
     if request.method=='GET':
-        dia=consultas()
-        return render(request,"Docente/cargaAcademica.html",{'dia':dia})
+        diccionario=consultas()
+        return render(request,"Docente/cargaAcademica.html",{'dic':diccionario})
 
 def registroTema(request):
     return 

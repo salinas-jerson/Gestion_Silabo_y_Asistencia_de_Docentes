@@ -1,3 +1,31 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h1>carga academica</h1>
-{{dia}} {% endblock %}
+
+<div class="card-group">
+	{% for title,dia in dic.items %}
+	<div class="card">
+		<img
+			src="../../static/assets/img/slide/gifsinfo.gif"
+			class="card-img-top"
+			alt="imagen"
+		/>
+		<div class="card-body">
+			<h5 class="card-title">{{title}}</h5>
+			<div class="card-group">
+				<div class="card-body">
+					<h5>DIA</h5>
+					{% for itdia in dia %}
+					<p class="card-text">{{itdia}}</p>
+					{% endfor %}
+				</div>
+				<div class="card-body">
+					<h5>AULA</h5>
+					{% for key,itsalon in dia.items %}
+					<p class="card-text">{{itsalon}}</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}
