@@ -36,11 +36,13 @@ def misDocentes(respuesta):
 @login_required # home director de escuela
 def dirEscuela(respuesta):
     #"consultas del director de escuela" 
-    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+    return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
 
 def iniciarSesionDE(respuesta):    # 
     if respuesta.method == 'GET':
-        return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm})
+        global nombre_director_escuela
+        return render(respuesta, 'DirEscuela/loginDE.html', {"form": 
+        AuthenticationForm})
     else:
         user = authenticate(
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
@@ -352,9 +354,9 @@ def registro_Silabo(respuesta):
         return cursos_unicos
 
     global Id_de_docente
-    Id_de_docente=buscar_id(nombre_de_docente,apellido_de_docente)
-    materias=buscar_curso()
-    registros_objetos=[]
+    Id_de_docente = buscar_id(nombre_de_docente,apellido_de_docente)
+    materias = buscar_curso()
+    registros_objetos = []
     subidos=[]
     if respuesta.method=="GET":
         #consultamos el numero de silabos
