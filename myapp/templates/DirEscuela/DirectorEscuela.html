@@ -3,35 +3,40 @@
 {% block content %}
 {% csrf_token %}
     <h1>Bienvenido Director de escuela: {{ nombre_director_escuela }}</h1>
-    
-    <main class="container ">
-        <div class="row">
-            <div class="card card-body text-center mt-5">
-                <h1>Cargar carga académica</h1>
-                <div class="text-center">
-                    <a class="btn btn-primary" href="/carga_academcica/"> Cargar
-                    </a>
-                </div>           
+    <div class="grid_docente">
+      <div class="item item-1">
+        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+          <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+              <a href="{% url 'mis_datos' %}"
+                class="list-group-item list-group-item-action py-2 ripple"
+                aria-current="true">
+                <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Mis Datos</span>
+              </a>
+              <a href="{% url 'mis_docentes' %}"
+                class="list-group-item list-group-item-action py-2 ripple">
+                <i class="fas fa-chart-area fa-fw me-3"></i><span>Mis Docentes</span>
+              </a>
+              <a href="{% url 'carga_academcica' %}"
+                class="list-group-item list-group-item-action py-2 ripple">
+                <i class="fas fa-lock fa-fw me-3"></i><span>Carga Académica</span></a>
+
+              <div class="dropdown list-group-item list-group-item-action py-2 ripple">
+                  <i class="fas fa-chart-line fa-fw me-3 dropdown-toggle "  id="dropdown1" data-toggle="dropdown"><p style="color:rgb(255,0,0);">Danger</p>
+                  </i>
+                  <div class="dropdown-menu">
+                    <a class="btn btn-danger" href="/Eliminar_docente/"> Eliminar usuario Docentes</a>
+                    <a class="btn btn-success" href="/crear_user_docentes/"> Crear usuario Docentes</a>
+                  </div>
+              </div> 
+
+
             </div>
-        </div>
-        <div class="text-center">
-            
-        </div>
-        <div class="text-center">
-            
-        </div>  
-    </main>
-    <br>
-    <div class="container ">
-        <div class="dropdown ">
-          <button class="btn btn-danger dropdown-toggle " type="button" id="dropdown1" data-toggle="dropdown">Danger
-          </button>
-          <div class="dropdown-menu">
-            <a class="btn btn-danger" href="/Eliminar_docente/"> Eliminar usuario Docentes</a>
-            <a class="btn btn-success" href="/crear_user_docentes/"> Crear usuario Docentes</a>
           </div>
-        </div>  
+        </nav>
       </div>
+    </div>
+
       <br>
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p> 
 {% endblock %}

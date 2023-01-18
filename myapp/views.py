@@ -178,7 +178,8 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
 @login_required
 def verSilabos(respuesta,id):
     id_docente = id 
-    silabos = Silabo.objects.filter(docente_id=id_docente)
+    silabos = Silabo.objects.filter(id_Docente=id_docente)
+    
     cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
     cursos = []
     nom = ""
@@ -189,9 +190,9 @@ def verSilabos(respuesta,id):
             docente = i.DOCENTE
 
     if respuesta.method == 'GET':   
-        carga = Document.objects.filter(title='CargaAcademica')    
-        carga = carga.first()
-        return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente,"carga":carga})
+        #carga = Document.objects.filter(title='CargaAcademica')    
+        #carga = carga.first()
+        return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
     else:             
         if respuesta.POST["btn"] == "silabo":
             return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
@@ -352,19 +353,12 @@ def registro_Silabo(respuesta):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-                cursos.append(item.CURSO.replace(" ",""))
+                cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
         cursos_unicos=list(set(cursos))
         return cursos_unicos
 
-<<<<<<< HEAD
-    global Id_de_docente
-    Id_de_docente = buscar_id(nombre_de_docente,apellido_de_docente)
-    materias = buscar_curso()
-    registros_objetos = []
-=======
     materias=buscar_curso()
     registros_objetos=[]
->>>>>>> 026339ccdd1cb0fd3b651f1b90a2ab05eec5495c
     subidos=[]
     if respuesta.method=="GET":
         #consultamos el numero de silabos

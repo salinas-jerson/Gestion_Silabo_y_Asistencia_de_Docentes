@@ -10,7 +10,7 @@
             <td>PR_DE</td>
             <td>Curso</td>
             <td>Docente</td>
-            <td>Informe</td>
+            <td>Informe de asistencia</td>
             <td>PDF</td>
             <td>Sílabo</td>
         </tr>
@@ -25,11 +25,24 @@
                 <td>{{ i.CURSO }}</td>
                 <td>{{ i.DOCENTE }}</td>
                 
-                <td><button class="btn btn-success" name="reporte">Informe</button></td>
+                <td><button class="btn btn-success" name="reporte">Informe asistencia</button></td>
                 <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
             </form>
-            <td><a href= "{{ '/files/files/IF614BIN2022-2.pdf' }}"  target="_blank">Ver PDF</a></td>
-            <td><a href="{{ carga.uploadfile.url }}"  target="_blank">Descargar</a></td>
+
+            {% if silabos|length > 0 %} 
+            {% for file in silabos %} 
+            {% if file.curso == i.CURSO %}
+            <td><a href= "{{file.silabo.url}}"  target="_blank">Ver PDF</a></td>
+		    {% endif %} 
+            {% endfor %} 
+            {% endif %}
+            <!-- 
+                
+
+        <td><a href="{{ carga.uploadfile.url }}"  target="_blank">Descargar</a></td>
+
+            -->
+            
             
         </tr>
         {% endfor %}
