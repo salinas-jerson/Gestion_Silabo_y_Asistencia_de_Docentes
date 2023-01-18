@@ -14,7 +14,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente
 
 # Create your views here.
  
@@ -408,37 +408,8 @@ def eliminarSilabo(request,i):
     messages.info(request,i+" ELIMINADO")
     return redirect('regis_silabo')
 
-from datetime import datetime
-@login_required
-def asistencia(request):
-    def buscar_IdDoncente():
-        for item in Docentes.objects.all():
-            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
-                return item.id_docente
-    #importamos datetime from datetime
-    #entonces capturamos la fecha y hora
-    time_now=datetime.now()
-    Fecha=time_now.date()
-    Hora=time_now.time()
-    if request.method=='GET':
-        return render(request,"Docente/asistencia.html",{'Fecha_actual':Fecha,'Hora_actual':Hora})
-    else:
-        if request.method=='POST':
-            try:
-                if request.POST["mi_asistencia"]:
-                    try:
-                        #aqui se registraria la asistencia en una tabla en la BD
-                        asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
-                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha)
-                        registro_asistencia.save()
-                        messages.success(request,"Su Asistencia Fue Registrada!")
-                        return redirect('asistencia')      
-                    except:
-                        messages.warning(request,"usted ya registró su asistencia")
-                        return redirect('asistencia')
-            except:
-                messages.warning(request,"no seleccionó la casilla ")
-        return redirect('asistencia')
+
+
 def asistencia_alumnos(request):
     return render(request,"Docente/asistenciaAlumnos.html")
 def carga_academica(request):
@@ -471,5 +442,75 @@ def carga_academica(request):
         diccionario=consultas()
         return render(request,"Docente/cargaAcademica.html",{'dic':diccionario})
 
-def registroTema(request):
-    return 
+def registroTema(request,cur):
+    def buscar_IdDoncente():
+        for item in Docentes.objects.all():
+            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
+                return item.id_docente
+    #reunimos la informacion necesaria
+    #docente,Tema,FechaAvance,id_Docente,Avance_curso
+    avance_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
+    contenido=request.POST['TemaAvance']
+    registro_avance=Avance_Docente(docente=avance_docente,Tema=contenido,id_Docente_Avance=avance_docente.id_docente,Avance_curso=cur)
+    registro_avance.save()
+    messages.success(request,"Su Avance del dia "+cur+" Fue Registrada!")
+    return redirect('asistencia')
+    
+
+
+from datetime import datetime
+def asistencia(request):
+    def buscar_curso():
+        cursos=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente==Id_de_docente:
+                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
+        cursos_unicos=list(set(cursos))
+        return cursos_unicos
+    #importamos datetime from datetime
+    #entonces capturamos la fecha y hora
+    materia=buscar_curso()
+    time_now=datetime.now()
+    Fecha=time_now.date()
+    Hora=time_now.time()
+    if request.method=='GET':
+        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora})
+
+@login_required
+def registroAsistencia(request,cur):
+    def buscar_IdDoncente():
+        for item in Docentes.objects.all():
+            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
+                return item.id_docente
+    def buscar_curso():
+        cursos=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente==Id_de_docente:
+                cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
+        cursos_unicos=list(set(cursos))
+        return cursos_unicos
+    #importamos datetime from datetime
+    #entonces capturamos la fecha y hora
+    materia=buscar_curso()
+    time_now=datetime.now()
+    Fecha=time_now.date()
+    Hora=time_now.time()
+    if request.method=='GET':
+        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora})
+    else:
+        if request.method=='POST':
+            try:
+                if request.POST["mi_asistencia"]:
+                    try:
+                        #aqui se registraria la asistencia en una tabla en la BD
+                        asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
+                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur)
+                        registro_asistencia.save()
+                        messages.success(request,"Su Asistencia de "+cur+" Fue Registrada!")
+                        return redirect('asistencia')      
+                    except:
+                        messages.warning(request,"usted ya registró su asistencia en "+cur)
+                        return redirect('asistencia')
+            except:
+                messages.warning(request,"no seleccionó la casilla ")
+        return redirect('asistencia')
