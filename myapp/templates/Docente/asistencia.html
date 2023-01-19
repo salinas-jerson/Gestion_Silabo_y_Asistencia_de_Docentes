@@ -1,13 +1,14 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<div class="container">
-	<div class="row">
+<div class="card-group">
+	{% for i in cursos %}
+	<div class="card-body">
 		<div class="col">
-			<h2>REGISTRAR ASISTENCIA</h2>
-			<h3>Fecha</h3>
-			<h4>{{Fecha_actual}}</h4>
-			<h3>Hora</h3>
-			<h4>{{Hora_actual}}</h4>
-			<form action="/asistencia/" method="POST">
+			<h5 class="card-title">{{i}}</h2>
+			<h5>Fecha</h5>
+			<h6>{{Fecha_actual}}</h6>
+			<h5>Hora</h5>
+			<h6>{{Hora_actual}}</h6>
+			<form action="registroAsistencia/{{i}}" method="POST">
 				{% csrf_token %}
 				<label for="">marcar asistencia</label>
 				<input
@@ -20,12 +21,14 @@
 			</form>
 		</div>
 		<div class="col">
-			<form action="/registroTema/" method="POST">
+			<form action="registroTema/{{i}}" method="POST">
+				{% csrf_token %}
 				<label for="">Registrar Temas </label>
-				<input type="text" placeholder="Ingrese tema del dia" />
+				<input type="text" name="TemaAvance" placeholder="Ingrese tema del dia" />
 				<button type="submit" class="btn btn-second">Registrar</button>
 			</form>
 		</div>
 	</div>
+	{% endfor %}
 </div>
 {% endblock %}
