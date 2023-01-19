@@ -10,29 +10,32 @@
             <td>PR_DE</td>
             <td>Curso</td>
             <td>Docente</td>
-            <td>Informe de asistencia</td>
-            <td>PDF</td>
             <td>Temas avanzados</td>
+            <td>Informe de asistencia</td>
+            <td>PDF</td>            
         </tr>
     </thead>
 
     <tbody>
         {% for i in cursos %}
         <tr>          
-            <form action="{% url 'ver_archivo' %}" method="POST" >
+            <form action="{% url 'asistencia' %}" method="POST">
                 {% csrf_token %}
                 <td>{{ i.PR_DE }}</td>
                 <td>{{ i.CURSO }}</td>
                 <td>{{ i.DOCENTE }}</td>
-                
-                <td><button class="btn btn-success" name="reporte">Informe asistencia</button></td>
+                <td><button class="btn btn-info" name="btn" value="temas">Temas</button></td>                
+                <td><button class="btn btn-success" name="btn" value="asistencia">Informe asistencia</button></td>
                 <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
+                <input type="hidden" name="curso" value="{{ i.CURSO }}" />
+                <input type="hidden" name="docente" value="{{ i.DOCENTE }}" />
             </form>
 
             {% if silabos|length > 0 %} 
             {% for file in silabos %} 
             {% if file.curso == i.CURSO %}
             <td><a href= "{{file.silabo.url}}"  target="_blank">Ver PDF</a></td>
+            
 		    {% endif %} 
             {% endfor %} 
             {% endif %}

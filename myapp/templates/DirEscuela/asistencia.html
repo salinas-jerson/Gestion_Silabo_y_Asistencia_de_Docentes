@@ -1,0 +1,9 @@
+{% extends 'ventanas/baseDE.html' %}
+{% block content %}
+{% csrf_token %}
+
+<h1>Detalles de la asistencia</h1>    
+<h1>Docente: {{ docente }}</h1>       
+<h1>Curso: {{ curso }}</h1> 
+{% endblock %}
+

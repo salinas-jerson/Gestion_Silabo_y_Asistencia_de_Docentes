@@ -171,8 +171,7 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             first_name=i.Nombre,
             last_name=i.apellido,            
             username=i.Nombre,             
-            password=make_password("123")
-                ).save()
+            password=make_password("123")).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 @login_required
@@ -190,8 +189,6 @@ def verSilabos(respuesta,id):
             docente = i.DOCENTE
 
     if respuesta.method == 'GET':   
-        #carga = Document.objects.filter(title='CargaAcademica')    
-        #carga = carga.first()
         return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
     else:             
         if respuesta.POST["btn"] == "silabo":
@@ -200,16 +197,21 @@ def verSilabos(respuesta,id):
             return render(respuesta,"DirEscuela/reporte.html")
  
 @login_required
-def verArchivos(respuesta):
+def verAsistencia(respuesta):
+
     if respuesta.method == 'GET':
         return render(respuesta,"DirEscuela/verSilabos.html",{"carga":"name"})
     else:
-        print("post")
-        id_docente = respuesta.POST["id_docente"]        
-        if respuesta.POST["btn"] == "silabo":
-            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":"silabos","cursos":"cursos"})
+        id_docente = respuesta.POST["id_docente"] 
+        curso =   respuesta.POST["curso"]
+        docente =   respuesta.POST["docente"]
+        
+
+        if respuesta.POST["btn"] == "asistencia":
+            return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente})
         else:
-            return render(respuesta,"DirEscuela/reporte.html")
+            temas = Asistencia_In.objects.filter(id_docente=id_docente)
+            return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente})
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":
