@@ -198,20 +198,18 @@ def verSilabos(respuesta,id):
  
 @login_required
 def verAsistencia(respuesta):
-
-    if respuesta.method == 'GET':
-        return render(respuesta,"DirEscuela/verSilabos.html",{"carga":"name"})
-    else:
+    if respuesta.method == 'POST':
         id_docente = respuesta.POST["id_docente"] 
         curso =   respuesta.POST["curso"]
         docente =   respuesta.POST["docente"]
         
 
         if respuesta.POST["btn"] == "asistencia":
-            return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente})
+            asistencia = Avance_Docente.objects.filter(id_Docente_Avance = id_docente)
+            return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente,"asistencia":asistencia})
         else:
-            temas = Asistencia_In.objects.filter(id_docente=id_docente)
-            return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente})
+            temas = Asistencia_In.objects.filter(id_Docente=id_docente)
+            return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente,"temas":temas})
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":
