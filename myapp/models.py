@@ -56,6 +56,7 @@ class Asistencia_In(models.Model):
     FechaIn=models.DateField()
     id_Docente=models.CharField(max_length=5,default='default value')
     Asistencia_curso=models.CharField(max_length=100,default='default value')
+    codigo_curso=models.CharField(max_length=10,default='default value')
 
 #Tabla de Temas de avance
 class Avance_Docente(models.Model):
@@ -64,6 +65,7 @@ class Avance_Docente(models.Model):
     FechaAvance=models.DateTimeField(auto_now=True)
     id_Docente_Avance=models.CharField(max_length=5,default='default value')
     Avance_curso=models.CharField(max_length=100,default='default value')
+    codigo_curso=models.CharField(max_length=10,default='default value')
 
 #nombre de curso
 #id docente

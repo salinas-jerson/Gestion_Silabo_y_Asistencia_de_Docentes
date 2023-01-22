@@ -451,8 +451,13 @@ def registroTema(request,cur):
     #reunimos la informacion necesaria
     #docente,Tema,FechaAvance,id_Docente,Avance_curso
     avance_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
+    cod_curso=CargaAcademica.objects.filter(id_docente=avance_docente.id_docente)
+    cod=""
+    for c in cod_curso:
+        if c.CURSO==cur:
+            cod=c.PR_DE
     contenido=request.POST['TemaAvance']
-    registro_avance=Avance_Docente(docente=avance_docente,Tema=contenido,id_Docente_Avance=avance_docente.id_docente,Avance_curso=cur)
+    registro_avance=Avance_Docente(docente=avance_docente,Tema=contenido,id_Docente_Avance=avance_docente.id_docente,Avance_curso=cur,codigo_curso=cod)
     registro_avance.save()
     messages.success(request,"Su Avance del dia "+cur+" Fue Registrada!")
     return redirect('asistencia')
@@ -490,6 +495,7 @@ def registroAsistencia(request,cur):
                 cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
         cursos_unicos=list(set(cursos))
         return cursos_unicos
+
     #importamos datetime from datetime
     #entonces capturamos la fecha y hora
     materia=buscar_curso()
@@ -505,7 +511,12 @@ def registroAsistencia(request,cur):
                     try:
                         #aqui se registraria la asistencia en una tabla en la BD
                         asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
-                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur)
+                        cod_curso=CargaAcademica.objects.filter(id_docente=asistencia_docente.id_docente)
+                        cod=""
+                        for c in cod_curso:
+                            if c.CURSO==cur:
+                                cod=c.PR_DE
+                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur,codigo_curso=cod)
                         registro_asistencia.save()
                         messages.success(request,"Su Asistencia de "+cur+" Fue Registrada!")
                         return redirect('asistencia')      
