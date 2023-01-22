@@ -19,7 +19,7 @@
     <tbody>
         {% for i in cursos %}
         <tr>          
-            <form action="{% url 'reporte-asistencia' %}" method="POST">
+            <form action="{% url 'consulta' %}" method="POST">
                 {% csrf_token %}
                 <td>{{ i.PR_DE }}</td>
                 <td>{{ i.CURSO }}</td>

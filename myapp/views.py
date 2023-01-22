@@ -173,44 +173,52 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             username=i.Nombre,             
             password=make_password("123")).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+@login_required
+def reporteAsistencia():
+    return
 
 @login_required
-def verSilabos(respuesta,id):
-    id_docente = id 
-    silabos = Silabo.objects.filter(id_Docente=id_docente)
-    
-    cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
-    cursos = []
-    nom = ""
-    for i in cursos1:                
-        if i.CURSO != nom:
-            nom = i.CURSO
-            cursos.append(i)
-            docente = i.DOCENTE
+def reporteTemas(id_curso,id_docente):
+    temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, falta = id_curso)
+    return temas
 
-    if respuesta.method == 'GET':   
-        return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
-    else:             
-        if respuesta.POST["btn"] == "silabo":
+@login_required
+def verDetalleActividades(respuesta):
+    if respuesta.method == 'POST':   
+        id_docente = respuesta.POST["id_docente"] 
+        silabos = Silabo.objects.filter(id_Docente=id_docente)        
+        cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
+        cursos = []
+        nom = ""
+        for i in cursos1:                
+            if i.PR_DE != nom: #restringir por codigo de curso PR_DE
+                nom = i.PR_DE
+                cursos.append(i)
+                docente = i.DOCENTE    
+
+        if respuesta.POST["btn"] == "silabo": 
             return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
-        else:
+        else: # btn = reporte
+            for i in cursos:
+                print(i.PR_DE)
+                #reporteTemas()
+
+
             return render(respuesta,"DirEscuela/reporte.html")
  
 @login_required
-def verAsistencia(respuesta):
+def verAsistencia_Tema(respuesta):
     if respuesta.method == 'POST':
-        id_docente = respuesta.POST["id_docente"] 
-        curso =   respuesta.POST["curso"]
+        id_docente = respuesta.POST["id_docente"]
+        curso =   respuesta.POST["curso"] #PR_DE de la carga
         docente =   respuesta.POST["docente"]
-        
-
         if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
             asistencia = Asistencia_In.objects.filter(id_Docente = id_docente, Asistencia_curso = curso)
-
             return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente,"asistencia":asistencia})
         else: # btn = temas 
             temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, Avance_curso = curso)
             return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente,"temas":temas})
+
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":
