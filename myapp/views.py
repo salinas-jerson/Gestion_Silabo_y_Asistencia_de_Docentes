@@ -204,11 +204,12 @@ def verAsistencia(respuesta):
         docente =   respuesta.POST["docente"]
         
 
-        if respuesta.POST["btn"] == "asistencia":
-            asistencia = Avance_Docente.objects.filter(id_Docente_Avance = id_docente)
+        if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
+            asistencia = Asistencia_In.objects.filter(id_Docente = id_docente, Asistencia_curso = curso)
+
             return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente,"asistencia":asistencia})
-        else:
-            temas = Asistencia_In.objects.filter(id_Docente=id_docente)
+        else: # btn = temas 
+            temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, Avance_curso = curso)
             return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente,"temas":temas})
 
 """def resgistDE(respuesta):

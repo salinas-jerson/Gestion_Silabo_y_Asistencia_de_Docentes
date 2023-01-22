@@ -34,7 +34,7 @@ urlpatterns = [
     path('Eliminar_docente/',views.Eliminar_user_docentes,name="Eliminar_docente"), 
     path('crear_user_docentes/',views.crear_user_docentes,name="crear_user_docentes"), 
     path('mis_docentes/ver_silabos/<int:id>/',views.verSilabos,name="ver_silabos"),
-    path('mis_docentes/ver_silabos/asistencia/',views.verAsistencia,name="asistencia"),
+    path('mis_docentes/ver_silabos/reporte-asistencia/',views.verAsistencia,name="reporte-asistencia"),
 
 ]#
 urlpatterns+=[

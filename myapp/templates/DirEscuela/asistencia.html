@@ -5,5 +5,30 @@
 <h1>Detalles de la asistencia</h1>    
 <h1>Docente: {{ docente }}</h1>       
 <h1>Curso: {{ curso }}</h1> 
+
+{% if asistencia|length > 0 %} 
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    <thead>
+        <tr>
+            <td>curso</td>
+            <td>fecha</td>            
+            <td>hora</td>        
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in asistencia %}
+        <tr>          
+            <td>{{ i.Asistencia_curso }}</td>
+            <td>{{ i.FechaIn }}</td>                                
+            <td>{{ i.HoraEntrada }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h3>no hay asistencias registradas</h3>
+{% endif %}
+
 {% endblock %}
 

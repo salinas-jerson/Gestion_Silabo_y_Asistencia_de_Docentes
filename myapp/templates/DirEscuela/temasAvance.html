@@ -5,5 +5,30 @@
 <h1>Detalles del tema de avance</h1>    
 <h1>Docente: {{ docente }}</h1>       
 <h1>Curso: {{ curso }}</h1> 
+
+{% if temas|length > 0 %} 
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    <thead>
+        <tr>
+            <td>Curso</td>
+            <td>Tema</td>            
+            <td>Fecha</td>        
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for i in temas %}
+        <tr>          
+            <td>{{ i.Avance_curso }}</td>
+            <td>{{ i.Tema }}</td>                                
+            <td>{{ i.FechaAvance }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h3>no hay temas registrados</h3>
+{% endif %}
+
 {% endblock %}
 
