@@ -171,8 +171,7 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             first_name=i.Nombre,
             last_name=i.apellido,            
             username=i.Nombre,             
-            password=make_password("123")
-                ).save()
+            password=make_password("123")).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 @login_required
@@ -190,8 +189,6 @@ def verSilabos(respuesta,id):
             docente = i.DOCENTE
 
     if respuesta.method == 'GET':   
-        #carga = Document.objects.filter(title='CargaAcademica')    
-        #carga = carga.first()
         return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
     else:             
         if respuesta.POST["btn"] == "silabo":
@@ -200,16 +197,20 @@ def verSilabos(respuesta,id):
             return render(respuesta,"DirEscuela/reporte.html")
  
 @login_required
-def verArchivos(respuesta):
-    if respuesta.method == 'GET':
-        return render(respuesta,"DirEscuela/verSilabos.html",{"carga":"name"})
-    else:
-        print("post")
-        id_docente = respuesta.POST["id_docente"]        
-        if respuesta.POST["btn"] == "silabo":
-            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":"silabos","cursos":"cursos"})
-        else:
-            return render(respuesta,"DirEscuela/reporte.html")
+def verAsistencia(respuesta):
+    if respuesta.method == 'POST':
+        id_docente = respuesta.POST["id_docente"] 
+        curso =   respuesta.POST["curso"]
+        docente =   respuesta.POST["docente"]
+        
+
+        if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
+            asistencia = Asistencia_In.objects.filter(id_Docente = id_docente, Asistencia_curso = curso)
+
+            return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente,"asistencia":asistencia})
+        else: # btn = temas 
+            temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, Avance_curso = curso)
+            return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente,"temas":temas})
 
 """def resgistDE(respuesta):
     if respuesta.method == "GET":
