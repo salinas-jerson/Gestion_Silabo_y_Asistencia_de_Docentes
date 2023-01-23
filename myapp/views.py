@@ -9,7 +9,10 @@ from django.contrib import messages
 
 
 #archivos
-import csv
+from django.template.loader import render_to_string
+#from weasyprint import HTML
+#from weasyprint.fonts import FontConfiguration
+
 from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -173,14 +176,51 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             username=i.Nombre,             
             password=make_password("123")).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
-@login_required
-def reporteAsistencia():
-    return
 
-@login_required
+def regla3Simple(total,parte):
+    if total != 0:
+        return 100*parte/total
+    else:
+        return 0
+
+def reporteAsistencia(id_curso,id_docente):
+    return Asistencia_In.objects.filter(id_Docente = id_docente, codigo_curso = id_curso)
+
 def reporteTemas(id_curso,id_docente):
-    temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, falta = id_curso)
-    return temas
+    return Avance_Docente.objects.filter(id_Docente_Avance = id_docente, codigo_curso = id_curso)
+
+
+
+def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde):
+    objeto = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
+    hora = str(objeto.first().HR_INICIO)+":00:00" # hora de inicio del curso
+    horaFin = str(objeto.first().HR_FIN)+":00:00" # hora de inicio del curso
+    horaFin = datetime.strptime(horaFin, "%H:%M:%S")
+    hora = datetime.strptime(hora, "%H:%M:%S")
+    minutosClase = str(horaFin - hora).split(':')
+    minutosClase = int(minutosClase[0])*60 + int(minutosClase[1])
+
+    total_asistencia += len(asistencia)
+    for j in asistencia:
+        #c.
+        diferencia =  datetime.strptime(str(j.HoraEntrada).split('.')[0], "%H:%M:%S") - hora
+        diferencia = str(diferencia).split(':')
+        if len(diferencia[0].split(',')) >= 2: # muy a destiempo , resulta en días
+            total_destiempo+=1
+        else:
+            minutos = int(diferencia[0])*60 + int(diferencia[1])
+                        
+            if  0 <= minutos <= 15: #puntual
+                total_puntual+=1
+            else:
+                if minutos < minutosClase :
+                    total_tarde+=1
+                else:
+                    total_destiempo+=1
+                
+    return total_asistencia,total_destiempo, total_puntual,total_tarde
+
+
 
 @login_required
 def verDetalleActividades(respuesta):
@@ -199,25 +239,38 @@ def verDetalleActividades(respuesta):
         if respuesta.POST["btn"] == "silabo": 
             return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
         else: # btn = reporte
+            temas_totales = []
             for i in cursos:
-                print(i.PR_DE)
-                #reporteTemas()
-
-
-            return render(respuesta,"DirEscuela/reporte.html")
+                temas = reporteTemas(i.PR_DE, id_docente)
+                temas_totales.append(([i.PR_DE,i.CURSO,"  : Hora "+str(i.HR_INICIO)+":00"],temas))
+            
+            total_asistencia = 0
+            total_destiempo = 0
+            total_puntual = 0
+            total_tarde = 0
+            asistencia_totales = []
+            for i in cursos:
+                asistencia = reporteAsistencia(i.PR_DE,id_docente)
+                asistencia_totales.append(([i.PR_DE,i.CURSO,"  : Hora "+str(i.HR_INICIO)+":00"],asistencia))
+                total_asistencia, total_destiempo, total_puntual, total_tarde =  totalAsistencia(id_docente, i.PR_DE, asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde)
+            
+            
+            return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :total_asistencia,
+            "total_destiempo":regla3Simple(total_asistencia,total_destiempo),"total_puntual":regla3Simple(total_asistencia,total_puntual), "total_tarde" :regla3Simple(total_asistencia,total_tarde),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
  
 @login_required
 def verAsistencia_Tema(respuesta):
     if respuesta.method == 'POST':
         id_docente = respuesta.POST["id_docente"]
-        curso =   respuesta.POST["curso"] #PR_DE de la carga
+        curso =   respuesta.POST["curso"]
+        id_curso =   respuesta.POST["id_curso"] #PR_DE de la carga
         docente =   respuesta.POST["docente"]
         if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
-            asistencia = Asistencia_In.objects.filter(id_Docente = id_docente, Asistencia_curso = curso)
-            return render(respuesta,"DirEscuela/asistencia.html",{"curso":curso,"docente":docente,"asistencia":asistencia})
+            hora = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
+            hora = hora.first().HR_INICIO
+            return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente, "hora":hora,"asistencia":reporteAsistencia(id_curso,id_docente)})
         else: # btn = temas 
-            temas = Avance_Docente.objects.filter(id_Docente_Avance = id_docente, Avance_curso = curso)
-            return render(respuesta,"DirEscuela/temasAvance.html",{"curso":curso,"docente":docente,"temas":temas})
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"temas":reporteTemas(id_curso,id_docente)})
 
 
 """def resgistDE(respuesta):

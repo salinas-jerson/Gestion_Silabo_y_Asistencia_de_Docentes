@@ -3,23 +3,41 @@
 {% csrf_token %}
 
 <h1>Detalles de la asistencia</h1>    
-<h1>Docente: {{ docente }}</h1>       
-<h1>Curso: {{ curso }}</h1> 
-
-{% if asistencia|length > 0 %} 
 <table class="table table-striped" id="hor-minimalist-b" width="80%">
     <thead>
         <tr>
-            <td>curso</td>
-            <td>fecha</td>            
-            <td>hora</td>        
+            <td>Docente</td>
+            <td>Código de curso</td>            
+            <td>Curso</td> 
+            <td>Hora de inicio</td>        
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>          
+            <td>{{ docente }}</td>
+            <td>{{ id_curso }}</td>                                
+            <td>{{ curso }}</td>
+            <td>{{ hora }}:00</td>
+        </tr>
+    </tbody>
+</table>
+
+{% if asistencia|length > 0 %} 
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    
+    <thead>
+        <tr>
+            <td>Código de curso</td> 
+            <td>Fecha</td>            
+            <td>Hora</td>        
         </tr>
     </thead>
 
     <tbody>
         {% for i in asistencia %}
-        <tr>          
-            <td>{{ i.Asistencia_curso }}</td>
+        <tr>    
+            <td>{{ i.codigo_curso }}</td>      
             <td>{{ i.FechaIn }}</td>                                
             <td>{{ i.HoraEntrada }}</td>
         </tr>

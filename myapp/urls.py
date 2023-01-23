@@ -35,7 +35,7 @@ urlpatterns = [
     path('crear_user_docentes/',views.crear_user_docentes,name="crear_user_docentes"), 
     path('mis_docentes/ver-actividades/',views.verDetalleActividades,name="ver-actividades"),
     path('mis_docentes/ver-actividades/consulta/',views.verAsistencia_Tema,name="consulta"),
-    #path('mis_docentes/reporte/',views.misDocentes,name="reporte"),
+    #path('mis_docentes/ver-actividades/export/', views.export_pdf, name="export-pdf" ),
 
 ]#
 urlpatterns+=[

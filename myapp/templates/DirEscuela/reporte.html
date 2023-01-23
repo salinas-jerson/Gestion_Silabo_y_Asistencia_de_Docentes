@@ -3,5 +3,78 @@
 {% block content %}
 {% csrf_token %}
     <h1>reporte</h1>
+        
+    <h2>Docente: {{docente}}</h2> <!--export-pdf-->
+    <a href="{% url 'direct' %}">PDF</a>
+    <h2>Temas:</h2>
+    {% for datos,temas in temas_totales %}        
+        {% for dat in datos %}
+        <tr>
+            <td>{{ dat }} </td> 
+        </tr>        
+        {% endfor %}
+        {% if temas|length > 0 %} 
+        <table class="table table-striped" id="hor-minimalist-b" width="80%">
+            <thead>
+                <tr>
+                    <td>Id Curso</td>
+                    <td>Tema</td>            
+                    <td>Fecha</td>        
+                </tr>
+            </thead> 
+            <tbody>
+                {% for i in temas %}
+                <tr>          
+                    <td>{{ i.codigo_curso }}</td>
+                    <td>{{ i.Tema }}</td>                                
+                    <td>{{ i.FechaAvance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <h3>No hay temas registrados </h3>
+        {% endif %}         
+    {% endfor %}
 
+    <h2>Asistencias:</h2>
+
+    {% for datos,asistencia in asistencia_totales %}        
+        {% for dato in datos %}
+        <tr>
+            <td>{{ dato }} </td> 
+        </tr>        
+        {% endfor %}
+        {% if asistencia|length > 0 %} 
+        <table class="table table-striped" id="hor-minimalist-b" width="80%">
+            <thead>
+                <tr>
+                    <td>Código de curso</td> 
+                    <td>Fecha</td>            
+                    <td>Hora</td>        
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in asistencia %}
+                <tr>    
+                    <td>{{ i.codigo_curso }}</td>       
+                    <td>{{ i.FechaIn }}</td>                                
+                    <td>{{ i.HoraEntrada }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <h3>No hay asistencias registradas </h3>
+        {% endif %}         
+    {% endfor %}
+
+    {% if total_asistencia > 0 %}
+    <h4>De {{total_asistencia}} asistencias registradas</h4>
+    <h5>El  {{total_puntual}} % llega puntual</h5>
+    <h5>El  {{total_tarde}} % llega tarde</h5>
+    <h5>El  {{total_destiempo}} % no asiste en su hora</h5>
+    {% else %}
+    <h4> {{total_asistencia}} asistencias registradas</h4>
+    {% endif %}
 {% endblock %}
