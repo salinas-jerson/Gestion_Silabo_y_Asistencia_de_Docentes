@@ -490,15 +490,19 @@ def carga_academica(request):
         for item in carga_docente:
             cursos.append(item.CURSO)
         cursos_unicos=list(set(cursos))
+        
         #diccionario anidado
         dic={}  
         for cur in cursos_unicos:
             dic[cur]={}
-            for carga in carga_docente:
-                if cur==carga.CURSO:
-                    dic[cur][carga.DIA]={}
-                    dic[cur][carga.DIA]=carga.AULA+" "+str(carga.HR_INICIO)+":00"+" - "+str(carga.HR_FIN)+":00"
-
+            for g in carga_docente:
+                if cur==g.CURSO:
+                    dic[cur][g.PR_DE]={}
+                    for d in carga_docente:
+                        if g.PR_DE==d.PR_DE:
+                            dic[cur][g.PR_DE][d.DIA]={}
+                            dic[cur][g.PR_DE][d.DIA]=d.AULA+" "+str(d.HR_INICIO)+":00"+" - "+str(d.HR_FIN)+":00"
+                            
         return dic
     if request.method=='GET':
         diccionario=consultas()
