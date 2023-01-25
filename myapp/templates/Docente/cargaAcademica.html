@@ -1,7 +1,7 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
 
 <div class="card-group">
-	{% for title,dia in dic.items %}
+	{% for title,grupo in dic.items %}
 	<div class="card">
 		<img
 			src="../../static/assets/img/slide/gifsinfo.gif"
@@ -12,15 +12,23 @@
 			<h5 class="card-title">{{title}}</h5>
 			<div class="card-group">
 				<div class="card-body">
-					<h5>DIA</h5>
-					{% for itdia in dia %}
-					<p class="card-text">{{itdia}}</p>
-					{% endfor %}
-				</div>
-				<div class="card-body">
-					<h5>AULA</h5>
-					{% for key,itsalon in dia.items %}
-					<p class="card-text">{{itsalon}}</p>
+					{% for grup,dias in grupo.items %}
+					<h5>GRUPO</h5>
+					<p class="card-text">{{grup}}</p>
+					<div class="card-group">
+						<div class="card-body">
+							<h5>DIA</h5>
+							{% for dia,salon in dias.items %}
+							<p class="card-text">{{dia}}</p>
+							{% endfor %}
+						</div>
+						<div class="card-body">
+							<h5>AULA</h5>
+							{% for key,itsalon in dias.items %}
+							<p class="card-text">{{itsalon}}</p>
+							{% endfor %}
+						</div>
+					</div>
 					{% endfor %}
 				</div>
 			</div>
