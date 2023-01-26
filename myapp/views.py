@@ -472,19 +472,47 @@ from datetime import datetime
 def asistencia(request):
     def buscar_curso():
         cursos=[]
+        grupos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
                 cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
+                grupos.append(item.PR_DE)
         cursos_unicos=list(set(cursos))
-        return cursos_unicos
+        grupos_unicos=list(set(grupos))
+        return cursos_unicos,grupos_unicos
+    def buscar_Carga():
+        #buscamos la carga del docente y almacenamos
+        Docente_carga=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente== Id_de_docente:
+                Docente_carga.append(item)
+        return Docente_carga
+    #utilizamos el arreglo del docente
+    def consultas():
+        carga_docente=buscar_Carga()
+        cursos=[]
+        for item in carga_docente:
+            cursos.append(item.CURSO)
+        cursos_unicos=list(set(cursos))
+        
+        #diccionario anidado
+        dic={}  
+        for cur in cursos_unicos:
+            dic[cur]={}
+            for g in carga_docente:
+                if cur==g.CURSO:
+                    dic[cur][g.PR_DE]={}
+                    
+        return dic
     #importamos datetime from datetime
     #entonces capturamos la fecha y hora
-    materia=buscar_curso()
+    materia,grupos=buscar_curso()
+    m=consultas() #diccionario de grupos
     time_now=datetime.now()
     Fecha=time_now.date()
     Hora=time_now.time()
     if request.method=='GET':
-        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora})
+        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora,'grupos':m})
 
 @login_required
 def registroAsistencia(request,cur):
@@ -516,10 +544,12 @@ def registroAsistencia(request,cur):
                         #aqui se registraria la asistencia en una tabla en la BD
                         asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
                         cod_curso=CargaAcademica.objects.filter(id_docente=asistencia_docente.id_docente)
-                        cod=""
+                        '''cod=""
                         for c in cod_curso:
                             if c.CURSO==cur:
-                                cod=c.PR_DE
+                                cod=c.PR_DE'''
+                        cod=request.POST["grupos"]
+                        print(cod)
                         registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur,codigo_curso=cod)
                         registro_asistencia.save()
                         messages.success(request,"Su Asistencia de "+cur+" Fue Registrada!")
