@@ -17,6 +17,16 @@
 					class="asistencia"
 					value="asistencia"
 				/>
+				<select name="grupos" id="group">
+					{% for key,set in grupos.items %}
+					{% for grup,it in set.items %}
+					{% if key == i %}
+					<option value="{{grup}}">{{grup}}</option>
+					{% endif %}
+					{% endfor %}
+					{% endfor %}
+				</select>
+
 				<input type="submit" value="Registrar" class="btn btn-second" />
 			</form>
 		</div>
