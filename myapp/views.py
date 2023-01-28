@@ -306,7 +306,7 @@ Id_de_docente=""
 #@login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
-        Docente= nombre_de_docente
+        Docente= nombre_de_docente.upper()
         return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
     else:
         return render(respuesta,"Docente/docentes.html",{'nombre':Docente,'error':"Problemas a iniciar secion"})  
@@ -593,7 +593,7 @@ def registroAsistencia(request,cur):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-                cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
+                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
         cursos_unicos=list(set(cursos))
         return cursos_unicos
 
