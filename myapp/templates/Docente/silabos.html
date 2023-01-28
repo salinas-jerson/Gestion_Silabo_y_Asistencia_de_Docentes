@@ -11,8 +11,12 @@
 		>
 			{% csrf_token %}
 			<p style="color:rgb(255,0,0);">{{error}}</p>
-			{% csrf_token %}
+			{% if BD|length == 0 %}
 			<input type="file" id="archivo" name="archivo" />
+			{% else %} {% if BD|length != 0 %} {% if i not in subidos %}
+			<input type="file" id="archivo" name="archivo" />
+			{% endif %} {% endif %}{% endif %}
+
 			<button type="submit" class="btn btn-primary">Guardar</button>
 			<a href="eliminarSilabo/{{i}}" class="btn btn-second">Eliminar</a>
 		</form>
