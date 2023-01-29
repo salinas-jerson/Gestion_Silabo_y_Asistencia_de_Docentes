@@ -311,14 +311,13 @@ def misCursos(respuesta):
 nombre_de_docente=""
 apellido_de_docente=""
 Id_de_docente=""
-@login_required
+#@login_required
 def docentes(respuesta):
     if respuesta.method=="GET":
-        Docente= nombre_de_docente
+        Docente= nombre_de_docente.upper()
         return render(respuesta,"Docente/docentes.html",{'nombre':Docente})
     else:
-        return render(respuesta,"Docente/docentes.html",{'nombre':Docente,'error':"Problemas a iniciar secion"})
-        
+        return render(respuesta,"Docente/docentes.html",{'nombre':Docente,'error':"Problemas a iniciar secion"})  
         
                 
 #modulo para validar si es un docente
@@ -367,7 +366,7 @@ def buscar_id(name,lastname):
 def iniciarSesionD(respuesta):    
     def busqueda_username(username1):
         for fila in User.objects.all():
-            if fila.username==username1.lower():
+            if fila.username==username1.lower() and fila.is_superuser==0:
                 return fila.first_name, fila.last_name
         return 0
     #------------
@@ -380,10 +379,10 @@ def iniciarSesionD(respuesta):
             nombre_docente,apellido_docente=busqueda_username(respuesta.POST['username'].lower())
             
         else:
-            
-            mensaje = "No existe usuario"
             nombre_docente = "0"
             apellido_docente ="0"
+            return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
+
         global nombre_de_docente
         global apellido_de_docente
         nombre_de_docente=nombre_docente
@@ -395,10 +394,10 @@ def iniciarSesionD(respuesta):
             respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
         if user is None: 
             return render(respuesta, 'Docente/loginD.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
-
+        Docente=nombre_de_docente.upper()
         login(respuesta, user)
-        return render(respuesta, 'Docente/docentes.html')
-        #return redirect('docentes')
+        return render(respuesta, 'Docente/docentes.html',{'nombre':Docente})
+       
 
 @login_required
 def cerrarLoginD(respuesta):
@@ -423,7 +422,7 @@ def registro_Silabo(respuesta):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-                cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
+                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
         cursos_unicos=list(set(cursos))
         return cursos_unicos
 
@@ -432,6 +431,7 @@ def registro_Silabo(respuesta):
     subidos=[]
     if respuesta.method=="GET":
         #consultamos el numero de silabos
+        
         for item in materias:
             ss=buscar_id_Silabo(item)
             if ss:
@@ -439,7 +439,8 @@ def registro_Silabo(respuesta):
                 registros_objetos.append(File)
                 subidos.append(File.curso)  
                  
-        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos})
+        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos}) 
+    
 
 def guardarSilabo(request,i):
     def buscar_id_Silabo(curso):
@@ -459,25 +460,32 @@ def guardarSilabo(request,i):
         return cursos_unicos
     materias=buscar_curso()
     registros_objetos=[]
-    if request.method=='POST':            
-        uploadedFile=request.FILES["archivo"]
-        objeto_de_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
-        document=Silabo(docente=objeto_de_docente,silabo=uploadedFile,curso=i,id_Docente=objeto_de_docente.id_docente)
-        document.save()    
-        messages.info(request,"Silabo"+ i +" Guardado!")
-        for item in materias:
-            ss=buscar_id_Silabo(item)
-            if ss:
-                File=Silabo.objects.get(id=ss)#--------------
-                registros_objetos.append(File)
-        return redirect('regis_silabo')
+    if request.method=='POST':  
+        try:          
+            uploadedFile=request.FILES["archivo"]
+            objeto_de_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
+            document=Silabo(docente=objeto_de_docente,silabo=uploadedFile,curso=i,id_Docente=objeto_de_docente.id_docente)
+            document.save()    
+            messages.info(request,"Silabo"+ i +" Guardado!")
+            for item in materias:
+                ss=buscar_id_Silabo(item)
+                if ss:
+                    File=Silabo.objects.get(id=ss)#--------------
+                    registros_objetos.append(File)
+            return redirect('regis_silabo')
+        except:
+            messages.warning(request,"No hay un archivo que guardar")
+            return redirect('regis_silabo')
         #return render(request,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos})                       
 def eliminarSilabo(request,i):
-    silabo=Silabo.objects.get(curso=i)
-    silabo.delete()
-    messages.info(request,i+" ELIMINADO")
-    return redirect('regis_silabo')
-
+    try:
+        silabo=Silabo.objects.get(curso=i)
+        silabo.delete()
+        messages.info(request,i+" ELIMINADO")
+        return redirect('regis_silabo')
+    except:
+        messages.warning(request,"Es posible que usted no tenga el archivo")
+        return redirect('regis_silabo')
 
 
 def asistencia_alumnos(request):
@@ -593,7 +601,7 @@ def registroAsistencia(request,cur):
         cursos=[]
         for item in CargaAcademica.objects.all():
             if item.id_docente==Id_de_docente:
-                cursos.append(item.CURSO.replace(" "," ")) # porque es necesario reemplazar el espacio?
+                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
         cursos_unicos=list(set(cursos))
         return cursos_unicos
 
