@@ -27,6 +27,13 @@ def index(respuesta):
       
 def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
+#----------------------- MODULOS GENERALES ----------------------------
+def esSuperUser(username): # si es superusuario
+    director = User.objects.filter(username= username)
+    return True if director.first().is_superuser == 1 else False
+
+def regla3Simple(total,parte):
+    return 0 if total == 0 else 100*parte/total
 
 #----------------------- DIRECTOR DE ESCUELA --------------------------
 #variables globales
@@ -44,20 +51,21 @@ def dirEscuela(respuesta):
 def iniciarSesionDE(respuesta):    # 
     if respuesta.method == 'GET':
         global nombre_director_escuela
-        return render(respuesta, 'DirEscuela/loginDE.html', {"form": 
-        AuthenticationForm})
+        return render(respuesta, 'DirEscuela/loginDE.html')
     else:
-        user = authenticate(
-            respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
-        if user is None:
-            return render(respuesta, 'DirEscuela/loginDE.html', {"form": AuthenticationForm, "error": "nombre o contraseña incorrecta."})
-
-        login(respuesta, user)
-        global nombre_director_escuela  #var global DE
-        datosDE = User.objects.filter(username=respuesta.POST['username'])
-        nombre_director_escuela = datosDE[0]
-        
-        return render(respuesta, 'DirEscuela/DirectorEscuela.html', {"nombre_director_escuela": nombre_director_escuela})
+        if esSuperUser(respuesta.POST['username']):
+            user = authenticate(
+                respuesta, username=respuesta.POST['username'], password=respuesta.POST['password'])
+            if user is None:
+                return render(respuesta, 'DirEscuela/loginDE.html', { "error": "nombre o contraseña incorrecta."})
+            login(respuesta, user)
+            global nombre_director_escuela  #var global DE
+            datosDE = User.objects.filter(username=respuesta.POST['username'])
+            nombre_director_escuela = datosDE[0]
+            
+            return render(respuesta, 'DirEscuela/DirectorEscuela.html', {"nombre_director_escuela": nombre_director_escuela})
+        else:
+            return render(respuesta, 'DirEscuela/loginDE.html', { "error": "ingrese como director/a"})
 
 @login_required  # cierra sesion
 def cerrarLoginDE(respuesta):
@@ -177,12 +185,6 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             password=make_password("123")).save()
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
-def regla3Simple(total,parte):
-    if total != 0:
-        return 100*parte/total
-    else:
-        return 0
-
 def reporteAsistencia(id_curso,id_docente):
     return Asistencia_In.objects.filter(id_Docente = id_docente, codigo_curso = id_curso)
 
@@ -220,24 +222,25 @@ def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_desti
                 
     return total_asistencia,total_destiempo, total_puntual,total_tarde
 
-
+def cursosSilaboForDocente(id_docente):
+    silabos = Silabo.objects.filter(id_Docente=id_docente)        
+    cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
+    cursos = []
+    nom = ""
+    for i in cursos1:                
+        if i.PR_DE != nom: #restringir por codigo de curso PR_DE
+            nom = i.PR_DE
+            cursos.append(i)
+            docente = i.DOCENTE  
+    return silabos,cursos,docente,id_docente
 
 @login_required
 def verDetalleActividades(respuesta):
     if respuesta.method == 'POST':   
-        id_docente = respuesta.POST["id_docente"] 
-        silabos = Silabo.objects.filter(id_Docente=id_docente)        
-        cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
-        cursos = []
-        nom = ""
-        for i in cursos1:                
-            if i.PR_DE != nom: #restringir por codigo de curso PR_DE
-                nom = i.PR_DE
-                cursos.append(i)
-                docente = i.DOCENTE    
+        silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.POST["id_docente"] )
 
         if respuesta.POST["btn"] == "silabo": 
-            return render(respuesta,"DirEscuela/verSilabos.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
+            return render(respuesta,"DirEscuela/DetallaActividades.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
         else: # btn = reporte
             temas_totales = []
             for i in cursos:
@@ -257,7 +260,11 @@ def verDetalleActividades(respuesta):
             
             return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :total_asistencia,
             "total_destiempo":regla3Simple(total_asistencia,total_destiempo),"total_puntual":regla3Simple(total_asistencia,total_puntual), "total_tarde" :regla3Simple(total_asistencia,total_tarde),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
- 
+    
+    else:
+        silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.GET["id_docente"])
+        return render(respuesta,"DirEscuela/DetallaActividades.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
+    
 @login_required
 def verAsistencia_Tema(respuesta):
     if respuesta.method == 'POST':
@@ -268,9 +275,10 @@ def verAsistencia_Tema(respuesta):
         if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
             hora = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
             hora = hora.first().HR_INICIO
-            return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente, "hora":hora,"asistencia":reporteAsistencia(id_curso,id_docente)})
+            return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente,"id_docente":id_docente, "hora":hora,"asistencia":reporteAsistencia(id_curso,id_docente)})
         else: # btn = temas 
-            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"temas":reporteTemas(id_curso,id_docente)})
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":reporteTemas(id_curso,id_docente)})
+    
 
 
 """def resgistDE(respuesta):

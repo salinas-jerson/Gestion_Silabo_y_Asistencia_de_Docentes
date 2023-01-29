@@ -23,6 +23,7 @@
 
 <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 </head>
+</html>
 
 {% csrf_token %}
 
@@ -58,23 +59,17 @@
 
             {% if silabos|length > 0 %} 
             {% for file in silabos %} 
-            {% if file.curso == i.CURSO %}
-            <td><a href= "{{file.silabo.url}}"  target="_blank">Ver PDF</a></td>            
-		    {% endif %} 
+                {% if file.curso == i.CURSO %}
+                <td><a href= "{{file.silabo.url}}" >Ver PDF</a></td>            
+                {% endif %} 
             {% endfor %} 
             {% endif %}
-            <!-- 
-                
-
-        <td><a href="{{ carga.uploadfile.url }}"  target="_blank">Descargar</a></td>
-
-            -->
             
             
         </tr>
         {% endfor %}
-    
-        <a href="{% url 'ver-actividades'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
+        
+        <a href="{% url 'mis_docentes'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
 
         <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
         <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
@@ -83,7 +78,7 @@
         <script src="{% static 'assets/vendor/waypoints/noframework.waypoints.js'%}"></script>
         <script src="{% static 'assets/vendor/php-email-form/validate.js'%}"></script>
         <script src="{% static 'assets/js/main.js'%}"></script>
-        </body>
+        
     </tbody>
 </table>
 {% endblock %}
