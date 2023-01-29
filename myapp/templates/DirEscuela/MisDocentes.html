@@ -69,16 +69,17 @@
                     </tbody>
                 </table>               
 
-                <div class="container text-center" >
-                    <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p>
-                </div>        
+                      
         
             </div>                    
           </div>
         </div>
-        
+        {% csrf_token %}
         
         <a href="{% url 'direct'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
+        <div class="container text-center" >
+            <p class="mt-5 mb-3 text-muted">&copy; 2022 cero absoluto</p>
+        </div>  
 
         <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
         <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>

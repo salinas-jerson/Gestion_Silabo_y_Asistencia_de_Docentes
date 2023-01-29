@@ -1,8 +1,14 @@
 {% extends 'ventanas/baseDE.html' %}
+{% load  static %}
 
 {% block content %}
 {% csrf_token %}
-    <h1>Bienvenido Director de escuela: {{ nombre_director_escuela }}</h1>
+<div class="col-md-12">
+  <img src="../static/images/perfil.png" class="rounded-circle" align="right" width="100" height="100">
+</div>
+
+    <h1>Bienvenido Director de escuela: {{ nombre_director_escuela }}</h1>    
+
     <div class="grid_docente">
       <div class="item item-1">
         <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
