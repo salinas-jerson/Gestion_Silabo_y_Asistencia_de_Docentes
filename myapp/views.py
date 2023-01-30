@@ -17,7 +17,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea
 
 # Create your views here.
  
@@ -29,8 +29,7 @@ def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
 #----------------------- MODULOS GENERALES ----------------------------
 def esSuperUser(username): # si es superusuario
-    director = User.objects.filter(username= username)
-    return True if director.first().is_superuser == 1 else False
+    return True if User.objects.filter(username= username, is_superuser = 1).exists() else False    
 
 def regla3Simple(total,parte):
     return 0 if total == 0 else 100*parte/total
@@ -61,7 +60,7 @@ def iniciarSesionDE(respuesta):    #
             login(respuesta, user)
             global nombre_director_escuela  #var global DE
             datosDE = User.objects.filter(username=respuesta.POST['username'])
-            nombre_director_escuela = datosDE[0]
+            nombre_director_escuela = datosDE.first().first_name
             
             return render(respuesta, 'DirEscuela/DirectorEscuela.html', {"nombre_director_escuela": nombre_director_escuela})
         else:
@@ -85,7 +84,7 @@ def cargaAcademica(request):
                     return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "actualizado"})
                 else:
                     Document(title='CargaAcademica',uploadfile=file).save()
-                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "XD"})            
+                    return render(request, 'DirEscuela/cargaAcademica.html', { 'uploaded_file_url': "subió un archivo"})            
             else:
                 return render(request, 'DirEscuela/cargaAcademica.html',{"error": "*seleccione un archivo con extención .CSV"})
         except:
@@ -158,12 +157,39 @@ def actualizarDocente(respuesta):
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
 @login_required #modifica sus datos 
-def misDatos(respuesta):
-    if respuesta.method == 'GET':
-        DirEsc = User.objects.filter(is_superuser=1)
-        return render(respuesta,"DirEscuela/misDatosDE.html",{'director_escuela':DirEsc}) 
-    else:
-        return render(respuesta,"DirEscuela/misDatosDE.html") 
+def programarTarea(respuesta):
+    return render(respuesta,"DirEscuela/programarTarea.html")
+
+    
+@login_required
+def validarTarea(respuesta):
+    if respuesta.method == 'POST':
+        if "tareas" not in respuesta.POST:
+            messages.warning(respuesta,"Elija una tarea a asignar")
+            return render(respuesta,"DirEscuela/programarTarea.html",{"error":"elija tarea"}) 
+
+        dif = datetime.strptime(respuesta.POST["fecha1"], "%Y-%m-%d")  - datetime.strptime(respuesta.POST["fecha0"], "%Y-%m-%d")
+        
+        if len(str(dif).split(',')) == 1:
+            messages.warning(respuesta,"asigne como mínimo un día para la entrega")
+            return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
+        else:
+            if int((str(dif).split(',')[0]).split(' ')[0]) > 0 :
+                if respuesta.POST["tareas"] == "silabo":
+                    messages.info(respuesta,"Asingnación de tarea sílabo correcta")
+                    #guardar tarea en tabla 
+                    if AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).exists():
+                        AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).delete()
+                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+                    else:
+                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+                #elif otra tarea
+            else:
+                messages.warning(respuesta,"asigne una fecha posterior para la entrega")
+                return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
+    return render(respuesta,"DirEscuela/programarTarea.html") 
 
 @login_required
 def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docentes
@@ -245,7 +271,7 @@ def verDetalleActividades(respuesta):
             temas_totales = []
             for i in cursos:
                 temas = reporteTemas(i.PR_DE, id_docente)
-                temas_totales.append(([i.PR_DE,i.CURSO,"  : Hora "+str(i.HR_INICIO)+":00"],temas))
+                temas_totales.append(([i.PR_DE,i.CURSO],temas))
             
             total_asistencia = 0
             total_destiempo = 0
@@ -254,7 +280,7 @@ def verDetalleActividades(respuesta):
             asistencia_totales = []
             for i in cursos:
                 asistencia = reporteAsistencia(i.PR_DE,id_docente)
-                asistencia_totales.append(([i.PR_DE,i.CURSO,"  : Hora "+str(i.HR_INICIO)+":00"],asistencia))
+                asistencia_totales.append(([i.PR_DE,i.CURSO],asistencia))
                 total_asistencia, total_destiempo, total_puntual, total_tarde =  totalAsistencia(id_docente, i.PR_DE, asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde)
             
             

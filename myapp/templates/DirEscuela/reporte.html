@@ -29,7 +29,6 @@
     <h1>reporte</h1>
         
     <h2>Docente: {{docente}}</h2> <!--export-pdf-->
-    <a href="{% url 'direct' %}">PDF</a>
     <h2>Temas:</h2>
     {% for datos,temas in temas_totales %}        
         {% for dat in datos %}
