@@ -13,14 +13,19 @@ urlpatterns = [
     path('silabos/eliminarSilabo/<i>',views.eliminarSilabo,name='eliminarSilabo'),
     path('silabos/guardarSilabo/<i>',views.guardarSilabo,name="guardarSilabo"),
     path('asistencia/',views.asistencia,name="asistencia"),
+    path('asistencia/control_de_asistenciaAL/<i>',views.ControlAsistenciaAL,name='control_de_asistenciaAL'),
+    path('control_alumno/',views.control_alumno,name='control_alumno'),
     path('asistencia/registroTema/<cur>',views.registroTema,name="regis_Tema"),
     path('asistencia/registroAsistencia/<cur>',views.registroAsistencia,name="registroAsistencia"),
     path('asistencia_alumnos/',views.asistencia_alumnos,name="asistencia_Al"),
+    path('asistencia_alumnos/guardarAlumnos/<i>',views.guardar_Alumnos,name="guardar_alumnos"),
+    path('asistencia_alumnos/borrarAlumnos/<i>',views.borrar_Alumnos,name="borrar_alumnos"),
     path('carga_academica/',views.carga_academica,name="carga_academica"),
     path('docentes/',views.docentes,name="docentes"),
     path('regist_D/',views.resgistD,name="regist_D"),
     path('iniciaSessionD/',views.iniciarSesionD,name="iniciaSessionD"),
     path('cerrarSessionD/',views.cerrarLoginD,name="cerrarSessionD"),
+    
     
     #------------ URL DIRECTOR DE ESCUELA ----------------------------
     path('mis_docentes/',views.misDocentes,name="mis_docentes"),

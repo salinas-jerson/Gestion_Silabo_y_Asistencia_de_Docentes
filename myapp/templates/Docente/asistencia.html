@@ -38,6 +38,18 @@
 				<button type="submit" class="btn btn-second">Registrar</button>
 			</form>
 		</div>
+		<div class="col">
+			{% for key,set in grupos.items %}
+			{% for grup,it in set.items %}
+			{% if key == i %}
+			<form action="control_de_asistenciaAL/{{grup}}" method="POST">
+				{% csrf_token %}
+				<input type="submit" class="btn btn-info" value="Control de Lista">
+			</form>
+			{% endif %}
+			{% endfor %}
+			{% endfor %}
+		</div>
 	</div>
 	{% endfor %}
 </div>

@@ -1,3 +1,62 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h1>asistencia Alumnos</h1>
+<h1>Asistencia de Alumnos</h1>
+<!--leer archivo de estudiantes en excel-->
+<div class="row row-cols-1 row-cols-md-2 g-4">
+	{% for Materia,grupos in cursos.items %} {% for group in grupos %}
+	<div class="col">
+		<div class="card">
+			<h3>{{Materia}}</h3>
+			<h3>{{group}}</h3>
+			<div class="card-body">
+				<form
+					action="guardarAlumnos/{{group}}"
+					method="POST"
+					class="documento"
+					enctype="multipart/form-data"
+				>
+					{% csrf_token %}
+					<p style="color:rgb(255,0,0);">{{error}}</p>
+					{% if BD|length == 0 %}
+					<input type="file" id="archivo" name="archivo" />
+					{% else %} {% if BD|length != 0 %} {% if group not in subidos %}
+					<input type="file" id="archivo" name="archivo" />
+					{% endif %} {% endif %}{% endif %}
+
+					<button type="submit" class="btn btn-primary">Guardar</button>
+					<a href="borrarAlumnos/{{group}}" class="btn btn-primary">Eliminar</a>
+				</form>
+			</div>
+		</div>
+		{% if BD|length > 0 %} {% for file in BD %} {% if file.cod_curso == group %}
+		<div>
+			<table class="table" id="table">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Codigo</th>
+						<th scope="col">Apellidos-Nombres</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for g,cod in Alumnos.items %} {% for key,nombre in cod.items %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						<td>{{key}}</td>
+						<td>{{nombre}}</td>
+					</tr>
+					{% endfor %} {% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<script>
+			function myfuncion() {
+				document.getElementById('table');
+			}
+		</script>
+		<a href="{{file.Lista.url}}">Descargar</a>
+		{% endif %} {% endfor %} {% endif %}
+	</div>
+	{% endfor %} {% endfor %}
+</div>
+
 {% endblock%}

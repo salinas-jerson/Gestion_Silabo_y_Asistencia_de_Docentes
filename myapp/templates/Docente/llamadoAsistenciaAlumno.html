@@ -1,0 +1,29 @@
+{% extends 'ventanas/baseDocente.html' %} {% block content %}
+<h5>LLamado de asistencia</h5>
+<div>
+	<table class="table" id="table">
+		<thead class="thead-Primary">
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Codigo</th>
+				<th scope="col">Apellidos-Nombres</th>
+				<th scope="col">observacion</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for cod,nombres in Alumnos.items %}
+			<tr>
+				<th scope="row">{{forloop.counter}}</th>
+				<td>{{cod}}</td>
+				<td>{{nombres}}</td>
+				<td>
+					{% csrf_token %}
+					<input type="submit" value="presente" />
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}
