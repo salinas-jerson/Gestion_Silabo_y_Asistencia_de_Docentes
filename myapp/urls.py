@@ -12,9 +12,12 @@ urlpatterns = [
     path('silabos/',views.registro_Silabo,name="regis_silabo"),
     path('silabos/eliminarSilabo/<i>',views.eliminarSilabo,name='eliminarSilabo'),
     path('silabos/guardarSilabo/<i>',views.guardarSilabo,name="guardarSilabo"),
+    path('silabos/ParteSilabo/<i>',views.ParteSilabo,name="ParteSilabo"),
+
     path('asistencia/',views.asistencia,name="asistencia"),
     path('asistencia/control_de_asistenciaAL/<i>',views.ControlAsistenciaAL,name='control_de_asistenciaAL'),
-    path('control_alumno/',views.control_alumno,name='control_alumno'),
+    path('asistencia/control_de_asistenciaAL/<i>/control_alumno',views.control_alumno,name='control_alumno'),
+    #path('control_alumno/',views.control_alumno,name='control_alumno'),
     path('asistencia/registroTema/<cur>',views.registroTema,name="regis_Tema"),
     path('asistencia/registroAsistencia/<cur>',views.registroAsistencia,name="registroAsistencia"),
     path('asistencia_alumnos/',views.asistencia_alumnos,name="asistencia_Al"),

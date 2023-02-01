@@ -1,5 +1,40 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
 <h5>LLamado de asistencia</h5>
+
+<script>
+	async function getvalues() {
+		var seleccion = new Array();
+		var chbox = document.getElementById('table');
+		var selech = chbox.getElementsByTagName('input');
+		var g = document.getElementById('grupoCurso').innerText;
+
+		console.log(g);
+		for (var i = 0; i < selech.length; i++) {
+			if (selech[i].checked) {
+				seleccion.push(selech[i].value);
+			}
+		}
+		const s = JSON.stringify(seleccion);
+		if (seleccion.length > 0) {
+			document.getElementById('negrita').innerHTML = seleccion;
+		}
+		console.log(s);
+		/*let response= await fetch('/',{
+			method:'GET',
+			headers:{
+				'X-Requested-With':'XMLHttpRequest',
+				'Content-Type':'application/json'
+			}
+		})*/
+		/*$.ajax({
+			//url: 'asistencia/control_de_asistenciaAL/' + g + '/control_alumno/',
+			url: '/control_alumno',
+			type: 'POST',
+			contentType: 'aplication/json',
+			data: JSON.stringify(s),
+		});*/
+	}
+</script>
 <div>
 	<table class="table" id="table">
 		<thead class="thead-Primary">
@@ -14,16 +49,23 @@
 			{% for cod,nombres in Alumnos.items %}
 			<tr>
 				<th scope="row">{{forloop.counter}}</th>
-				<td>{{cod}}</td>
-				<td>{{nombres}}</td>
+				<!--<form action="{{grupo}}" method="POST">-->
+				<td name="cod">{{cod}}</td>
+				<td name="nombre">{{nombres}}</td>
 				<td>
 					{% csrf_token %}
-					<input type="submit" value="presente" />
+					<!--<input type="submit" name="presente" class="presente" value="P" />-->
+					<input type="checkbox" value="{{cod}}" />
 				</td>
+				<!--</form>-->
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+	{% csrf_token %}
+	<input id="but1" type="button" value="Guardar Lista" onclick="getvalues()" />
+	<b id="negrita"></b>
+	<p id="grupoCurso">{{grupo}}</p>
 </div>
 
 {% endblock %}

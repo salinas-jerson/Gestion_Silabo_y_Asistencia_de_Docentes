@@ -17,7 +17,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno,Silabo_Content
 
 # Create your views here.
  
@@ -463,8 +463,10 @@ def registro_Silabo(respuesta):
                 File=Silabo.objects.get(id=ss)#--------------
                 registros_objetos.append(File)
                 subidos.append(File.curso)  
-                 
-        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos}) 
+
+        UnidadLectiva=['I','II','III'] 
+
+        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos,'unidades':UnidadLectiva}) 
     
 
 def guardarSilabo(request,i):
@@ -532,13 +534,9 @@ def carga_academica(request):
         return render(request,"Docente/cargaAcademica.html",{'dic':diccionario})
 
 def registroTema(request,cur):
-    def buscar_IdDoncente():
-        for item in Docentes.objects.all():
-            if item.Nombre.lower()==nombre_de_docente.lower() and item.apellido.lower()==apellido_de_docente.lower():
-                return item.id_docente
     #reunimos la informacion necesaria
     #docente,Tema,FechaAvance,id_Docente,Avance_curso
-    avance_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
+    avance_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
     cod_curso=CargaAcademica.objects.filter(id_docente=avance_docente.id_docente)
     cod=""
     for c in cod_curso:
@@ -550,23 +548,8 @@ def registroTema(request,cur):
     messages.success(request,"Su Avance del dia "+cur+" Fue Registrada!")
     return redirect('asistencia')
     
-
-
-from datetime import datetime
-def asistencia(request):
-    def buscar_curso():
-        cursos=[]
-        grupos=[]
-        for item in CargaAcademica.objects.all():
-            if item.id_docente==Id_de_docente:
-                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
-                grupos.append(item.PR_DE)
-        cursos_unicos=list(set(cursos))
-        grupos_unicos=list(set(grupos))
-        return cursos_unicos,grupos_unicos
-
-    #utilizamos el arreglo del docente
-    def consultas():
+#--------------------------------
+def consultas():
         carga_docente=buscar_Carga()
         cursos=[]
         for item in carga_docente:
@@ -582,6 +565,21 @@ def asistencia(request):
                     dic[cur][g.PR_DE]={}
                     
         return dic
+#--------------------------------
+from datetime import datetime
+def asistencia(request):
+    def buscar_curso():
+        cursos=[]
+        grupos=[]
+        for item in CargaAcademica.objects.all():
+            if item.id_docente==Id_de_docente:
+                cursos.append(item.CURSO) # porque es necesario reemplazar el espacio?
+                grupos.append(item.PR_DE)
+        cursos_unicos=list(set(cursos))
+        grupos_unicos=list(set(grupos))
+        return cursos_unicos,grupos_unicos
+
+    #utilizamos el arreglo del docente
     #importamos datetime from datetime
     #entonces capturamos la fecha y hora
     materia,grupos=buscar_curso()
@@ -641,22 +639,7 @@ def registroAsistencia(request,cur):
 
 
 def asistencia_alumnos(request):
-    def consulta_grupo():
-        carga_docente=buscar_Carga()
-        cursos=[]
-        for item in carga_docente:
-            cursos.append(item.CURSO)
-        cursos_unicos=list(set(cursos))
-        
-        #diccionario anidado
-        dic={}  
-        for cur in cursos_unicos:
-            dic[cur]={}
-            for g in carga_docente:
-                if cur==g.CURSO:
-                    dic[cur][g.PR_DE]={}
-        return dic
-    materias_grupos=consulta_grupo()
+    materias_grupos=consultas()
     registros_objetos=[]
     subidos=[]
     if request.method=="GET":
@@ -716,18 +699,76 @@ def borrar_Alumnos(request,i):
     
 def ControlAsistenciaAL(request,i): # i=codigo del curso
     #filtramos los alumnos que corresponden al curso y grupo
-    lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
-    '''nombres=[]
-    for a in lista_alumnos:
-        nombres.append(a.Apellido_Nombre)'''
-    alumnos={}
-    for A in lista_alumnos:
-        alumnos[A.codigoAlumno]={}
-        alumnos[A.codigoAlumno]=A.Apellido_Nombre
-    
-    return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos})
+    if request.method=='GET':
+        lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
+        
+        alumnos={}
+        for A in lista_alumnos:
+            alumnos[A.codigoAlumno]={}
+            alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
+    else:
+        if request.method=='POST':
+            lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
+        
+            alumnos={}
+            for A in lista_alumnos:
+                alumnos[A.codigoAlumno]={}
+                alumnos[A.codigoAlumno]=A.Apellido_Nombre
+            '''arreglo=[]
+            respuesta=request.POST['presente']
+            if respuesta:
+                cod=request.POST.get['cod']
+                name=request.POST['nombre']
+
+                messages.info(request,"registrado"+cod)'''
+            return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
 
 def control_alumno(request):
     if request.method=='POST':
+        output=request.get_json()
+        print(output)
+
         messages.info(request,"registrado")
         return redirect('ControlAsistenciaAL')
+
+
+def ParteSilabo(request,i):
+    #recuperamos los valores y agregamos a la tabla Silabo_Content
+    #codigo de curso
+    diccionario=consultas()
+    cod_c=''
+    for key,grupo in diccionario.items():
+        for k in grupo:
+            if i==key:
+                cod_c=k
+    fechainicio=request.POST['fechaInicio']
+    fechafin=request.POST['fechaConclusion']
+    contenido=request.POST['contenido']
+    tiempo=request.POST['tiempo']
+    actividades=request.POST['actividades']
+    u=request.POST['unidad']
+    print(u)
+    Silabo_Content( codigo_curso=cod_c ,
+                        id_Docente_Avance=Id_de_docente,
+                        Nombre_curso=i,
+                        Contenido=contenido,
+                        Actividades=actividades,
+                        Tiempo=tiempo,
+                        FechaInicio=fechainicio,
+                        FechaFinal=fechafin,
+                        Unidad=u).save()
+    messages.info(request, u +" REGISTRADO")
+    return redirect('regis_silabo')
+
+    '''semestre=models.CharField(max_length=10)
+    codigo_curso=models.CharField(max_length=10,default='default value')
+    id_Docente_Avance=models.CharField(max_length=5,default='default value')
+    Nombre_curso=models.CharField(max_length=50,default='default value')
+    Contenido=models.CharField(max_length=300)
+    Actividades=models.CharField(max_length=300)
+    Tiempo=models.CharField(max_length=2)
+    FechaInicio=models.DateField()
+    FechaFinal=models.DateField()
+    Unidad=models.CharField(max_length=1)'''
