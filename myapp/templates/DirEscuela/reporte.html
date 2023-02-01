@@ -66,9 +66,10 @@
         {% endfor %}
     </section>
     <!-- Asistencia -->
+    <blockquote style="margin-left: 20px;"></blockquote>
     <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA</h2>
     <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
-    
+    <blockquote style="margin-left: 20px;"></blockquote>
     {% for datos,asistencia in asistencia_totales %}        
         {% for dato in datos %}
         <tr>
@@ -102,29 +103,33 @@
     </section>
 
     <!-- Asistencia total -->
+    <blockquote style="margin-left: 20px;"></blockquote>
     <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA TOTAL</h2>
     <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
-    
+    <blockquote style="margin-left: 20px;"></blockquote>
 
     {% if total_asistencia > 0 %}
+    
     <h1>Observaciones: nivel de sistencia</h1>
     <table class="table table-striped" id="hor-minimalist-b" width="80%">
         
         <thead>
             <tr>
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Total</td>
+                
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Puntual</td> 
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Tarde</td>            
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Faltas</td>        
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Total</td>
             </tr>
         </thead>
 
         <tbody>
             <tr> 
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_asistencia}}</td>
+                
                 <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_puntual}}0%</td> 
                 <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_tarde}}0%</td>            
                 <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_destiempo}}0%</td>  
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_asistencia}}</td>
         </tbody>
         
     </table>
