@@ -160,18 +160,22 @@ def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docent
     for i in docentes:
         if User.objects.filter(username=i.Nombre).exists():
             User.objects.filter(username=i.Nombre).delete()
+    messages.warning(respuesta,"Eliminaste las cuentas de usuario de tus docentes")
     return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 @login_required #crea usuario de docentes
 def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
     docentes= Docentes.objects.all()
     for i in docentes:
-        User(  
+        try:
+            User(  
             email= i.Nombre+"@gmail.com",
             first_name=i.Nombre,
             last_name=i.apellido,            
             username=i.Nombre,             
             password=make_password("123")).save()
+        except: IntegrityError
+    messages.info (respuesta,"Se creó los usuarios para todos tus docentes")
     return render(respuesta,"DirEscuela/DirectorEscuela.html")   
 
 @login_required
@@ -203,13 +207,13 @@ def programarTarea(respuesta):
                 return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"})
     return render(respuesta,"DirEscuela/programarTarea.html") 
 
-def reporteAsistencia(id_curso,id_docente):
+def listaAsistencia(id_curso,id_docente):
     return Asistencia_In.objects.filter(id_Docente = id_docente, codigo_curso = id_curso)
 
-def reporteTemas(id_curso,id_docente):
+def listaTemas(id_curso,id_docente):
     return Avance_Docente.objects.filter(id_Docente_Avance = id_docente, codigo_curso = id_curso)
 
-def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde):
+def separaAsistencia(id_docente,id_curso,asistencia,observations):
     objeto = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
     hora = str(objeto.first().HR_INICIO)+":00:00" # hora de inicio del curso
     horaFin = str(objeto.first().HR_FIN)+":00:00" # hora de inicio del curso
@@ -217,26 +221,35 @@ def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_desti
     hora = datetime.strptime(hora, "%H:%M:%S")
     minutosClase = str(horaFin - hora).split(':')
     minutosClase = int(minutosClase[0])*60 + int(minutosClase[1])
-
-    total_asistencia += len(asistencia)
+    #total_asistencia, total_puntual, total_tarde, total_destiempo
+    observations[0] += len(asistencia)
     for j in asistencia:
         #c.
         diferencia =  datetime.strptime(str(j.HoraEntrada).split('.')[0], "%H:%M:%S") - hora
         diferencia = str(diferencia).split(':')
         if len(diferencia[0].split(',')) >= 2: # muy a destiempo , resulta en días
-            total_destiempo+=1
+            observations[3]+=1
         else:
-            minutos = int(diferencia[0])*60 + int(diferencia[1])
-                        
+            minutos = int(diferencia[0])*60 + int(diferencia[1])                        
             if  0 <= minutos <= 15: #puntual
-                total_puntual+=1
+                observations[1]+=1
             else:
-                if minutos < minutosClase :
-                    total_tarde+=1
-                else:
-                    total_destiempo+=1
-                
-    return total_asistencia,total_destiempo, total_puntual,total_tarde
+                if minutos < minutosClase : #tarde
+                    observations[2]+=1
+                else: #antes y es destiempo
+                    observations[3]+=1                
+    return observations
+
+def separaTemas(id_docente,id_curso,temas,observations):
+    objeto = Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso)
+    #total_temas, tema correcto, tema incorrecto
+    observations[0] += len(temas)
+    for i in temas:
+        if i in objeto.get().Contenido:
+            observations[1] +=1
+        else:
+            observations[2] +=1
+    return observations
 
 def cursosSilaboForDocente(id_docente): #cursos y sílabo para un docente en particular
     silabos = Silabo.objects.filter(id_Docente=id_docente)        
@@ -263,22 +276,19 @@ def verDetalleActividades(respuesta):
             total_tema_incorrecta = 0
             temas_totales = []
             for i in cursos:
-                temas = reporteTemas(i.PR_DE, id_docente)
-                temas_totales.append(([i.PR_DE,i.CURSO],temas))
+                temas = listaTemas(i.PR_DE, id_docente)
+                temas_totales.append(([i.PR_DE,i.CURSO],temas))            
             
-            total_asistencia = 0
-            total_destiempo = 0
-            total_puntual = 0
-            total_tarde = 0
+            #total_asistencia, total_puntual, total_tarde, total_destiempo
+            observations =[0,0,0,0]
             asistencia_totales = []
             for i in cursos:
-                asistencia = reporteAsistencia(i.PR_DE,id_docente) # retornar mas un arreglo de conteo por curso con semaforo
+                asistencia = listaAsistencia(i.PR_DE,id_docente) # retornar mas un arreglo de conteo por curso con semaforo
                 asistencia_totales.append(([i.PR_DE,i.CURSO],asistencia))
-                total_asistencia, total_destiempo, total_puntual, total_tarde =  totalAsistencia(id_docente, i.PR_DE, asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde)
+                observations =  separaAsistencia(id_docente, i.PR_DE, asistencia, observations)            
             
-            
-            return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :total_asistencia,
-            "total_destiempo":regla3Simple(total_asistencia,total_destiempo),"total_puntual":regla3Simple(total_asistencia,total_puntual), "total_tarde" :regla3Simple(total_asistencia,total_tarde),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
+            return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :observations[0],
+            "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
     
     else:
         silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.GET["id_docente"])
@@ -294,9 +304,12 @@ def verAsistencia_Tema(respuesta):
         if respuesta.POST["btn"] == "asistencia": # despues de los 15 minutos se consira tarde para el docente
             hora = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
             hora = hora.first().HR_INICIO
-            return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente,"id_docente":id_docente, "hora":hora,"asistencia":reporteAsistencia(id_curso,id_docente)})
+            asistencia = listaAsistencia(id_curso,id_docente)
+            observations =  separaAsistencia(id_docente, id_curso, asistencia, [0,0,0,0])
+            return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente,"id_docente":id_docente, "hora":hora,"asistencia":asistencia,
+            "total_asistencia" :observations[0],"total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),})
         else: # btn = temas 
-            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":reporteTemas(id_curso,id_docente)})
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":listaTemas(id_curso,id_docente)})
     
 
 
