@@ -68,6 +68,29 @@
         {% endfor %}
     </tbody>
 </table>
+<h1>Observaciones: nivel de sistencia</h1>
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    
+    <thead>
+        <tr>
+            <td>Total</td>
+            <td>Puntual</td> 
+            <td>Tarde</td>            
+            <td>Faltas</td>        
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr> 
+            <td>{{total_asistencia}}</td>
+            <td>{{total_puntual}}0%</td> 
+            <td>{{total_tarde}}0%</td>            
+            <td>{{total_destiempo}}0%</td>  
+    </tbody>
+    
+</table>
+
+
 {% else %}
 <h3>no hay asistencias registradas</h3>
 {% endif %}

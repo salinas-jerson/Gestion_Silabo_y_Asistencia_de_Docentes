@@ -4,7 +4,7 @@
 <main class="container">
     <div class="row">
         <div class="col-md-4 offset-md-4 mt-5">
-            <form action="{% url 'asigna-tarea' %} " method="POST" class="card card-body text-center">
+            <form action="{% url 'programar-tarea' %}" method="POST" class="card card-body text-center">
                 <h1>Asignar tareas</h1>
                 <p style="color:rgb(255,0,0);">{{error}}</p>
                 {% csrf_token %}

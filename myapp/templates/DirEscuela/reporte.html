@@ -35,7 +35,7 @@
         {% for datos,temas in temas_totales %}  
         <blockquote style="margin-left: 20px;">
 							
-        </blockquote>      
+        </blockquote>     
             {% for dat in datos %}
             <tr>
                 <td>{{ dat }} </td> 
@@ -107,10 +107,27 @@
     
 
     {% if total_asistencia > 0 %}
-    <h2>ASISTENCIA REGISTRADA: {{total_asistencia}}</h2>
-    <h5>El  {{total_puntual}} % llega puntual</h5>
-    <h5>El  {{total_tarde}} % llega tarde</h5>
-    <h5>El  {{total_destiempo}} % no asiste en su hora</h5>
+    <h1>Observaciones: nivel de sistencia</h1>
+    <table class="table table-striped" id="hor-minimalist-b" width="80%">
+        
+        <thead>
+            <tr>
+                <td>Total</td>
+                <td>Puntual</td> 
+                <td>Tarde</td>            
+                <td>Faltas</td>        
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr> 
+                <td>{{total_asistencia}}</td>
+                <td>{{total_puntual}}0%</td> 
+                <td>{{total_tarde}}0%</td>            
+                <td>{{total_destiempo}}0%</td>  
+        </tbody>
+        
+    </table>
     {% else %}
     <h4> {{total_asistencia}} asistencias registradas</h4>
     {% endif %}

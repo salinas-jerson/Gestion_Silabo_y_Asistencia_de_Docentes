@@ -2,6 +2,28 @@
 {% load  static %}
 
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="" name="description">
+<meta content="" name="keywords">
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+<link href="{% static 'assets/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+
+<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+</head>
+</html>
 {% csrf_token %}
 <section id="hero" style="background-color: rgba(0, 0, 0, 0.0);">
   <div class="col-md-12">
@@ -41,21 +63,35 @@
               <div class="dropdown list-group-item list-group-item-action py-2 ripple">
                   <i class="btn-get-started animate__animated animate__fadeInLeftBig  scrollto"  id="dropdown1" data-toggle="dropdown"><p style="color:rgb(255,0,0);">Danger</p>
                   </i>
-                  <div class="dropdown-menu">
+                  <div class="dropdown-menu">                    
                     <a class="btn btn-danger" href="/Eliminar_docente/"> Eliminar usuario Docentes</a>
                     <a class="btn btn-success" href="/crear_user_docentes/"> Crear usuario Docentes</a>
                   </div>
               </div>
               </div> 
-
-
             </div>
           </div>
         </nav>
       </section>
       </div>
     </div>
+    
+    <!--
+      <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    -->
 
       <br>
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p> 
+      
+      <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
+        <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
+        <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js'%}"></script>
+        <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js'%}"></script>
+        <script src="{% static 'assets/vendor/waypoints/noframework.waypoints.js'%}"></script>
+        <script src="{% static 'assets/vendor/php-email-form/validate.js'%}"></script>
+        <script src="{% static 'assets/js/main.js'%}"></script>
 {% endblock %}
