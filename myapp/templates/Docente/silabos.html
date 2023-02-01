@@ -1,5 +1,5 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<div class="card">
+<div class="card-group">
 	{% for i in cursos %}
 	<div class="card-body">
 		<h3>{{i}}</h3>
@@ -23,6 +23,85 @@
 		{% if BD|length > 0 %} {% for file in BD %} {% if file.curso == i %}
 		<a href="{{file.silabo.url}}">ver silabo</a>
 		{% endif %} {% endfor %} {% endif %}
+		<div>
+			{% for u in unidades %}
+			<form action="ParteSilabo/{{i}}" method="POST">
+				{% csrf_token %}
+				<label for="">Inicio</label>
+				<input name="fechaInicio" type="Date" placeholder="Fecha de Inicio" />
+
+				<label for="">Conclusion</label>
+				<input
+					name="fechaConclusion"
+					type="Date"
+					placeholder="Fecha de Conclusion"
+				/>
+
+				<div class="mb-3">
+					<select name="unidad" id="unidad">
+						<option value="{{u}}">UNIDAD{{u}}</option>
+					</select>
+
+					<label for="">UNIDAD {{u}}</label>
+					<label for="Textarea1" class="form-label">Contenido</label>
+					<textarea
+						name="contenido"
+						class="form-control"
+						id="contenidos"
+						rows="3"
+					></textarea>
+
+					<input name="tiempo" type="number" placeholder="Tiempo" />
+
+					<label for="Textarea2" class="form-label">Actividades</label>
+					<textarea
+						name="actividades"
+						class="form-control"
+						id="actividades"
+						rows="2"
+					></textarea>
+				</div>
+				<!--<div class="mb-3">
+					<label for="">UNIDAD II</label>
+					<label for="Textarea1" class="form-label">Contenido</label>
+					<textarea
+						name="contenido2"
+						class="form-control"
+						id="contenidos"
+						rows="3"
+					></textarea>
+					<input name="tiempo2" type="number" placeholder="Tiempo" />
+					<label for="Textarea2" class="form-label">Actividades</label>
+					<textarea
+						name="actividad2"
+						class="form-control"
+						id="actividades"
+						rows="2"
+					></textarea>
+				</div>
+				<div class="mb-3">
+					<label for="">UNIDAD III</label>
+					<label for="Textarea1" class="form-label">Contenido</label>
+					<textarea
+						name="contenido3"
+						class="form-control"
+						id="contenidos"
+						rows="3"
+					></textarea>
+					<input name="tiempo3" type="number" placeholder="Tiempo" />
+					<label for="Textarea2" class="form-label">Actividades</label>
+					<textarea
+						name="actividad3"
+						class="form-control"
+						id="actividades"
+						rows="2"
+					></textarea>
+				</div>-->
+				<button type="submit" class="btn btn-warning">Registrar</button>
+			</form>
+			{% endfor %}
+		</div>
 	</div>
+
 	{% endfor %} {% endblock %}
 </div>

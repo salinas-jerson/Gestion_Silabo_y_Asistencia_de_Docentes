@@ -76,9 +76,36 @@ class Avance_Docente(models.Model):
     Avance_curso=models.CharField(max_length=100,default='default value')
     codigo_curso=models.CharField(max_length=10,default='default value')
 
-#nombre de curso
-#id docente
-#asistencia id docente
-
+#Tabla de alumnos
+class Registro_Alumnos(models.Model):
+    codigo=models.CharField(max_length=6,default="defauld value")
+    Nombres=models.CharField(max_length=40,default="defauld value")
+    Apellidos=models.CharField(max_length=40,default="defauld value")
+    codigoCurso=models.CharField(max_length=10,default='default value')
+    Fecha=models.DateField()
+    observacion=models.CharField(max_length=10,default="defauld value")
     
-#
+class Lista_Alumnos(models.Model):
+    id_Docente=models.CharField(max_length=5,default='default value')
+    Lista=models.FileField(upload_to='uploads/')
+    cod_curso=models.CharField(max_length=10,default='default value')
+   
+class Alumno(models.Model):
+    codigoAlumno=models.CharField(max_length=6,default="defauld value")
+    Apellido_Nombre=models.CharField(max_length=40,default="defauld value")
+    CodigoCurso=models.CharField(max_length=10,default='default value')
+
+#clase para agregar contenido del silabo
+class Silabo_Content(models.Model):
+    codigo_curso=models.CharField(max_length=10,default='default value')
+    id_Docente_Avance=models.CharField(max_length=5,default='default value')
+    Nombre_curso=models.CharField(max_length=50,default='default value')
+    Contenido=models.CharField(max_length=300)
+    Actividades=models.CharField(max_length=300)
+    Tiempo=models.PositiveIntegerField()
+    FechaInicio=models.DateField()
+    FechaFinal=models.DateField()
+    Unidad=models.CharField(max_length=15)
+    
+    
+    
