@@ -24,23 +24,25 @@
 </head>
 </html>
 {% csrf_token %}
-
-<h1>Detalles del tema de avance</h1>    
-
+   
+<section id="card" style="background-color: rgba(0, 0, 0, 0.0);">
+    <h2 style="text-align: center;color:rgb(255, 255, 255)" class="animate__animated animate__fadeInDown">Detalles de los temas de avance</h4>    
+    
+   
 <table class="table table-striped" id="hor-minimalist-b" width="80%">
     <thead>
         <tr>
-            <td>Docente</td>
-            <td>Código de curso</td>            
-            <td>Curso</td>        
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);background-color: rgb(236, 68, 68);color:aliceblue">Docente</td>
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);background-color: rgb(236, 68, 68);color:aliceblue">Código de curso</td>            
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);background-color: rgb(236, 68, 68);color:aliceblue">Curso</td>        
         </tr>
     </thead>
 
     <tbody>
         <tr>          
-            <td>{{ docente }}</td>
-            <td>{{ id_curso }}</td>                                
-            <td>{{ curso }}</td>
+            <td style="border: 1px solid rgb(7, 7, 7);text-align:center;background-color: rgb(255, 255, 255);color: rgb(236, 68, 68); font-weight:bold">{{ docente }}</td>
+            <td style="border: 1px solid rgb(0, 0, 0);text-align:center;background-color: rgb(255, 255, 255);color: rgb(236, 68, 68); font-weight:bold">{{ id_curso }}</td>                                
+            <td style="border: 1px solid rgb(0, 0, 0);text-align:center;background-color: rgb(255, 255, 255);color: rgb(236, 68, 68); font-weight:bold">{{ curso }}</td>
         </tr>
     </tbody>
 </table>
@@ -49,18 +51,18 @@
 <table class="table table-striped" id="hor-minimalist-b" width="80%">
     <thead>
         <tr>
-            <td>Id Curso</td>
-            <td>Tema</td>            
-            <td>Fecha</td>        
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Id Curso</td>
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Tema</td>            
+            <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Fecha</td>        
         </tr>
     </thead>
 
     <tbody>
         {% for i in temas %}
         <tr>          
-            <td>{{ i.codigo_curso }}</td>
-            <td>{{ i.Tema }}</td>                                
-            <td>{{ i.FechaAvance }}</td>
+            <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.codigo_curso }}</td>
+            <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.Tema }}</td>                                
+            <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.FechaAvance }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -72,11 +74,10 @@
 <form action="{% url 'ver-actividades' %}" method="get">
     <input type="hidden" name="id_docente" value="{{ id_docente }}" />
     <button class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></button>
-    
-</form>
-<input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(4, 0, 255);"   onClick="history.back();">
-<p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p> 
 
+</form>
+<input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(4, 0, 255);"  onClick="history.back();">
+</section>
         <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
         <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
         <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js'%}"></script>

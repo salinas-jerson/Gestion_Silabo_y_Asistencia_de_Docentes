@@ -1,3 +1,5 @@
+{% load  static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -25,19 +27,38 @@
 			integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
 			crossorigin="anonymous"
 		/>
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<meta content="" name="description">
+		<meta content="" name="keywords">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-		<title>{% block title %} {% endblock %}</title>
+		<link href="{% static 'assets/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+
+		<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+
+	<title>{% block title %} {% endblock %}</title>
 	</head>
-	<body>
+	<body  	style="background-image: url('/static/images/azul2.png'); height: 100vh; background-size: cover; background-repeat: repeat;">  
+    
+    
 		<div class="container p-3 my-3">
 			<div class="row">
-				<div class="col-md-12">
+			  <div class="col-md-12">
 					<nav
-						class="navbar navbar-expand-md navbar-light bg"
-						style="background-color: #2f4990"
+						class=" animate__animated animate__backInRight  scrollto navbar navbar-expand-md navbar-light bg"	
+						style="background-color: #ffffffcb"
 					>
 						{% if user.is_authenticated %}
-						<a href="{% url 'docentes' %}" class="navbar-brand">Docente Home</a>
+						<a href="{% url 'docentes' %}" class="  animate__fadeInLeftBig  scrollto">Docente Home</a>
 						{% else %}
 						<a href="{% url 'index' %}" class="navbar-brand">Home</a>
 						{% endif %}
@@ -53,9 +74,8 @@
 							<div class="navbar-nav ml-auto">
 								{% if user.is_authenticated %}
 								<li class="nav-item">
-									<a class="nav-link" href="{% url 'cerrarSessionD' %}"
-										>X cerrar sesión</a
-									>
+									<a class="btn-get-started animate__animated animate__backInRight  scrollto" href="{% url 'cerrarSessionD' %}">
+										X Cerrar Sesión </a>
 								</li>
 
 								{% else %}
@@ -92,25 +112,50 @@
 				</div>
 			</div>
 		</div>
+	
+	<footer id="footer">
+		<div class="footer-top">
+		  <div class="container">
+			<div class="row">
+			  <div class="col-lg-3 col-md-6">
+				<div class="footer-info">
+				  <h3>CERO ABSOLUTO</h3>
+				  <div class="social-links mt-3">
+					<a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+					<a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+					<a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>  
+				  </div>
+				</div>
+			  </div>
+			  <div class="col-lg-2 col-md-6 footer-links">
+				<h4>Enlaces Utiles</h4>
+				<ul>
+				  <li><i class="bx bx-chevron-right"></i> <a href="#">Docente Home</a></li>
+				  
+				</ul>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<div class="container">
+		  <div class="copyright">
+			&copy; <strong><span>cero absoluto</span></strong>. 
+		  </div>
+		</div>
+		</footer>
+	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+	<!-- Vendor JS Files -->
+	<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
+	<script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
+	<script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js'%}"></script>
+	<script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js'%}"></script>
+	<script src="{% static 'assets/vendor/waypoints/noframework.waypoints.js'%}"></script>
+	<script src="{% static 'assets/vendor/php-email-form/validate.js'%}"></script>
 
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script
-			src="https://code.jquery.com/jquery-3.6.3.js"
-			integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-			integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-			crossorigin="anonymous"
-		></script>
-
-		<!-- A plugin for password show/hide  -->
-		<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+	<!-- Template Main JS File -->
+	<script src="{% static 'assets/js/main.js'%}"></script>
+	
+	  
 	</body>
 </html>
+	
