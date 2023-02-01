@@ -22,8 +22,7 @@ from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avanc
 # Create your views here.
  
 def index(respuesta):
-    title = 'Variable enviada'
-    return render(respuesta,"index.html",{'cabecera': title}) #cabecera es una var
+    return render(respuesta,"index.html") #cabecera es una var
       
 def AcerceDe(respuesta):
     return render(respuesta,"about.html") 
@@ -44,7 +43,6 @@ def misDocentes(respuesta):
 
 @login_required # home director de escuela
 def dirEscuela(respuesta):
-    #"consultas del director de escuela" 
     return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
 
 def iniciarSesionDE(respuesta):    # 
@@ -156,20 +154,34 @@ def actualizarDocente(respuesta):
     messages.info (respuesta,"Usted, actualizó la tabla docente")
     return render(respuesta,"DirEscuela/MisDocentes.html",{'docentes':docentes,"error":"Actualizado"}) 
 
-@login_required #modifica sus datos 
-def programarTarea(respuesta):
-    return render(respuesta,"DirEscuela/programarTarea.html")
+@login_required #elimina usuario de docentes
+def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docentes
+    docentes= Docentes.objects.all()
+    for i in docentes:
+        if User.objects.filter(username=i.Nombre).exists():
+            User.objects.filter(username=i.Nombre).delete()
+    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
-    
+@login_required #crea usuario de docentes
+def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
+    docentes= Docentes.objects.all()
+    for i in docentes:
+        User(  
+            email= i.Nombre+"@gmail.com",
+            first_name=i.Nombre,
+            last_name=i.apellido,            
+            username=i.Nombre,             
+            password=make_password("123")).save()
+    return render(respuesta,"DirEscuela/DirectorEscuela.html")   
+
 @login_required
-def validarTarea(respuesta):
+def programarTarea(respuesta):
     if respuesta.method == 'POST':
         if "tareas" not in respuesta.POST:
             messages.warning(respuesta,"Elija una tarea a asignar")
             return render(respuesta,"DirEscuela/programarTarea.html",{"error":"elija tarea"}) 
 
-        dif = datetime.strptime(respuesta.POST["fecha1"], "%Y-%m-%d")  - datetime.strptime(respuesta.POST["fecha0"], "%Y-%m-%d")
-        
+        dif = datetime.strptime(respuesta.POST["fecha1"], "%Y-%m-%d")  - datetime.strptime(respuesta.POST["fecha0"], "%Y-%m-%d")        
         if len(str(dif).split(',')) == 1:
             messages.warning(respuesta,"asigne como mínimo un día para la entrega")
             return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
@@ -188,36 +200,14 @@ def validarTarea(respuesta):
                 #elif otra tarea
             else:
                 messages.warning(respuesta,"asigne una fecha posterior para la entrega")
-                return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
+                return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"})
     return render(respuesta,"DirEscuela/programarTarea.html") 
-
-@login_required
-def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docentes
-    docentes= Docentes.objects.all()
-    for i in docentes:
-        if User.objects.filter(username=i.Nombre).exists():
-            User.objects.filter(username=i.Nombre).delete()
-    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
-
-@login_required
-def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
-    docentes= Docentes.objects.all()
-    for i in docentes:
-        User(  
-            email= i.Nombre+"@gmail.com",
-            first_name=i.Nombre,
-            last_name=i.apellido,            
-            username=i.Nombre,             
-            password=make_password("123")).save()
-    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
 
 def reporteAsistencia(id_curso,id_docente):
     return Asistencia_In.objects.filter(id_Docente = id_docente, codigo_curso = id_curso)
 
 def reporteTemas(id_curso,id_docente):
     return Avance_Docente.objects.filter(id_Docente_Avance = id_docente, codigo_curso = id_curso)
-
-
 
 def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde):
     objeto = CargaAcademica.objects.filter( id_docente = id_docente, PR_DE = id_curso)
@@ -248,7 +238,7 @@ def totalAsistencia(id_docente,id_curso,asistencia,total_asistencia, total_desti
                 
     return total_asistencia,total_destiempo, total_puntual,total_tarde
 
-def cursosSilaboForDocente(id_docente):
+def cursosSilaboForDocente(id_docente): #cursos y sílabo para un docente en particular
     silabos = Silabo.objects.filter(id_Docente=id_docente)        
     cursos1 = CargaAcademica.objects.filter(id_docente=id_docente)
     cursos = []
@@ -264,10 +254,13 @@ def cursosSilaboForDocente(id_docente):
 def verDetalleActividades(respuesta):
     if respuesta.method == 'POST':   
         silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.POST["id_docente"] )
-
-        if respuesta.POST["btn"] == "silabo": 
+        #btn mas detalles
+        if respuesta.POST["btn"] == "mas_detalles": 
             return render(respuesta,"DirEscuela/DetallaActividades.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
         else: # btn = reporte
+            total_temas = 0
+            total_tema_correcta = 0
+            total_tema_incorrecta = 0
             temas_totales = []
             for i in cursos:
                 temas = reporteTemas(i.PR_DE, id_docente)
@@ -279,7 +272,7 @@ def verDetalleActividades(respuesta):
             total_tarde = 0
             asistencia_totales = []
             for i in cursos:
-                asistencia = reporteAsistencia(i.PR_DE,id_docente)
+                asistencia = reporteAsistencia(i.PR_DE,id_docente) # retornar mas un arreglo de conteo por curso con semaforo
                 asistencia_totales.append(([i.PR_DE,i.CURSO],asistencia))
                 total_asistencia, total_destiempo, total_puntual, total_tarde =  totalAsistencia(id_docente, i.PR_DE, asistencia,total_asistencia, total_destiempo, total_puntual, total_tarde)
             
