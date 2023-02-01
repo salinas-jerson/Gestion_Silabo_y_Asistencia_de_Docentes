@@ -31,7 +31,7 @@ def esSuperUser(username): # si es superusuario
     return True if User.objects.filter(username= username, is_superuser = 1).exists() else False    
 
 def regla3Simple(total,parte):
-    return 0 if total == 0 else 100*parte/total
+    return 0 if total == 0 else round((100*parte/total), 2)
 
 #----------------------- DIRECTOR DE ESCUELA --------------------------
 #variables globales
@@ -277,7 +277,7 @@ def verDetalleActividades(respuesta):
             temas_totales = []
             for i in cursos:
                 temas = listaTemas(i.PR_DE, id_docente)
-                temas_totales.append(([i.PR_DE,i.CURSO],temas))            
+                temas_totales.append(([i.PR_DE,i.CURSO],temas))           
             
             #total_asistencia, total_puntual, total_tarde, total_destiempo
             observations =[0,0,0,0]
