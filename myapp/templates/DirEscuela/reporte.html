@@ -64,41 +64,11 @@
             <h5 style="color:red">No hay temas registrados </h5>
             {% endif %}         
         {% endfor %}
-<<<<<<< HEAD
-        {% if temas|length > 0 %} 
-        <table class="table table-striped" id="hor-minimalist-b" width="80%">
-            <thead>
-                <tr>
-                    <td>Id Curso</td>
-                    <td>Tema</td>            
-                    <td>Fecha</td>        
-                </tr>
-            </thead> 
-            <tbody>
-                {% for i in temas %}
-                <tr>          
-                    <td>{{ i.codigo_curso }}</td>
-                    <td>{{ i.Tema }}</td>                                
-                    <td>{{ i.FechaAvance }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <h3>No hay temas registrados </h3>
-        {% endif %} 
-        <!--por cada curso-->        
-    {% endfor %}
-
-    <h2>Asistencias:</h2>
-
-=======
     </section>
     <!-- Asistencia -->
     <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA</h2>
     <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
     
->>>>>>> 0644fba6a35d4fea43495c777e732015f238c7a8
     {% for datos,asistencia in asistencia_totales %}        
         {% for dato in datos %}
         <tr>
@@ -137,34 +107,10 @@
     
 
     {% if total_asistencia > 0 %}
-<<<<<<< HEAD
-    <h1>Observaciones: nivel de sistencia</h1>
-    <table class="table table-striped" id="hor-minimalist-b" width="80%">
-        
-        <thead>
-            <tr>
-                <td>Total</td>
-                <td>Puntual</td> 
-                <td>Tarde</td>            
-                <td>Faltas</td>        
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr> 
-                <td>{{total_asistencia}}</td>
-                <td>{{total_puntual}}0%</td> 
-                <td>{{total_tarde}}0%</td>            
-                <td>{{total_destiempo}}0%</td>  
-        </tbody>
-        
-    </table>
-=======
     <h2>ASISTENCIA REGISTRADA: {{total_asistencia}}</h2>
     <h5>El  {{total_puntual}} % llega puntual</h5>
     <h5>El  {{total_tarde}} % llega tarde</h5>
     <h5>El  {{total_destiempo}} % no asiste en su hora</h5>
->>>>>>> 0644fba6a35d4fea43495c777e732015f238c7a8
     {% else %}
     <h4> {{total_asistencia}} asistencias registradas</h4>
     {% endif %}
