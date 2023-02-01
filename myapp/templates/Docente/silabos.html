@@ -1,8 +1,15 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<div class="card-group">
+
+<blockquote style="margin-left: 30px;">							
+</blockquote>
+<body>
+	<h2 class="animate__animated animate__fadeInDown">Asignaturas</h2>
+	
+
+<section class="card-deck">
 	{% for i in cursos %}
-	<div class="card-body">
-		<h3>{{i}}</h3>
+	<div class="card">
+		<h3><a href="#">{{i}}</a></h3>
 		<form
 			action="guardarSilabo/{{i}}"
 			method="POST"
@@ -17,13 +24,16 @@
 			<input type="file" id="archivo" name="archivo" />
 			{% endif %} {% endif %}{% endif %}
 
-			<button type="submit" class="btn btn-primary">Guardar</button>
-			<a href="eliminarSilabo/{{i}}" class="btn btn-second">Eliminar</a>
+			<button type="submit" style="background-color: rgba(1, 65, 126, 0.986); color: white;"class="btn btn-primary">Guardar</button>
+			<a href="eliminarSilabo/{{i}}" style="background-color: rgb(230, 49, 49); color: white;"class="btn btn-second">Eliminar</a>
+		
 		</form>
 		{% if BD|length > 0 %} {% for file in BD %} {% if file.curso == i %}
-		<a href="{{file.silabo.url}}">ver silabo</a>
+		<a href="{{file.silabo.url}}" class="btn-get-started animate__animated animate__fadeInUp scrollto;"style="background-color:rgba(6, 55, 100, 0.479);">ver silabo</a>
+		
 		{% endif %} {% endfor %} {% endif %}
 		<div>
+
 			{% for u in unidades %}
 			<form action="ParteSilabo/{{i}}" method="POST">
 				{% csrf_token %}
@@ -99,9 +109,13 @@
 				</div>-->
 				<button type="submit" class="btn btn-warning">Registrar</button>
 			</form>
+			
 			{% endfor %}
 		</div>
 	</div>
 
-	{% endfor %} {% endblock %}
+
+	{% endfor %}</section>{% endblock %}
 </div>
+
+

@@ -25,43 +25,50 @@
 <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 </head>
 </html>
-{% csrf_token %}
-    <h1>reporte</h1>
-        
-    <h2>Docente: {{docente}}</h2> <!--export-pdf-->
-    <h2>Temas:</h2>
-    {% for datos,temas in temas_totales %}        
-        {% for dat in datos %}
-        <tr>
-            <td>{{ dat }} </td> 
-        </tr>        
+{% csrf_token %}  
+
+<blockquote style="margin-left: 20px;"></blockquote>
+<h4 style="text-align: center;color:rgb(253, 253, 253)" class="animate__animated animate__fadeInDown"> Reporte de actividades del Docente:</h4>    
+<h2 style="text-align: center" class="animate__animated animate__fadeInDown">{{ docente }}</h2>         
+         <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">TEMAS</h2>
+        <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
+        {% for datos,temas in temas_totales %}  
+        <blockquote style="margin-left: 20px;">
+							
+        </blockquote>      
+            {% for dat in datos %}
+            <tr>
+                <td>{{ dat }} </td> 
+            </tr>        
+            {% endfor %}
+            {% if temas|length > 0 %} 
+            <table class="table table-striped" id="hor-minimalist-b" width="80%">
+                <thead>
+                    <tr>
+                        <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Id Curso</td>
+                        <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Tema</td>            
+                        <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Fecha</td>        
+                    </tr>
+                </thead> 
+                <tbody>
+                    {% for i in temas %}
+                    <tr>          
+                        <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.codigo_curso }}</td>
+                        <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.Tema }}</td>                                
+                        <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.FechaAvance }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h5 style="color:red">No hay temas registrados </h5>
+            {% endif %}         
         {% endfor %}
-        {% if temas|length > 0 %} 
-        <table class="table table-striped" id="hor-minimalist-b" width="80%">
-            <thead>
-                <tr>
-                    <td>Id Curso</td>
-                    <td>Tema</td>            
-                    <td>Fecha</td>        
-                </tr>
-            </thead> 
-            <tbody>
-                {% for i in temas %}
-                <tr>          
-                    <td>{{ i.codigo_curso }}</td>
-                    <td>{{ i.Tema }}</td>                                
-                    <td>{{ i.FechaAvance }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <h3>No hay temas registrados </h3>
-        {% endif %}         
-    {% endfor %}
-
-    <h2>Asistencias:</h2>
-
+    </section>
+    <!-- Asistencia -->
+    <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA</h2>
+    <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
+    
     {% for datos,asistencia in asistencia_totales %}        
         {% for dato in datos %}
         <tr>
@@ -72,35 +79,42 @@
         <table class="table table-striped" id="hor-minimalist-b" width="80%">
             <thead>
                 <tr>
-                    <td>Código de curso</td> 
-                    <td>Fecha</td>            
-                    <td>Hora</td>        
+                    <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Codigo Curso</td>
+                    <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Fecha</td>            
+                    <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Hora</td>        
+                       
                 </tr>
             </thead>
             <tbody>
                 {% for i in asistencia %}
                 <tr>    
-                    <td>{{ i.codigo_curso }}</td>       
-                    <td>{{ i.FechaIn }}</td>                                
-                    <td>{{ i.HoraEntrada }}</td>
+                    <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.codigo_curso }}</td>
+                    <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.FechaIn }}</td>                                
+                    <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{  i.HoraEntrada }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        {% else %}
-        <h3>No hay asistencias registradas </h3>
+     {% else %}
+        <h5 style="color:red">No hay ASISTENCIAS registrados </h5>
         {% endif %}         
     {% endfor %}
+    </section>
+
+    <!-- Asistencia total -->
+    <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA TOTAL</h2>
+    <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
+    
 
     {% if total_asistencia > 0 %}
-    <h4>De {{total_asistencia}} asistencias registradas</h4>
+    <h2>ASISTENCIA REGISTRADA: {{total_asistencia}}</h2>
     <h5>El  {{total_puntual}} % llega puntual</h5>
     <h5>El  {{total_tarde}} % llega tarde</h5>
     <h5>El  {{total_destiempo}} % no asiste en su hora</h5>
     {% else %}
     <h4> {{total_asistencia}} asistencias registradas</h4>
     {% endif %}
-
+    </section>
     <a href="{% url 'mis_docentes'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
     <input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(4, 0, 255);"   onClick="history.back();">
     <p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p> 

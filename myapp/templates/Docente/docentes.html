@@ -1,42 +1,53 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h1>Bienvenido</h1>
-<h1>{{nombre}}</h1>
-<!-- botones para cada funcion de docente -->
-<div class="grid_docente">
-	<div class="item item-1">
-		<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-			<div class="position-sticky">
-				<div class="list-group list-group-flush mx-3 mt-4">
-					<a
-						href="{% url 'asistencia' %}"
-						class="list-group-item list-group-item-action py-2 ripple"
-						aria-current="true"
-					>
-						<i class="fas fa-tachometer-alt fa-fw me-3"></i
-						><span>ASISTENCIA</span>
+
+
+
+<section id="hero" style="background-color: rgba(0, 0, 0, 0.0);">
+	<div class="col-md-12">
+	  <img src="../static/images/perfil.png" class="rounded-circle" align="right" width="100" height="100">
+	</div>
+	<h4 style="text-align: center;color:rgba(253, 253, 253, 0.719)" class="animate__animated animate__fadeInDown">Bienvenido Docente <span> <h2>{{nombre}}</h2></span></h4>  
+
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8 col-md-">
+		  <div class="footer-info">
+			<div class="social-links mt-3">
+				<div id="card-container" class="card w-25" style="background-color: transparent;">
+					<a href="{% url 'asistencia' %}" class="btn-get-started animate__animated animate__fadeInLeft  scrollto">
+					<i class="bi-calendar4-week"></i>
+					<span>ASISTENCIA</span>
 					</a>
-					<a
-						href="{% url 'asistencia_Al' %}"
-						class="list-group-item list-group-item-action py-2 ripple"
-					>
-						<i class="fas fa-chart-area fa-fw me-3"></i
-						><span>ASISTENCIA DE ALUMNOS</span>
-					</a>
-					<a
-						href="{% url 'carga_academica' %}"
-						class="list-group-item list-group-item-action py-2 ripple"
-						><i class="fas fa-lock fa-fw me-3"></i><span>HORARIO</span></a
-					>
-					<a
-						href="{% url 'regis_silabo' %}"
-						class="list-group-item list-group-item-action py-2 ripple"
-						><i class="fas fa-chart-line fa-fw me-3"></i><span>SILABO</span></a
-					>
 				</div>
+
+				<div id="card-container" class="card w-25" style="background-color: transparent;">
+					<a href="{% url 'asistencia_Al' %}" class="btn-get-started animate__animated animate__fadeInLeft scrollto">
+					<i class="bi-card-checklist"></i>
+					<span>ASISTENCIA DE ALUMNOS</span>
+					</a>
+				</div>
+
+				<div id="card-container" class="card w-25" style="background-color: transparent;">
+					<a href="{% url 'carga_academica' %}" class="btn-get-started animate__animated animate__fadeInLeftBig   scrollto">
+					<i class="bi-calendar4-week"></i>
+					<span>HORARIOS</span>
+					</a>
+				</div>
+
+				<div id="card-container" class="card w-25" style="background-color: transparent;">
+					<a href="{% url 'regis_silabo' %}" class="btn-get-started animate__animated animate__fadeInLeftBig  scrollto">
+					<i class="bi-calendar4-week"></i>
+					<span>SILABO</span>
+					</a>
+				</div>
+		
 			</div>
-		</nav>
+		</div>
 	</div>
 </div>
+</section>
 <!-- se la pasa una variable -->
 
 <!--{% for i in tareas %}-->

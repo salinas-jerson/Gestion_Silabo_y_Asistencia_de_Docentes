@@ -1,32 +1,65 @@
+
 {% extends 'ventanas/baseDE.html' %}
 
 {% load  static %}
-
-{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<meta content="" name="description">
-<meta content="" name="keywords">
+    <head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<!--carpeta css-->
+		<link rel="stylesheet" href="../../static/styles/docente.css" />
 
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+		<!-- Bootstrap CSS -->
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous"
+		/>
 
-<link href="{% static 'assets/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+		<!--Font awesome icons -->
+		<link
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+			integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
+			crossorigin="anonymous"
+		/>
+
+	
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<meta content="" name="description">
+		<meta content="" name="keywords">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+		<link href="{% static 'assets/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
 
 
-<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+		<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+
+
+{% block content %}
+
 </head>
-</html>
+<blockquote style="margin-left: 20px;">
+							
+</blockquote>
+<h6 style="text-align: center;color: rgba(253, 253, 253, 0.719)" class="animate__animated animate__fadeInDown">Lista General de Docentes de  <span> <h2>Ingenieria Informática y de Sistemas:</h2></span></h4>  
+<!-- botones para cada funcion de docente -->
 
-    <h1 class="text-center">Docentes de Ingenieria Informática y de Sistemas: </h1>
 
     <div class="container text-center" >
         <a class="btn btn-primary" href="{% url 'update_docente' %}"> Actualizar docentes
@@ -37,6 +70,11 @@
     {% csrf_token %}
 
     <body> <!--onload="popup()">-->
+        <section class="card">
+        <h5 style="text-align: center;color: rgb(3, 41, 90)" class="animate__animated animate__fadeInDown">Lista de  de todos los docentes, donde se puede ver los reportes y asistencias de cada uno de ellos, con el fin de brindar una visión completa y organizada de la labor docente.</h1>
+            <blockquote style="margin-left: 20px;">
+							
+            </blockquote>
         <div id="main_container">
           
           <div class="center_content">
@@ -60,8 +98,8 @@
                                 <td>{{ i.id_docente }}</td>
                                 <td>{{i.apellido}}, {{ i.Nombre }}</td>
                                 
-                                <td><button class="btn btn-info" name="btn" value="silabo">Más detalles</button></td>
-                                <td><button class="btn btn-success" name="btn" value="reporte">Reporte</button></td>
+                                <td><button type="submit" style="background-color: rgba(6, 55, 100, 0.959); color: white;" class="btn btn-info" name="btn" value="silabo">Más detalles</button></td>
+                                <td><button type="submit" style="background-color: rgba(221, 42, 42, 0.959); color: white;"class="btn btn-success" name="btn" value="reporte">Reporte</button></td>
                                 <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
                             </form>
                         </tr>
@@ -69,11 +107,10 @@
                     </tbody>
                 </table>               
 
-                      
-        
             </div>                    
           </div>
         </div>
+    </section>
         {% csrf_token %}
         
         <a href="{% url 'direct'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
@@ -88,6 +125,7 @@
         <script src="{% static 'assets/vendor/waypoints/noframework.waypoints.js'%}"></script>
         <script src="{% static 'assets/vendor/php-email-form/validate.js'%}"></script>
         <script src="{% static 'assets/js/main.js'%}"></script>
-        </body>
-
+   
+</body>
+</html>
 {% endblock %}

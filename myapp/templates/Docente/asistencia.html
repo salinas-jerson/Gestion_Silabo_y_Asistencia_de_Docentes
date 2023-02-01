@@ -1,13 +1,49 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<div class="card-group">
+<section id="hero" style="background-color: rgba(0, 0, 0, 0.0);">
+<script>
+	function startTime(){
+	today=new Date();
+	h=today.getHours();
+	m=today.getMinutes();
+	s=today.getSeconds();
+	m=checkTime(m);
+	s=checkTime(s);
+	document.getElementById('reloj').innerHTML=h+":"+m+":"+s;
+	t=setTimeout('startTime()',500);}
+	function checkTime(i)
+	{if (i<10) {i="0" + i;}return i;}
+	window.onload=function(){startTime();}
+	</script>
+	<h2><div id="reloj" style="font-size:50px; color: rgb(255, 255, 255);"></div> </h2> 
+
+	<a class="btn-get-started">
+		<script>
+			//<![CDATA[
+			function makeArray() {
+			for (i = 0; i<makeArray.arguments.length; i++)
+			this[i + 1] = makeArray.arguments[i];}
+			var months = new makeArray('Enero','Febrero','Marzo','Abril','Mayo',
+			'Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+			var date = new Date();
+			var day = date.getDate();
+			var month = date.getMonth() + 1;
+			var yy = date.getYear();
+			var year = (yy < 1000) ? yy + 1900 : yy;
+			document.write( + day + " de " + months[month] + " del " + year);
+			//]]>
+			</script>  
+		</a>	
+		
+		
+<blockquote style="margin-left: 20px;">							
+</blockquote>		
+
+<div class="card-deck animate__animated animate__fadeInLeftBig ">
 	{% for i in cursos %}
-	<div class="card-body">
+	<div class="card">
 		<div class="col">
-			<h5 class="card-title">{{i}}</h2>
-			<h5>Fecha</h5>
-			<h6>{{Fecha_actual}}</h6>
-			<h5>Hora</h5>
-			<h6>{{Hora_actual}}</h6>
+			<h5><a href="#">{{i}}</a></h5>
+
 			<form action="registroAsistencia/{{i}}" method="POST">
 				{% csrf_token %}
 				<label for="">marcar asistencia</label>
@@ -27,15 +63,19 @@
 					{% endfor %}
 				</select>
 
-				<input type="submit" value="Registrar" class="btn btn-second" />
+				<input type="submit" style="background-color: rgba(6, 55, 100, 0.959); color: white;" class="btn btn-second" 	 value="Registrar" class="btn btn-second" />
 			</form>
 		</div>
+		<blockquote style="margin-left: 20px;">							
+		</blockquote>
 		<div class="col">
 			<form action="registroTema/{{i}}" method="POST">
 				{% csrf_token %}
 				<label for="">Registrar Temas </label>
 				<input type="text" name="TemaAvance" placeholder="Ingrese tema del dia" />
-				<button type="submit" class="btn btn-second">Registrar</button>
+				
+				<button type="submit" style="background-color: rgba(6, 55, 100, 0.959); color: white;" class="btn btn-second">Registrar</button>
+
 			</form>
 		</div>
 		<div class="col">
@@ -52,5 +92,10 @@
 		</div>
 	</div>
 	{% endfor %}
+	
 </div>
+<p>"Por favor marque su asistencia y registre el tema dictado en el formulario correspondiente."
+</p>
+</body>
+</section>
 {% endblock %}

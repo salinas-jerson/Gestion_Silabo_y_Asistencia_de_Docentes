@@ -28,9 +28,10 @@
 </html>
 
 {% csrf_token %}
-
-<h1>Detalles de actividades</h1>    
-<h1>Docente: {{ docente }}</h1>          
+<section id="hero" style="background-color: rgba(0, 0, 0, 0.0);">
+<h4 style="text-align: center;color:rgba(253, 253, 253, 0.719)" class="animate__animated animate__fadeInDown">Detalles de actividades del Docente:</h4>    
+<h2 style="text-align: center" class="animate__animated animate__fadeInDown">{{ docente }}</h2> 
+<section class="card">         
 <table class="table table-striped" id="hor-minimalist-b" width="80%">
     <thead>
         <tr>
@@ -73,11 +74,13 @@
         
     </tbody>
 </table>
+</section>
+<blockquote style="margin-left: 20px;"></blockquote>
 <a href="{% url 'mis_docentes'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
 
-<input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(4, 0, 255);"   onClick="history.back();">
+<input class="btn-get-started animate__animated animate__fadeInLeft scrollto" type="button" value= "Atrás"   onClick="history.back();">
 
-<p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p>  
+
 
         <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>
         <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
