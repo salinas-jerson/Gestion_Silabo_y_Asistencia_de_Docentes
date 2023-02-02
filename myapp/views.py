@@ -123,7 +123,7 @@ def CsvToDB(respuesta):
                      
             linea = miCSV_arch.readline()
         miCSV_arch.close()
-    return render(respuesta, 'DirEscuela/DirectorEscuela.html')
+    return render(respuesta, 'DirEscuela/DirectorEscuela.html',{"nombre_director_escuela": nombre_director_escuela})
 
 @login_required #actualiza la tabla de docentes
 def actualizarDocente(respuesta):
@@ -161,7 +161,7 @@ def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docent
         if User.objects.filter(username=i.Nombre).exists():
             User.objects.filter(username=i.Nombre).delete()
     messages.warning(respuesta,"Eliminaste las cuentas de usuario de tus docentes")
-    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+    return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
 
 @login_required #crea usuario de docentes
 def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
@@ -176,7 +176,9 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             password=make_password("123")).save()
         except: IntegrityError
     messages.info (respuesta,"Se creó los usuarios para todos tus docentes")
-    return render(respuesta,"DirEscuela/DirectorEscuela.html")   
+    return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela})   
+
+
 
 @login_required
 def programarTarea(respuesta):
@@ -191,17 +193,20 @@ def programarTarea(respuesta):
             return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
         else:
             if int((str(dif).split(',')[0]).split(' ')[0]) > 0 :
+                # verificar y guardar tarea en tabla 
+                if AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).exists(): #reemplaza tarea
+                    AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).delete()
+                    AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                else: #crea tarea
+                    AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                #tarea de subir el silabo
                 if respuesta.POST["tareas"] == "silabo":
-                    messages.info(respuesta,"Asingnación de tarea sílabo correcta")
-                    #guardar tarea en tabla 
-                    if AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).exists():
-                        AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).delete()
-                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
-                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
-                    else:
-                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
-                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+                    messages.info(respuesta,"Asingnación de tarea 'Enterga de sílabo' correcta")      
+                #tarea de subir contenido silabico
+                elif respuesta.POST["tareas"] == "contenido":
+                    messages.info(respuesta,"Asingnación de tarea 'Enterga de contenido silábico' correcta")
                 #elif otra tarea
+                return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
             else:
                 messages.warning(respuesta,"asigne una fecha posterior para la entrega")
                 return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"})
@@ -288,7 +293,7 @@ def verDetalleActividades(respuesta):
             
             return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :observations[0],
             "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente,
-            
+
             "totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
     
     else:
