@@ -17,7 +17,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno,Silabo_Content
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno,Silabo_Content,Registro_Alumnos
 
 # Create your views here.
  
@@ -705,39 +705,35 @@ def borrar_Alumnos(request,i):
     
 def ControlAsistenciaAL(request,i): # i=codigo del curso
     #filtramos los alumnos que corresponden al curso y grupo
-    if request.method=='GET':
+    if request.method=='POST':
         lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
         
         alumnos={}
         for A in lista_alumnos:
             alumnos[A.codigoAlumno]={}
             alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        list=request.POST.getlist("check")
+        if len(list)!=0:
+            time_now=datetime.now()
+            f=time_now.date()
+            for al in list:
+                nom=alumnos[al]
+                Registro_Alumnos(codigo=al,Nombres=nom,codigoCurso=i,Fecha=f,observacion='P').save()
+            messages.success(request,"REGISTRADO !")
+        #for al in li :
         
-        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
-    else:
-        if request.method=='POST':
-            lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
-        
-            alumnos={}
-            for A in lista_alumnos:
-                alumnos[A.codigoAlumno]={}
-                alumnos[A.codigoAlumno]=A.Apellido_Nombre
-            '''arreglo=[]
-            respuesta=request.POST['presente']
-            if respuesta:
-                cod=request.POST.get['cod']
-                name=request.POST['nombre']
-
-                messages.info(request,"registrado"+cod)'''
-            return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
 
 def control_alumno(request):
     if request.method=='POST':
-        output=request.get_json()
-        print(output)
-
-        messages.info(request,"registrado")
-        return redirect('ControlAsistenciaAL')
+        lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
+        alumnos={}
+        for A in lista_alumnos:
+            alumnos[A.codigoAlumno]={}
+            alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        li=request.POST.getlist("check")
+        print(li)
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
 
 
 def ParteSilabo(request,i):
@@ -768,13 +764,4 @@ def ParteSilabo(request,i):
     messages.info(request, u +" REGISTRADO")
     return redirect('regis_silabo')
 
-    '''semestre=models.CharField(max_length=10)
-    codigo_curso=models.CharField(max_length=10,default='default value')
-    id_Docente_Avance=models.CharField(max_length=5,default='default value')
-    Nombre_curso=models.CharField(max_length=50,default='default value')
-    Contenido=models.CharField(max_length=300)
-    Actividades=models.CharField(max_length=300)
-    Tiempo=models.CharField(max_length=2)
-    FechaInicio=models.DateField()
-    FechaFinal=models.DateField()
-    Unidad=models.CharField(max_length=1)'''
+   
