@@ -67,6 +67,28 @@
         {% endfor %}
     </tbody>
 </table>
+<h1>NIVEL DE AVANCE POR CURSO</h1>
+<table class="table table-striped" id="hor-minimalist-b" width="80%">
+    
+    <thead>
+        <tr>
+            <td>Temas registradas</td>
+            <td>Temas avanzadas</td> 
+            <td>Nivel de avance</td> 
+            <td>Correcto avance</td>            
+            <td>incoherencias</td>        
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr> 
+            <td>{{totalTemasReg}}</td>
+            <td>{{totalTemasAvan}}</td> 
+            <td>{{nivelAvance}}0%</td> 
+            <td>{{correcto}}0%</td>            
+            <td>{{incoherencia}}0%</td>  
+    </tbody>    
+</table>
 {% else %}
 <h3>no hay temas registrados</h3>
 {% endif %}

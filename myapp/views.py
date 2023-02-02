@@ -241,14 +241,14 @@ def separaAsistencia(id_docente,id_curso,asistencia,observations):
     return observations
 
 def separaTemas(id_docente,id_curso,temas,observations):
-    objeto = Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso)
-    #total_temas, tema correcto, tema incorrecto
+    observations[3] += Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso).count()
+    #total_temas_avance, tema correcto, tema incorrecto, total_temas_registrados
     observations[0] += len(temas)
     for i in temas:
-        if i in objeto.get().Contenido:
-            observations[1] +=1
+        if Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso,Contenido = i.Tema).exists():
+            observations[1] +=1 #avanza tema correcto
         else:
-            observations[2] +=1
+            observations[2] +=1 #avanza temas incorrectos
     return observations
 
 def cursosSilaboForDocente(id_docente): #cursos y sílabo para un docente en particular
@@ -270,14 +270,13 @@ def verDetalleActividades(respuesta):
         #btn mas detalles
         if respuesta.POST["btn"] == "mas_detalles": 
             return render(respuesta,"DirEscuela/DetallaActividades.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
-        else: # btn = reporte
-            total_temas = 0
-            total_tema_correcta = 0
-            total_tema_incorrecta = 0
+        else: # btn = reporte / [total_temas_avance, tema correcto, tema incorrecto, total_temas_registrados]
+            observationsT = [0,0,0,0]
             temas_totales = []
             for i in cursos:
                 temas = listaTemas(i.PR_DE, id_docente)
-                temas_totales.append(([i.PR_DE,i.CURSO],temas))           
+                temas_totales.append(([i.PR_DE,i.CURSO],temas))         
+                observationsT = separaTemas(id_docente,i.PR_DE,temas,observationsT) 
             
             #total_asistencia, total_puntual, total_tarde, total_destiempo
             observations =[0,0,0,0]
@@ -288,7 +287,9 @@ def verDetalleActividades(respuesta):
                 observations =  separaAsistencia(id_docente, i.PR_DE, asistencia, observations)            
             
             return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :observations[0],
-            "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
+            "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente,
+            
+            "totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
     
     else:
         silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.GET["id_docente"])
@@ -309,7 +310,10 @@ def verAsistencia_Tema(respuesta):
             return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente,"id_docente":id_docente, "hora":hora,"asistencia":asistencia,
             "total_asistencia" :observations[0],"total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),})
         else: # btn = temas 
-            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":listaTemas(id_curso,id_docente)})
+            temas = listaTemas(id_curso,id_docente)
+            observationsT = separaTemas(id_docente,id_curso,temas,[0,0,0,0])
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":temas,"totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
+            
     
 
 
