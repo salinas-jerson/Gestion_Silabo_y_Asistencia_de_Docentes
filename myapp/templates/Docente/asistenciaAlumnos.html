@@ -1,5 +1,5 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h2>Asistencia de Alumnos</h2>
+<h2 style="text-align: center;color:rgba(253, 253, 253, 0.719)" class="animate__animated animate__fadeInDown">ASISTENCIA DE ALUMNOS </h2>
 <!--leer archivo de estudiantes en excel-->
 <div class="row row-cols-1 row-cols-md-2 g-4">
 	{% for Materia,grupos in cursos.items %} {% for group in grupos %}
@@ -28,21 +28,22 @@
 			</div>
 		</div>
 		{% if BD|length > 0 %} {% for file in BD %} {% if file.cod_curso == group %}
+		<blockquote style="margin-left: 40px;"></blockquote>
 		<div>
 			<table class="table" id="table">
 				<thead>
 					<tr>
-						<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);background-color: rgb(236, 68, 68);color:aliceblue">#</th>
-						<th scope="col">Codigo</th>
-						<th scope="col">Apellidos-Nombres</th>
+						<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">#</th>
+						<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">Codigo</th>
+						<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">Apellidos-Nombres</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for g,cod in Alumnos.items %} {% for key,nombre in cod.items %}
 					<tr>
-						<th scope="row">{{forloop.counter}}</th>
-						<td>{{key}}</td>
-						<td>{{nombre}}</td>
+						<th style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{forloop.counter}}</th>
+						<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{key}}</td>
+						<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{nombre}}</td>
 					</tr>
 					{% endfor %} {% endfor %}
 				</tbody>

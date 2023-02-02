@@ -1,6 +1,7 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h5>LLamado de asistencia</h5>
-
+<blockquote style="margin-left: 20px;"></blockquote>
+<h4 style="text-align: center;color:rgba(253, 253, 253, 0.719)" class="animate__animated animate__fadeInDown">LLAMADO DE ASISTENCIA</h4>
+<blockquote style="margin-left: 20px;"></blockquote>
 <script>
 	async function getvalues() {
 		var seleccion = new Array();
@@ -34,28 +35,29 @@
 			data: JSON.stringify(s),
 		});*/
 	}
+	<blockquote style="margin-left: 20px;"></blockquote>
 </script>
 <div>
 	<table class="table" id="table">
 		<thead class="thead-Primary">
 			<tr>
-				<th scope="col">#</th>
-				<th scope="col">Codigo</th>
-				<th scope="col">Apellidos-Nombres</th>
-				<th scope="col">observacion</th>
+				<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">#</th>
+				<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">Codigo</th>
+				<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">Apellidos-Nombres</th>
+				<th class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue">observacion</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for cod,nombres in Alumnos.items %}
 			<tr>
-				<th scope="row">{{forloop.counter}}</th>
+				<th style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{forloop.counter}}</th>
 				<!--<form action="{{grupo}}" method="POST">-->
-				<td name="cod">{{cod}}</td>
-				<td name="nombre">{{nombres}}</td>
+				<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{cod}}</td>
+				<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{nombres}}</td>
 				<td>
 					{% csrf_token %}
 					<!--<input type="submit" name="presente" class="presente" value="P" />-->
-					<input type="checkbox" value="{{cod}}" />
+					<input type="checkbox" value="{{cod}}"  />
 				</td>
 				<!--</form>-->
 			</tr>
