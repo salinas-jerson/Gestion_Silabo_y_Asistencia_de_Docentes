@@ -85,7 +85,20 @@
     </div>
   </div>
 </div>
-
+<style>
+  audio {
+    display: none;
+  }
+  </style>
+  </head>
+  <audio id="audioPlayer" autoplay controls>
+    <source src="{% static 'images/10523.mp3' %}" type="audio/mpeg">
+    </audio>
+  <script>
+    var audioPlayer = document.getElementById("audioPlayer");
+    audioPlayer.volume = 0.1;
+    audioPlayer.currentTime = 1;
+  </script>
 
 <div class="container">
   <div class="copyright">
