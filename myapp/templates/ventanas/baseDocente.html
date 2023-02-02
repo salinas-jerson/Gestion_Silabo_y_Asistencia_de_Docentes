@@ -131,7 +131,14 @@
 				<h4>Enlaces Utiles</h4>
 				<ul>
 				  <li><i class="bx bx-chevron-right"></i> <a href="#">Docente Home</a></li>
-				  
+				  <audio id="audioPlayer" autoplay controls>
+					<source src="{% static 'images/10523.mp3' %}" type="audio/mpeg">
+					</audio>
+				<script>
+					var audioPlayer = document.getElementById("audioPlayer");
+					audioPlayer.volume = 0.1;
+					audioPlayer.currentTime = 1;
+				</script> 
 				</ul>
 			  </div>
 			</div>
@@ -141,6 +148,7 @@
 		  <div class="copyright">
 			&copy; <strong><span>cero absoluto</span></strong>. 
 		  </div>
+		 
 		</div>
 		</footer>
 	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
