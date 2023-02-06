@@ -481,8 +481,13 @@ def registro_Silabo(respuesta):
                 subidos.append(File.curso)  
 
         UnidadLectiva=['I','II','III'] 
+        #consultamos la fecha de entrega de silabos
+        e=AsignaTarea.objects.filter(titulo='silabo')
+        entrega=''
+        for fin in e:
+            entrega=fin.fechaFin            
 
-        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos,'unidades':UnidadLectiva}) 
+        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos,'unidades':UnidadLectiva,'entrega':entrega}) 
     
 
 def guardarSilabo(request,i):
@@ -751,7 +756,7 @@ def ControlAsistenciaAL(request,i): # i=codigo del curso
                 Registro_Alumnos(codigo=al,Nombres=nom,codigoCurso=i,Fecha=f,observacion='P').save()
             messages.success(request,"REGISTRADO !")
             porcentaje=str((len(list)*100)/len(lista_alumnos))
-            messages.info(request,porcentaje+"%" + " ASISTENTES")
+            messages.info(request,round(porcentaje,2)+"%" + " ASISTENTES")
         return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i,'asistentes':porcentaje}) 
 
 '''def control_alumno(request):
@@ -779,8 +784,8 @@ def ParteSilabo(request,i):
         for k in grupo:
             if i==key:
                 cod_c=k
-    fechainicio=request.POST['fechaInicio']
-    fechafin=request.POST['fechaConclusion']
+    fechainicio=datetime.now().date()
+    fechafin=datetime.now().date()
     contenido=request.POST['contenido']
     palabras=contenido.split('\n')
     #tiempo=request.POST['tiempo']
