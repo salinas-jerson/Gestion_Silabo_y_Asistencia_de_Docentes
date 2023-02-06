@@ -123,6 +123,7 @@ def CsvToDB(respuesta):
                      
             linea = miCSV_arch.readline()
         miCSV_arch.close()
+    messages.info(respuesta,"base de datos reemplazada")
     return render(respuesta, 'DirEscuela/DirectorEscuela.html',{"nombre_director_escuela": nombre_director_escuela})
 
 @login_required #actualiza la tabla de docentes
@@ -294,7 +295,7 @@ def verDetalleActividades(respuesta):
             return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :observations[0],
             "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente,
 
-            "totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
+            "totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[1]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
     
     else:
         silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.GET["id_docente"])
@@ -317,7 +318,7 @@ def verAsistencia_Tema(respuesta):
         else: # btn = temas 
             temas = listaTemas(id_curso,id_docente)
             observationsT = separaTemas(id_docente,id_curso,temas,[0,0,0,0])
-            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":temas,"totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":temas,"totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[1]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
             
     
 
