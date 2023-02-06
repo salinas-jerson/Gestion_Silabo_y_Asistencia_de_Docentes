@@ -71,7 +71,7 @@ class Asistencia_In(models.Model):
 class Avance_Docente(models.Model):
     docente=models.ForeignKey(Docentes,on_delete=models.CASCADE,null=False,blank=False)
     Tema=models.CharField(max_length=400)
-    FechaAvance=models.DateTimeField(auto_now=True)
+    FechaAvance=models.DateTimeField()
     id_Docente_Avance=models.CharField(max_length=5,default='default value')
     Avance_curso=models.CharField(max_length=100,default='default value')
     codigo_curso=models.CharField(max_length=10,default='default value')
