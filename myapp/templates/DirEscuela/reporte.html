@@ -58,12 +58,44 @@
                         <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{ i.FechaAvance }}</td>
                     </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                </tbody> 
+            </table>           
             {% else %}
             <h5 style="color:red">No hay temas registrados </h5>
             {% endif %}         
-        {% endfor %}
+        {% endfor %}        
+    </section>
+    <!-- nivel de avance total -->
+    <blockquote style="margin-left: 20px;"></blockquote>
+    <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">NIVEL DE AVANCE DEL DOCENTE</h2>
+    <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
+    <blockquote style="margin-left: 20px;"></blockquote>
+    {% if totalTemasAvan > 0 %}
+    
+    <table class="table table-striped" id="hor-minimalist-b" width="80%">        
+        <thead>
+            <tr>                
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Temas registradas</td> 
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Temas avanzadas</td>            
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Nivel de avance</td>        
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Correcto avance</td>
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Incoherencias</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr> 
+                
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasReg}}</td> 
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasAvan}}</td>            
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{nivelAvance}}0%</td>  
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{correcto}}0%</td>
+                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{incoherencia}}0%</td>
+        </tbody>        
+    </table>
+    {% else %}
+        <h4> {{totalTemasAvan}} temas registradas</h4>
+    {% endif %}
     </section>
     <!-- Asistencia -->
     <blockquote style="margin-left: 20px;"></blockquote>
@@ -104,18 +136,15 @@
 
     <!-- Asistencia total -->
     <blockquote style="margin-left: 20px;"></blockquote>
-    <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">ASISTENCIA TOTAL</h2>
+    <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">NIVEL DE ASISTENCIA TOTAL</h2>
     <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
     <blockquote style="margin-left: 20px;"></blockquote>
 
     {% if total_asistencia > 0 %}
     
-    <h1>Observaciones: nivel de sistencia</h1>
-    <table class="table table-striped" id="hor-minimalist-b" width="80%">
-        
+    <table class="table table-striped" id="hor-minimalist-b" width="80%">        
         <thead>
-            <tr>
-                
+            <tr>                
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Puntual</td> 
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Tarde</td>            
                 <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Faltas</td>        

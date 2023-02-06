@@ -17,7 +17,7 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import IntegrityError
-from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno,Silabo_Content
+from .models import Document,Docentes, CargaAcademica,Silabo,Asistencia_In,Avance_Docente, AsignaTarea,Lista_Alumnos,Alumno,Silabo_Content,Registro_Alumnos
 
 # Create your views here.
  
@@ -123,7 +123,7 @@ def CsvToDB(respuesta):
                      
             linea = miCSV_arch.readline()
         miCSV_arch.close()
-    return render(respuesta, 'DirEscuela/DirectorEscuela.html')
+    return render(respuesta, 'DirEscuela/DirectorEscuela.html',{"nombre_director_escuela": nombre_director_escuela})
 
 @login_required #actualiza la tabla de docentes
 def actualizarDocente(respuesta):
@@ -161,7 +161,7 @@ def Eliminar_user_docentes(respuesta): #elimina todos los usuarios de los docent
         if User.objects.filter(username=i.Nombre).exists():
             User.objects.filter(username=i.Nombre).delete()
     messages.warning(respuesta,"Eliminaste las cuentas de usuario de tus docentes")
-    return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+    return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
 
 @login_required #crea usuario de docentes
 def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
@@ -176,7 +176,9 @@ def crear_user_docentes(respuesta): # crea usuarios para todos los docentes
             password=make_password("123")).save()
         except: IntegrityError
     messages.info (respuesta,"Se creó los usuarios para todos tus docentes")
-    return render(respuesta,"DirEscuela/DirectorEscuela.html")   
+    return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela})   
+
+
 
 @login_required
 def programarTarea(respuesta):
@@ -191,17 +193,20 @@ def programarTarea(respuesta):
             return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"}) 
         else:
             if int((str(dif).split(',')[0]).split(' ')[0]) > 0 :
+                # verificar y guardar tarea en tabla 
+                if AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).exists(): #reemplaza tarea
+                    AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).delete()
+                    AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                else: #crea tarea
+                    AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
+                #tarea de subir el silabo
                 if respuesta.POST["tareas"] == "silabo":
-                    messages.info(respuesta,"Asingnación de tarea sílabo correcta")
-                    #guardar tarea en tabla 
-                    if AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).exists():
-                        AsignaTarea.objects.filter(titulo=respuesta.POST["tareas"]).delete()
-                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
-                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
-                    else:
-                        AsignaTarea(titulo=respuesta.POST["tareas"],fechaIni=respuesta.POST["fecha0"],fechaFin=respuesta.POST["fecha1"]).save()
-                        return render(respuesta,"DirEscuela/DirectorEscuela.html") 
+                    messages.info(respuesta,"Asingnación de tarea 'Enterga de sílabo' correcta")      
+                #tarea de subir contenido silabico
+                elif respuesta.POST["tareas"] == "contenido":
+                    messages.info(respuesta,"Asingnación de tarea 'Enterga de contenido silábico' correcta")
                 #elif otra tarea
+                return render(respuesta,"DirEscuela/DirectorEscuela.html",{"nombre_director_escuela": nombre_director_escuela}) 
             else:
                 messages.warning(respuesta,"asigne una fecha posterior para la entrega")
                 return render(respuesta,"DirEscuela/programarTarea.html",{"error":"Fecha incoherente, corrija"})
@@ -241,14 +246,14 @@ def separaAsistencia(id_docente,id_curso,asistencia,observations):
     return observations
 
 def separaTemas(id_docente,id_curso,temas,observations):
-    objeto = Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso)
-    #total_temas, tema correcto, tema incorrecto
+    observations[3] += Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso).count()
+    #total_temas_avance, tema correcto, tema incorrecto, total_temas_registrados
     observations[0] += len(temas)
     for i in temas:
-        if i in objeto.get().Contenido:
-            observations[1] +=1
+        if Silabo_Content.objects.filter(id_Docente_Avance = id_docente,codigo_curso = id_curso,Contenido = i.Tema).exists():
+            observations[1] +=1 #avanza tema correcto
         else:
-            observations[2] +=1
+            observations[2] +=1 #avanza temas incorrectos
     return observations
 
 def cursosSilaboForDocente(id_docente): #cursos y sílabo para un docente en particular
@@ -270,14 +275,13 @@ def verDetalleActividades(respuesta):
         #btn mas detalles
         if respuesta.POST["btn"] == "mas_detalles": 
             return render(respuesta,"DirEscuela/DetallaActividades.html",{"silabos":silabos,"cursos":cursos,"docente":docente})
-        else: # btn = reporte
-            total_temas = 0
-            total_tema_correcta = 0
-            total_tema_incorrecta = 0
+        else: # btn = reporte / [total_temas_avance, tema correcto, tema incorrecto, total_temas_registrados]
+            observationsT = [0,0,0,0]
             temas_totales = []
             for i in cursos:
                 temas = listaTemas(i.PR_DE, id_docente)
-                temas_totales.append(([i.PR_DE,i.CURSO],temas))           
+                temas_totales.append(([i.PR_DE,i.CURSO],temas))         
+                observationsT = separaTemas(id_docente,i.PR_DE,temas,observationsT) 
             
             #total_asistencia, total_puntual, total_tarde, total_destiempo
             observations =[0,0,0,0]
@@ -288,7 +292,9 @@ def verDetalleActividades(respuesta):
                 observations =  separaAsistencia(id_docente, i.PR_DE, asistencia, observations)            
             
             return render(respuesta,"DirEscuela/reporte.html",{"total_asistencia" :observations[0],
-            "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente})
+            "total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),"temas_totales":temas_totales,"asistencia_totales":asistencia_totales,"docente":docente,
+
+            "totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
     
     else:
         silabos,cursos,docente,id_docente = cursosSilaboForDocente(respuesta.GET["id_docente"])
@@ -309,7 +315,10 @@ def verAsistencia_Tema(respuesta):
             return render(respuesta,"DirEscuela/asistencia.html",{"id_curso":id_curso,"curso":curso,"docente":docente,"id_docente":id_docente, "hora":hora,"asistencia":asistencia,
             "total_asistencia" :observations[0],"total_destiempo":regla3Simple(observations[0],observations[3]),"total_puntual":regla3Simple(observations[0],observations[1]), "total_tarde" :regla3Simple(observations[0],observations[2]),})
         else: # btn = temas 
-            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":listaTemas(id_curso,id_docente)})
+            temas = listaTemas(id_curso,id_docente)
+            observationsT = separaTemas(id_docente,id_curso,temas,[0,0,0,0])
+            return render(respuesta,"DirEscuela/temasAvance.html",{"id_curso":id_curso, "curso":curso,"docente":docente,"id_docente":id_docente,"temas":temas,"totalTemasReg":observationsT[3],"totalTemasAvan":observationsT[0],"nivelAvance":regla3Simple(observationsT[3],observationsT[0]),"incoherencia":regla3Simple(observationsT[0],observationsT[2]),"correcto":regla3Simple(observationsT[0],observationsT[1])})
+            
     
 
 
@@ -705,39 +714,35 @@ def borrar_Alumnos(request,i):
     
 def ControlAsistenciaAL(request,i): # i=codigo del curso
     #filtramos los alumnos que corresponden al curso y grupo
-    if request.method=='GET':
+    if request.method=='POST':
         lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
         
         alumnos={}
         for A in lista_alumnos:
             alumnos[A.codigoAlumno]={}
             alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        list=request.POST.getlist("check")
+        if len(list)!=0:
+            time_now=datetime.now()
+            f=time_now.date()
+            for al in list:
+                nom=alumnos[al]
+                Registro_Alumnos(codigo=al,Nombres=nom,codigoCurso=i,Fecha=f,observacion='P').save()
+            messages.success(request,"REGISTRADO !")
+        #for al in li :
         
-        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
-    else:
-        if request.method=='POST':
-            lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
-        
-            alumnos={}
-            for A in lista_alumnos:
-                alumnos[A.codigoAlumno]={}
-                alumnos[A.codigoAlumno]=A.Apellido_Nombre
-            '''arreglo=[]
-            respuesta=request.POST['presente']
-            if respuesta:
-                cod=request.POST.get['cod']
-                name=request.POST['nombre']
-
-                messages.info(request,"registrado"+cod)'''
-            return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
 
 def control_alumno(request):
     if request.method=='POST':
-        output=request.get_json()
-        print(output)
-
-        messages.info(request,"registrado")
-        return redirect('ControlAsistenciaAL')
+        lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
+        alumnos={}
+        for A in lista_alumnos:
+            alumnos[A.codigoAlumno]={}
+            alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        li=request.POST.getlist("check")
+        print(li)
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
 
 
 def ParteSilabo(request,i):
@@ -768,13 +773,4 @@ def ParteSilabo(request,i):
     messages.info(request, u +" REGISTRADO")
     return redirect('regis_silabo')
 
-    '''semestre=models.CharField(max_length=10)
-    codigo_curso=models.CharField(max_length=10,default='default value')
-    id_Docente_Avance=models.CharField(max_length=5,default='default value')
-    Nombre_curso=models.CharField(max_length=50,default='default value')
-    Contenido=models.CharField(max_length=300)
-    Actividades=models.CharField(max_length=300)
-    Tiempo=models.CharField(max_length=2)
-    FechaInicio=models.DateField()
-    FechaFinal=models.DateField()
-    Unidad=models.CharField(max_length=1)'''
+   

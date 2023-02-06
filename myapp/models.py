@@ -79,8 +79,7 @@ class Avance_Docente(models.Model):
 #Tabla de alumnos
 class Registro_Alumnos(models.Model):
     codigo=models.CharField(max_length=6,default="defauld value")
-    Nombres=models.CharField(max_length=40,default="defauld value")
-    Apellidos=models.CharField(max_length=40,default="defauld value")
+    Nombres=models.CharField(max_length=120,default="defauld value")
     codigoCurso=models.CharField(max_length=10,default='default value')
     Fecha=models.DateField()
     observacion=models.CharField(max_length=10,default="defauld value")
