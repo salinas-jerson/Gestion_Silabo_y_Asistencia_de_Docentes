@@ -539,38 +539,48 @@ def carga_academica(request):
         diccionario=consultas()
         return render(request,"Docente/cargaAcademica.html",{'dic':diccionario})
 
-def registroTema(request,cur):
+
+
+
+
+
+
+
+
+
+def registroTema(request,cur):# cur es codigo de curso
     #reunimos la informacion necesaria
     #docente,Tema,FechaAvance,id_Docente,Avance_curso
-    avance_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
-    cod_curso=CargaAcademica.objects.filter(id_docente=avance_docente.id_docente)
-    cod=""
-    for c in cod_curso:
-        if c.CURSO==cur:
-            cod=c.PR_DE
-    contenido=request.POST['TemaAvance']
-    registro_avance=Avance_Docente(docente=avance_docente,Tema=contenido,id_Docente_Avance=avance_docente.id_docente,Avance_curso=cur,codigo_curso=cod)
-    registro_avance.save()
-    messages.success(request,"Su Avance del dia "+cur+" Fue Registrada!")
-    return redirect('asistencia')
+    if request.method=='POST':
+        avance_docente=Docentes.objects.get(id_docente=buscar_id_Doncente())
+        Fecha_hora=datetime.now()
+
+        contenido_tema=request.POST['avance_temas']
+
+        nom=request.POST['NombreC']
+        #contenido=request.POST['TemaAvance']
+        registro_avance=Avance_Docente(docente=avance_docente,Tema=contenido_tema,id_Docente_Avance=avance_docente.id_docente,Avance_curso=nom,codigo_curso=cur,FechaAvance=Fecha_hora)
+        registro_avance.save()
+        messages.success(request,"Su Avance del dia "+cur+" Fue Registrada!")
+        return redirect('asistencia')
     
 #--------------------------------
 def consultas():
-        carga_docente=buscar_Carga()
-        cursos=[]
-        for item in carga_docente:
-            cursos.append(item.CURSO)
-        cursos_unicos=list(set(cursos))
-        
-        #diccionario anidado
-        dic={}  
-        for cur in cursos_unicos:
-            dic[cur]={}
-            for g in carga_docente:
-                if cur==g.CURSO:
-                    dic[cur][g.PR_DE]={}
-                    
-        return dic
+    carga_docente=buscar_Carga()
+    cursos=[]
+    for item in carga_docente:
+        cursos.append(item.CURSO)
+    cursos_unicos=list(set(cursos))
+    
+    #diccionario anidado
+    dic={}  
+    for cur in cursos_unicos:
+        dic[cur]={}
+        for g in carga_docente:
+            if cur==g.CURSO:
+                dic[cur][g.PR_DE]={}
+                
+    return dic
 #--------------------------------
 from datetime import datetime
 def asistencia(request):
@@ -594,7 +604,17 @@ def asistencia(request):
     Fecha=time_now.date()
     Hora=time_now.time()
     if request.method=='GET':
-        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora,'grupos':m})
+        #filtramos los temas de avance
+        lista={}
+        for k,a in m.items():
+            for kg,it in a.items():     
+                l=Silabo_Content.objects.filter(codigo_curso=kg)
+                lista[kg]={}
+                for n in l:
+                    lista[kg][n.Contenido]={}
+
+
+        return render(request,"Docente/asistencia.html",{'cursos':m,'Fecha_actual':Fecha,'Hora_actual':Hora,'lista_t':lista})
 
 @login_required
 def registroAsistencia(request,cur):
@@ -626,16 +646,13 @@ def registroAsistencia(request,cur):
                         #aqui se registraria la asistencia en una tabla en la BD
                         asistencia_docente=Docentes.objects.get(id_docente=buscar_IdDoncente())
                         cod_curso=CargaAcademica.objects.filter(id_docente=asistencia_docente.id_docente)
-                        '''cod=""
-                        for c in cod_curso:
-                            if c.CURSO==cur:
-                                cod=c.PR_DE'''
-                        cod=request.POST["grupos"]
-                        print(cod)
-                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur,codigo_curso=cod)
+                    
+                        #cod=request.POST["grupos"]
+                        registro_asistencia=Asistencia_In(docente=asistencia_docente,HoraEntrada=Hora,FechaIn=Fecha,id_Docente=asistencia_docente.id_docente,Asistencia_curso=cur,codigo_curso=cod_curso)
                         registro_asistencia.save()
                         messages.success(request,"Su Asistencia de "+cur+" Fue Registrada!")
-                        return redirect('asistencia')      
+                        return render(request,"Docente/asistencia.html",{'cursos':materia,'Fecha_actual':Fecha,'Hora_actual':Hora})
+                        #return redirect('asistencia')      
                     except:
                         messages.warning(request,"usted ya registró su asistencia en "+cur)
                         return redirect('asistencia')
@@ -665,7 +682,6 @@ def asistencia_alumnos(request):
                 alumnos[e][t.codigoAlumno]={}
                 alumnos[e][t.codigoAlumno]=t.Apellido_Nombre
                 
-        contador=0
         return render(request,"Docente/asistenciaAlumnos.html",{'cursos':materias_grupos,'BD':registros_objetos,'subidos':subidos,'Alumnos':alumnos})
 
 def guardar_Alumnos(request,i):#guarda por grupos
@@ -702,17 +718,19 @@ def borrar_Alumnos(request,i):
     except:
         messages.warning(request,"Es posible que usted no tenga el archivo")
         return redirect('asistencia_Al')
-    
+
+
+
 def ControlAsistenciaAL(request,i): # i=codigo del curso
     #filtramos los alumnos que corresponden al curso y grupo
     if request.method=='POST':
         lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
-        
         alumnos={}
         for A in lista_alumnos:
             alumnos[A.codigoAlumno]={}
             alumnos[A.codigoAlumno]=A.Apellido_Nombre
         list=request.POST.getlist("check")
+        porcentaje=''
         if len(list)!=0:
             time_now=datetime.now()
             f=time_now.date()
@@ -720,11 +738,11 @@ def ControlAsistenciaAL(request,i): # i=codigo del curso
                 nom=alumnos[al]
                 Registro_Alumnos(codigo=al,Nombres=nom,codigoCurso=i,Fecha=f,observacion='P').save()
             messages.success(request,"REGISTRADO !")
-        #for al in li :
-        
-        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i}) 
+            porcentaje=str((len(list)*100)/len(lista_alumnos))
+            messages.info(request,porcentaje+"%" + " ASISTENTES")
+        return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i,'asistentes':porcentaje}) 
 
-def control_alumno(request):
+'''def control_alumno(request):
     if request.method=='POST':
         lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
         alumnos={}
@@ -734,6 +752,10 @@ def control_alumno(request):
         li=request.POST.getlist("check")
         print(li)
         return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i})
+
+'''
+
+
 
 
 def ParteSilabo(request,i):
@@ -748,20 +770,59 @@ def ParteSilabo(request,i):
     fechainicio=request.POST['fechaInicio']
     fechafin=request.POST['fechaConclusion']
     contenido=request.POST['contenido']
-    tiempo=request.POST['tiempo']
-    actividades=request.POST['actividades']
-    u=request.POST['unidad']
-    print(u)
-    Silabo_Content( codigo_curso=cod_c ,
-                        id_Docente_Avance=Id_de_docente,
-                        Nombre_curso=i,
-                        Contenido=contenido,
-                        Actividades=actividades,
-                        Tiempo=tiempo,
-                        FechaInicio=fechainicio,
-                        FechaFinal=fechafin,
-                        Unidad=u).save()
-    messages.info(request, u +" REGISTRADO")
+    palabras=contenido.split('\n')
+    #tiempo=request.POST['tiempo']
+    #actividades=request.POST['actividades']
+    #u=request.POST['unidad']
+    #print(u)
+    for t in palabras:
+        Silabo_Content( codigo_curso=cod_c ,
+                            id_Docente_Avance=Id_de_docente,
+                            Nombre_curso=i,
+                            Contenido=t,
+                            Actividades=' ',
+                            Tiempo=1,
+                            FechaInicio=fechainicio,
+                            FechaFinal=fechafin,
+                            Unidad=' ').save()
+    messages.info(request," REGISTRADO")
     return redirect('regis_silabo')
 
-   
+
+
+
+
+
+def ReportesAlumnos(request,i):
+    if request.method=='GET':
+        lista_alumnos=Alumno.objects.filter(CodigoCurso=i)
+        alumnos={}
+        for A in lista_alumnos:
+            alumnos[A.codigoAlumno]={}
+            alumnos[A.codigoAlumno]=A.Apellido_Nombre
+        
+        return render(request,'Docente/ReportesAlumnos.html',{'Alumnos':alumnos,'grupo':i})
+    else:
+        #informacion del curso
+        #filtramos alumno mediante su codigo
+        curso=request.POST['Codcurso']
+        arreglo_de_alumno=Registro_Alumnos.objects.filter(codigoCurso=curso , codigo=i)# "i" es codigo alumno
+        al=[]
+        for fila in arreglo_de_alumno:
+            al.append(fila)
+        #asistencias del alumno por clase
+        #filtro ediante el codigo del curso todo el abance del docente
+        TotalAvance=Avance_Docente.objects.filter(codigo_curso=curso)
+        porcentaje_asistencia=''
+        if len(TotalAvance)!=0:
+            porcentaje=(len(arreglo_de_alumno))*100/len(TotalAvance)
+            #transformamaos a cadena
+            porcentaje_asistencia=str(porcentaje)+'%'
+        else:
+            porcentaje_asistencia="El Docente Aun no inicio el curso"
+        #observaciones del alumno
+        return render(request,'Docente/Reporte.html',{'informacionCurso':curso,'AL':al,'asistencia':porcentaje_asistencia})
+        
+def ArmadoReporte(request,cod):
+    if request.method=='POST':
+        return render(request,'Docente/Reporte.html')

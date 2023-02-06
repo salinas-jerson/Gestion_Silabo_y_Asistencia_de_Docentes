@@ -1,0 +1,119 @@
+{% extends 'ventanas/baseDocente.html' %} {% block content %}
+<h3>Reportes</h3>
+<blockquote style="margin-left: 20px;"></blockquote>
+<h4
+	style="text-align: center;color:rgba(253, 253, 253, 0.719)"
+	class="animate__animated animate__fadeInDown"
+>
+	REPORTES DE ALUMNOS
+</h4>
+<blockquote style="margin-left: 20px;"></blockquote>
+<script>
+	async function getvalues() {
+		var seleccion = new Array();
+		var chbox = document.getElementById('table');
+		var selech = chbox.getElementsByTagName('input');
+		var g = document.getElementById('grupoCurso').innerText;
+
+		console.log(g);
+		for (var i = 0; i < selech.length; i++) {
+			if (selech[i].checked) {
+				seleccion.push(selech[i].value);
+			}
+		}
+		const s = JSON.stringify(seleccion);
+		if (seleccion.length > 0) {
+			document.getElementById('negrita').innerHTML = seleccion;
+		}
+		console.log(s);
+		/*let response= await fetch('/',{
+			method:'GET',
+			headers:{
+				'X-Requested-With':'XMLHttpRequest',
+				'Content-Type':'application/json'
+			}
+		})*/
+		/*$.ajax({
+			//url: 'asistencia/control_de_asistenciaAL/' + g + '/control_alumno/',
+			url: '/control_alumno',
+			type: 'POST',
+			contentType: 'aplication/json',
+			data: JSON.stringify(s),
+		});*/
+	}
+	<blockquote style="margin-left: 20px;"></blockquote>;
+</script>
+<div>
+	<form action="{{grupo}}" method="POST">
+		<table class="table" id="table">
+			<thead class="thead-Primary">
+				<tr>
+					<th
+						class="animate__animated animate__fadeInLeft"
+						style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue"
+					>
+						#
+					</th>
+					<th
+						class="animate__animated animate__fadeInLeft"
+						style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue"
+					>
+						Codigo
+					</th>
+					<th
+						class="animate__animated animate__fadeInLeft"
+						style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue"
+					>
+						Apellidos-Nombres
+					</th>
+					<th
+						class="animate__animated animate__fadeInLeft"
+						style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue"
+					>
+						observacion
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for cod,nombres in Alumnos.items %}
+				<tr>
+					<th
+						style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)"
+					>
+						{{forloop.counter}}
+					</th>
+					<!--<form action="{{grupo}}" method="POST">-->
+					<td
+						style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)"
+					>
+						{{cod}}
+					</td>
+					<td
+						style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)"
+					>
+						{{nombres}}
+					</td>
+					<td>
+						<center>
+							<form action="{{cod}}" method="POST">
+								{% csrf_token %}
+								<input name="Codcurso" type="hidden" value="{{grupo}}" />
+								<input type="submit" class="btn btn-info" value="Reporte" />
+							</form>
+						</center>
+					</td>
+					<!--</form>-->
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</form>
+	<div>
+		<b><a href="{% url 'asistencia_Al' %}">Atras</a></b>
+	</div>
+	<!--{% csrf_token %}
+	<input id="but1" type="button" value="Guardar Lista" onclick="getvalues()" />
+	<b id="negrita"></b>
+	<p id="grupoCurso">{{grupo}}</p>-->
+</div>
+{% endblock %}

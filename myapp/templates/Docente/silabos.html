@@ -33,8 +33,6 @@
 		
 		{% endif %} {% endfor %} {% endif %}
 		<div>
-
-			{% for u in unidades %}
 			<form action="ParteSilabo/{{i}}" method="POST">
 				{% csrf_token %}
 				<label for="">Inicio</label>
@@ -46,12 +44,7 @@
 					type="Date"
 					placeholder="Fecha de Conclusion"
 				/>
-
 				<div class="mb-3">
-					<select name="unidad" id="unidad">
-						<option value="{{u}}">UNIDAD{{u}}</option>
-					</select>
-
 					<label for="">UNIDAD {{u}}</label>
 					<label for="Textarea1" class="form-label">Contenido</label>
 					<textarea
@@ -61,57 +54,11 @@
 						rows="3"
 					></textarea>
 
-					<input name="tiempo" type="number" placeholder="Tiempo" />
-
-					<label for="Textarea2" class="form-label">Actividades</label>
-					<textarea
-						name="actividades"
-						class="form-control"
-						id="actividades"
-						rows="2"
-					></textarea>
 				</div>
-				<!--<div class="mb-3">
-					<label for="">UNIDAD II</label>
-					<label for="Textarea1" class="form-label">Contenido</label>
-					<textarea
-						name="contenido2"
-						class="form-control"
-						id="contenidos"
-						rows="3"
-					></textarea>
-					<input name="tiempo2" type="number" placeholder="Tiempo" />
-					<label for="Textarea2" class="form-label">Actividades</label>
-					<textarea
-						name="actividad2"
-						class="form-control"
-						id="actividades"
-						rows="2"
-					></textarea>
-				</div>
-				<div class="mb-3">
-					<label for="">UNIDAD III</label>
-					<label for="Textarea1" class="form-label">Contenido</label>
-					<textarea
-						name="contenido3"
-						class="form-control"
-						id="contenidos"
-						rows="3"
-					></textarea>
-					<input name="tiempo3" type="number" placeholder="Tiempo" />
-					<label for="Textarea2" class="form-label">Actividades</label>
-					<textarea
-						name="actividad3"
-						class="form-control"
-						id="actividades"
-						rows="2"
-					></textarea>
-				</div>-->
 				
 				<button type="submit" class="btn btn-warning">Registrar</button>
 			</form>
-			
-			{% endfor %}
+		
 		</div>
 	</div>
 	

@@ -27,6 +27,16 @@
 				</form>
 			</div>
 		</div>
+		
+
+
+
+
+
+
+
+
+
 		{% if BD|length > 0 %} {% for file in BD %} {% if file.cod_curso == group %}
 		<blockquote style="margin-left: 40px;"></blockquote>
 		<div>
@@ -44,6 +54,7 @@
 						<th style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{forloop.counter}}</th>
 						<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{key}}</td>
 						<td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{nombre}}</td>
+						
 					</tr>
 					{% endfor %} {% endfor %}
 				</tbody>
@@ -54,8 +65,13 @@
 				document.getElementById('table');
 			}
 		</script>
+		<form action="Reporte/{{group}}" method="GET">
+			<button class="btn btn-info">REPORTE</button>
+		</form>
+
 		<a href="{{file.Lista.url}}">Descargar</a>
 		{% endif %} {% endfor %} {% endif %}
+		
 	</div>
 	{% endfor %} {% endfor %}
 </div>
