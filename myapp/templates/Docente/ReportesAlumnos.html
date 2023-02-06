@@ -66,12 +66,6 @@
 					>
 						Apellidos-Nombres
 					</th>
-					<th
-						class="animate__animated animate__fadeInLeft"
-						style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(228, 53, 0);color:aliceblue"
-					>
-						observacion
-					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -93,9 +87,19 @@
 					>
 						{{nombres}}
 					</td>
+
 					<td>
 						<center>
-							<form action="{{cod}}" method="POST">
+							<form action="{{grupo}}/{{cod}}" method="POST">
+								{% csrf_token %}
+								<input name="Codcurso" type="hidden" value="{{grupo}}" />
+								<input type="submit" class="btn btn-second" value="|" />
+							</form>
+						</center>
+					</td>
+					<td>
+						<center>
+							<form action="{{grupo}}/{{cod}}" method="POST">
 								{% csrf_token %}
 								<input name="Codcurso" type="hidden" value="{{grupo}}" />
 								<input type="submit" class="btn btn-info" value="Reporte" />
