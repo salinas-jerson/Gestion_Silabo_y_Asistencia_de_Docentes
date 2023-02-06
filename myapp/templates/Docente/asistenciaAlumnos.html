@@ -1,5 +1,5 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<h2 style="text-align: center;color:rgba(0, 255, 13, 0.719)" class="animate__animated animate__fadeInDown">ASISTENCIA DE ALUMNOS </h2>
+<h2 style="text-align: center;color:rgba(0, 255, 13, 0.719)" class="animate__animated animate__fadeInDown">REGISTRO MASIVO DE ALUMNOS </h2>
 <!--leer archivo de estudiantes en excel-->
 <div class="row row-cols-1 row-cols-md-2 g-4">
 	{% for Materia,grupos in cursos.items %} {% for group in grupos %}
@@ -28,15 +28,6 @@
 			</div>
 		</div>
 		
-
-
-
-
-
-
-
-
-
 		{% if BD|length > 0 %} {% for file in BD %} {% if file.cod_curso == group %}
 		<blockquote style="margin-left: 40px;"></blockquote>
 		<div>
@@ -65,8 +56,9 @@
 				document.getElementById('table');
 			}
 		</script>
-		<form action="Reporte/{{group}}" method="GET">
-			<button class="btn btn-info">REPORTE</button>
+		<form action="Reporte/{{group}}" method="POST">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-info" value="REPORTE" />
 		</form>
 
 		<a href="{{file.Lista.url}}">Descargar</a>

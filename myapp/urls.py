@@ -30,7 +30,7 @@ urlpatterns = [
     path('iniciaSessionD/',views.iniciarSesionD,name="iniciaSessionD"),
     path('cerrarSessionD/',views.cerrarLoginD,name="cerrarSessionD"),
     path('asistencia_alumnos/Reporte/<i>',views.ReportesAlumnos,name="ReportesAlumnos"),
-    path('asistencia_alumnos/Reporte/<cod>',views.ArmadoReporte,name='Reporte'),
+    path('asistencia_alumnos/Reporte/<i>/<cur>',views.ArmadoReporte,name='Reporte'),
     
     #------------ URL DIRECTOR DE ESCUELA ----------------------------
     path('mis_docentes/',views.misDocentes,name="mis_docentes"),
