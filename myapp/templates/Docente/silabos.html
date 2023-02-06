@@ -51,6 +51,7 @@
 					placeholder="Fecha de Conclusion"
 				/>-->
 				<div class="mb-3">
+					{% csrf_token %}
 					<label for="">{{u}}</label>
 					<label for="Textarea1" class="form-label">Contenido</label>
 					<textarea
