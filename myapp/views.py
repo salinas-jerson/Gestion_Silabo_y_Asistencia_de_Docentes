@@ -751,7 +751,7 @@ def ControlAsistenciaAL(request,i): # i=codigo del curso
                 Registro_Alumnos(codigo=al,Nombres=nom,codigoCurso=i,Fecha=f,observacion='P').save()
             messages.success(request,"REGISTRADO !")
             porcentaje=str((len(list)*100)/len(lista_alumnos))
-            messages.info(request,porcentaje+"%" + " ASISTENTES")
+            messages.info(request,round(porcentaje,2)+"%" + " ASISTENTES")
         return render(request,'Docente/llamadoAsistenciaAlumno.html',{'Alumnos':alumnos,'grupo':i,'asistentes':porcentaje}) 
 
 '''def control_alumno(request):
