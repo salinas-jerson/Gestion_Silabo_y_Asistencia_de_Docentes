@@ -28,8 +28,9 @@
 {% csrf_token %}  
 
 <blockquote style="margin-left: 20px;"></blockquote>
-<h4 style="text-align: center;color:rgb(253, 253, 253)" class="animate__animated animate__fadeInDown"> Reporte de actividades del Docente:</h4>    
-<h2 style="text-align: center" class="animate__animated animate__fadeInDown">{{ docente }}</h2>         
+<h5 style="text-align: center;color:rgb(253, 253, 253)" class="animate__animated animate__fadeInDown"> Reporte de actividades del Docente:</h4>    
+<h2 style="color:rgba(243, 243, 243, 0.486); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">{{ docente }}</h2>   
+<blockquote style="margin-left: 20px;"></blockquote >     
          <h2 style="color:rgb(243, 243, 243); font-weight:bold;text-align:center"class="animate__animated animate__backInRight">TEMAS</h2>
         <section class="card" style="color: rgb(1, 44, 78);font-weight:bold;text-align:center;background-color: rgb(253, 253, 253, 0.801) ">
         {% for datos,temas in temas_totales %}  
@@ -75,22 +76,22 @@
     <table class="table table-striped" id="hor-minimalist-b" width="80%">        
         <thead>
             <tr>                
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Temas registradas</td> 
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Temas avanzadas</td>            
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Nivel de avance</td>        
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Correcto avance</td>
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Incoherencias</td>
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Temas registradas</td> 
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Temas avanzadas</td>            
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Nivel de avance</td>        
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Correcto avance</td>
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Incoherencias</td>
             </tr>
         </thead>
 
         <tbody>
             <tr> 
                 
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasReg}}</td> 
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasAvan}}</td>            
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{nivelAvance}}0%</td>  
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{correcto}}0%</td>
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{incoherencia}}0%</td>
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasReg}}</td> 
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{totalTemasAvan}}</td>            
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{nivelAvance}}0%</td>  
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{correcto}}0%</td>
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{incoherencia}}0%</td>
         </tbody>        
     </table>
     {% else %}
@@ -145,20 +146,20 @@
     <table class="table table-striped" id="hor-minimalist-b" width="80%">        
         <thead>
             <tr>                
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Puntual</td> 
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Tarde</td>            
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Faltas</td>        
-                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(1, 44, 78);color:aliceblue">Total</td>
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Puntual</td> 
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Tarde</td>            
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Faltas</td>        
+                <td class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgb(255, 255, 255);background-color: rgb(2, 100, 24);color:aliceblue">Total</td>
             </tr>
         </thead>
 
         <tbody>
             <tr> 
                 
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_puntual}}0%</td> 
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_tarde}}0%</td>            
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_destiempo}}0%</td>  
-                <td style="border: 1px solid rgb(5, 60, 112);text-align:center;background-color: rgb(255, 255, 255)">{{total_asistencia}}</td>
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{total_puntual}}0%</td> 
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{total_tarde}}0%</td>            
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{total_destiempo}}0%</td>  
+                <td style="border: 1px solid rgb(2, 100, 24);text-align:center;background-color: rgb(255, 255, 255)">{{total_asistencia}}</td>
         </tbody>
         
     </table>
@@ -166,8 +167,9 @@
     <h4> {{total_asistencia}} asistencias registradas</h4>
     {% endif %}
     </section>
+    <blockquote style="margin-left: 20px;"></blockquote>
     <a href="{% url 'mis_docentes'  %}" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-left-short"></i></a>
-    <input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(4, 0, 255);"   onClick="history.back();">
+    <input class="btn-outline-success btn-lg" type="button" value= "Atrás"  style="color:rgb(255, 255, 255);"   onClick="history.back();">
     <p class="mt-5 mb-3 text-muted text-center">&copy; 2022 cero absoluto</p> 
     
         <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js '%}"></script>

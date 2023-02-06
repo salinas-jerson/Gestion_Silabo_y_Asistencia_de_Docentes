@@ -16,7 +16,7 @@ urlpatterns = [
 
     path('asistencia/',views.asistencia,name="asistencia"),
     path('asistencia/control_de_asistenciaAL/<i>',views.ControlAsistenciaAL,name="control_de_asistenciaAL"),
-    path('asistencia/control_de_asistenciaAL/control_alumno',views.control_alumno,name="control_alumno"),
+    #path('asistencia/control_de_asistenciaAL/control_alumno',views.control_alumno,name="control_alumno"),
     
 
     path('asistencia/registroTema/<cur>',views.registroTema,name="regis_Tema"),
@@ -29,7 +29,8 @@ urlpatterns = [
     path('regist_D/',views.resgistD,name="regist_D"),
     path('iniciaSessionD/',views.iniciarSesionD,name="iniciaSessionD"),
     path('cerrarSessionD/',views.cerrarLoginD,name="cerrarSessionD"),
-    
+    path('asistencia_alumnos/Reporte/<i>',views.ReportesAlumnos,name="ReportesAlumnos"),
+    path('asistencia_alumnos/Reporte/<cod>',views.ArmadoReporte,name='Reporte'),
     
     #------------ URL DIRECTOR DE ESCUELA ----------------------------
     path('mis_docentes/',views.misDocentes,name="mis_docentes"),
