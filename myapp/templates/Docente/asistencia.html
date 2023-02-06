@@ -1,5 +1,6 @@
 {% extends 'ventanas/baseDocente.html' %} {% block content %}
-<section id="hero" style="background-color: rgba(0, 0, 0, 0.0);">
+<section id="card" style="background-color: rgba(0, 0, 0, 0.0);">
+	<div class="card-title" style="background-color: rgba(0, 0, 0, 0.0);">
 	<script>
 		function startTime() {
 			today = new Date();
@@ -24,10 +25,9 @@
 	<h2>
 		<div id="reloj" style="font-size:50px; color: rgb(255, 255, 255);"></div>
 	</h2>
-
+	
 	<a class="btn-get-started">
 		<script>
-			//<![CDATA[
 			function makeArray() {
 				for (i = 0; i < makeArray.arguments.length; i++)
 					this[i + 1] = makeArray.arguments[i];
@@ -51,19 +51,21 @@
 			var month = date.getMonth() + 1;
 			var yy = date.getYear();
 			var year = yy < 1000 ? yy + 1900 : yy;
-			document.write(+day + ' de ' + months[month] + ' del ' + year);
-			//]]>
+			document.write('<span style="color: white;">' + day + ' de ' + months[month] + ' del ' + year + '</span>');
 		</script>
 	</a>
+	</div>	
 
 	<blockquote style="margin-left: 20px;"></blockquote>
 
 	<div class="card-deck animate__animated animate__fadeInLeftBig ">
 		{% for cr,gs in cursos.items %}
-		<div class="card">
+			
 			<div class="col">
-				<h5><a href="#">{{cr}}</a></h5>
-
+				<h4 class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);background-color: rgb(233, 155, 10);color:rgb(4, 57, 104);font-weight:bold">{{cr}}</h5>
+					<blockquote style="margin-left: 20px;"></blockquote>
+				<div class="card">
+					<div class="col">
 				<form action="registroAsistencia/{{cr}}" method="POST">
 					{% csrf_token %}
 					<label for="">marcar asistencia</label>
@@ -90,8 +92,11 @@
 					/>
 				</form>
 			</div>
+			</div>
 			<blockquote style="margin-left: 20px;"></blockquote>
+			<div class="card">
 			<div class="col">
+				
 				{% for gru,t in gs.items %}
 				<form action="registroTema/{{gru}}" method="POST">
 					{% csrf_token %}
@@ -103,7 +108,7 @@
 						<option value="{{kk}}">{{kk}}</option>
 						{% endif %}{% endfor %}{% endfor %}
 					</select>
-
+						
 					<button
 						type="submit"
 						style="background-color: rgba(6, 55, 100, 0.959); color: white;"
@@ -114,6 +119,10 @@
 				</form>
 				{% endfor %}
 			</div>
+		
+		<blockquote style="margin-left: 20px;"></blockquote>
+		<div class="card">
+		</div>
 			<div class="col">
 				{% for gkey,g in gs.items %}
 				<form action="control_de_asistenciaAL/{{gkey}}" method="POST">
@@ -139,11 +148,14 @@
 					{% endfor %} {% endfor %}-->
 			</div>
 		</div>
+	</div>
+		
 		{% endfor %}
 	</div>
+	
 	<p>
-		"Por favor marque su asistencia y registre el tema dictado en el formulario
-		correspondiente."
+		<h4 class="animate__animated animate__fadeInLeft" style="text-align:center;border:1px solid rgba(255, 255, 255, 0);color:rgb(255, 166, 0)">Por favor marque su asistencia y registre el tema dictado en el formulario correspondiente."</h4>
+		
 	</p>
 </section>
 {% endblock %}
