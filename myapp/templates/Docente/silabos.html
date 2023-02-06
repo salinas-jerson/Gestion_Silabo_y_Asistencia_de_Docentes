@@ -3,9 +3,12 @@
 <blockquote style="margin-left: 30px;">							
 </blockquote>
 <body>
-	<h2 class="animate__animated animate__fadeInDown">Asignaturas</h2>
-	
-
+	<div style="margin: 0 0 0 45%;">
+		<h2 class="animate__animated animate__fadeInDown">SILABOS</h2>
+	</div>
+<div style="margin: 0 0 0 35%;">
+	<p class="text-white bg-dark"><h4 class="text-white bg-dark">Fecha Limite de entrega {{entrega}}</h4></p>
+</div>
 <section class="card-deck">
 	{% for i in cursos %}
 	<div class="card">
@@ -19,7 +22,10 @@
 			{% csrf_token %}
 			<p style="color:rgb(255,0,0);">{{error}}</p>
 			{% if BD|length == 0 %}
-			<input type="file" id="archivo" name="archivo" />
+			<!--<input type="file" id="archivo" name="archivo" />-->
+			<div class="input-group mb-3">
+				<input type="file" class="form-control" id="archivo" name="archivo">
+			</div>
 			{% else %} {% if BD|length != 0 %} {% if i not in subidos %}
 			<input type="file" id="archivo" name="archivo" />
 			{% endif %} {% endif %}{% endif %}
@@ -34,7 +40,7 @@
 		{% endif %} {% endfor %} {% endif %}
 		<div>
 			<form action="ParteSilabo/{{i}}" method="POST">
-				{% csrf_token %}
+				<!--{% csrf_token %}
 				<label for="">Inicio</label>
 				<input name="fechaInicio" type="Date" placeholder="Fecha de Inicio" />
 
@@ -43,9 +49,9 @@
 					name="fechaConclusion"
 					type="Date"
 					placeholder="Fecha de Conclusion"
-				/>
+				/>-->
 				<div class="mb-3">
-					<label for="">UNIDAD {{u}}</label>
+					<label for="">{{u}}</label>
 					<label for="Textarea1" class="form-label">Contenido</label>
 					<textarea
 						name="contenido"

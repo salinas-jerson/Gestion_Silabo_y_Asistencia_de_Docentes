@@ -481,8 +481,13 @@ def registro_Silabo(respuesta):
                 subidos.append(File.curso)  
 
         UnidadLectiva=['I','II','III'] 
+        #consultamos la fecha de entrega de silabos
+        e=AsignaTarea.objects.filter(titulo='silabo')
+        entrega=''
+        for fin in e:
+            entrega=fin.fechaFin            
 
-        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos,'unidades':UnidadLectiva}) 
+        return render(respuesta,"Docente/silabos.html",{'cursos':materias,'BD':registros_objetos,'subidos':subidos,'unidades':UnidadLectiva,'entrega':entrega}) 
     
 
 def guardarSilabo(request,i):
@@ -779,8 +784,8 @@ def ParteSilabo(request,i):
         for k in grupo:
             if i==key:
                 cod_c=k
-    fechainicio=request.POST['fechaInicio']
-    fechafin=request.POST['fechaConclusion']
+    fechainicio=datetime.now().date()
+    fechafin=datetime.now().date()
     contenido=request.POST['contenido']
     palabras=contenido.split('\n')
     #tiempo=request.POST['tiempo']
