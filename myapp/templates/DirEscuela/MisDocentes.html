@@ -83,10 +83,10 @@
                 <table class="table table-striped" id="hor-minimalist-b" width="80%">
                     <thead>
                         <tr>
-                            <td>Nro</td>
-                            <td>Apellidos y Nombres</td>
-                            <td>Detalles de actividades</td>
-                            <td>Reporte</td>
+                            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Nro</td>
+                            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Apellidos y Nombres</td>
+                            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Detalles de actividades</td>
+                            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Reporte</td>
                         </tr>
                     </thead>
 
@@ -95,11 +95,11 @@
                         <tr>
                             <form action="{% url 'ver-actividades'  %}" method="POST" >
                                 {% csrf_token %}
-                                <td>{{ i.id_docente }}</td>
-                                <td>{{i.apellido}}, {{ i.Nombre }}</td>
+                                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)">{{ i.id_docente }}</td>
+                                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)">{{i.apellido}}, {{ i.Nombre }}</td>
                                 
-                                <td><button type="submit" style="background-color: rgba(6, 55, 100, 0.959); color: white;" class="btn btn-info" name="btn" value="mas_detalles">Más detalles</button></td>
-                                <td><button type="submit"  class="btn btn-success" name="btn" value="reporte">Reporte</button></td>
+                                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)"><button type="submit" style="background-color: rgba(6, 55, 100, 0.959); color: white;" class="btn btn-info" name="btn" value="mas_detalles">Más detalles</button></td>
+                                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)"><button type="submit"  class="btn btn-success" name="btn" value="reporte">Reporte</button></td>
                                 <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
                             </form>
                         </tr>

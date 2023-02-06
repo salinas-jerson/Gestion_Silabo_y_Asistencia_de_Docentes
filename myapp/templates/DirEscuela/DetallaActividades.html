@@ -35,11 +35,11 @@
 <table class="table table-striped" id="hor-minimalist-b" width="80%">
     <thead>
         <tr>
-            <td>Cód. Curso</td>
-            <td>Curso</td>           
-            <td>Registro de asistencias</td>
-            <td>Temas avanzados</td>
-            <td>Sílabo</td>            
+            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Cód. Curso</td>
+            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Curso</td>           
+            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Registro de asistencias</td>
+            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Temas avanzados</td>
+            <td style="border: 2px solid rgb(255, 255, 255);text-align:center;background-color: rgb(233, 155, 10);font-weight:bold">Sílabo</td>            
         </tr>
     </thead>
 
@@ -48,10 +48,10 @@
         <tr>          
             <form action="{% url 'consulta' %}" method="POST">
                 {% csrf_token %}
-                <td>{{ i.PR_DE }}</td>
-                <td>{{ i.CURSO }}</td>                        
-                <td><button class="btn btn-success" name="btn" value="asistencia">Asistencias</button></td>
-                <td><button class="btn btn-info" name="btn" value="temas">Temas</button></td>
+                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)">{{ i.PR_DE }}</td>
+                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)">{{ i.CURSO }}</td>                        
+                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)"><button class="btn btn-success" name="btn" value="asistencia">Asistencias</button></td>
+                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)"><button class="btn btn-info" name="btn" value="temas">Temas</button></td>
                 <input type="hidden" name="id_docente" value="{{ i.id_docente }}" />
                 <input type="hidden" name="curso" value="{{ i.CURSO }}" />
                 <input type="hidden" name="id_curso" value="{{ i.PR_DE }}" />
@@ -61,7 +61,7 @@
             {% if silabos|length > 0 %} 
             {% for file in silabos %} 
                 {% if file.curso == i.CURSO %}
-                <td><a href= "{{file.silabo.url}}" >Ver PDF</a></td>            
+                <td style="border: 1px solid rgb(233, 155, 10);text-align:center;background-color: rgb(255, 255, 255)"><a href= "{{file.silabo.url}}" >Ver PDF</a></td>            
                 {% endif %} 
             {% endfor %} 
             {% endif %}
